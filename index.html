@@ -846,11 +846,21 @@
       // Кнопка подтверждения заказа
       document.getElementById('confirmOrderBtn').addEventListener('click', confirmUserData);
       
-      // Слушатель изменения адреса для геокодирования
+      // Слушатель изменения адреса для геокодирования (по событию change)
       document.getElementById('addressInput').addEventListener('change', (e) => {
         const address = e.target.value.trim();
         if(address) {
           geocodeAddress(address);
+        }
+      });
+      
+      // Дополнительно: слушатель keydown – при нажатии Enter запускается геокодирование
+      document.getElementById('addressInput').addEventListener('keydown', (e) => {
+        if(e.key === "Enter") {
+          const address = e.target.value.trim();
+          if(address) {
+            geocodeAddress(address);
+          }
         }
       });
       
@@ -1093,7 +1103,7 @@
     
     /* Геокодування адреси (Nominatim) */
     function geocodeAddress(address) {
-      fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&countrycodes=ua`)
+      fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&countrycodes=ua&limit=1`)
         .then(response => response.json())
         .then(data => {
           if(data && data.length > 0) {
