@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <title>Septic24 – Послуги асенізатора в Україні</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <!-- Підключення шрифта Montserrat -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -31,7 +31,7 @@
       background: linear-gradient(135deg, #ffffff, #d0e8ff);
       color: #002050;
       transition: background 0.5s, color 0.5s;
-      overflow: hidden;
+      /* Убрали overflow: hidden; чтобы страница могла прокручиваться на маленьких экранах */
     }
 
     /* Скрыть номера телефонов на экране загрузки */
@@ -117,9 +117,11 @@
       box-shadow: 0 0 20px #80d0ff;
     }
     
-    /* Основний контейнер */
+    /* Основний контейнер (адаптивная ширина + центрирование) */
     .container {
-      width: 100vw;
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
@@ -147,6 +149,8 @@
       display: block;
       margin: 20px auto;
       max-width: 250px;
+      width: 100%;
+      height: auto;
     }
     #description {
       font-size: 1rem;
@@ -433,15 +437,15 @@
       padding: 8px 50px 8px 8px;
       box-sizing: border-box;
     }
-    /* Кнопка "Пошук" со стилем, но чуть меньше */
+    /* Кнопка "Пошук" */
     .address-search-wrap button {
       position: absolute;
       right: 10px;
       top: 50%;
       transform: translateY(-55%);
-      padding: 4px 6px; /* уменьшаем высоту */
+      padding: 6px 10px;
       font-weight: 700;
-      font-size: 0.9rem; /* уменьшаем размер текста */
+      font-size: 0.9rem;
       color: #fff;
       background: #0060a0;
       cursor: pointer;
