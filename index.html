@@ -422,13 +422,45 @@
       text-align: left;
       margin: 10px 0;
     }
-    #addressInput {
+    /* Обёртка для поля ввода адреса с кнопкой "Пошук" */
+    .address-search-wrap {
+      position: relative;
       width: 100%;
-      padding: 8px;
       margin: 10px 0;
-      box-sizing: border-box;
-      font-size: 0.8rem;
     }
+    .address-search-wrap input[type="text"] {
+      width: 100%;
+      padding: 8px 50px 8px 8px;
+      box-sizing: border-box;
+    }
+    /* Кнопка "Пошук" со стилем, но чуть меньше */
+    .address-search-wrap button {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-55%);
+      padding: 4px 6px; /* уменьшаем высоту */
+      font-weight: 700;
+      font-size: 0.9rem; /* уменьшаем размер текста */
+      color: #fff;
+      background: #0060a0;
+      cursor: pointer;
+      border-radius: 5px;
+      border: none;
+      display: inline-flex; 
+      align-items: center; 
+      justify-content: center;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .address-search-wrap button:hover {
+      transform: translateY(-55%) translateX(0) scale(1.02);
+      box-shadow: 0 0 5px #0060a0, 0 0 10px #0060a0;
+    }
+    .address-search-wrap button:active {
+      transform: translateY(-55%) translateX(0) scale(0.95);
+      box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+    }
+
     #olMap {
       width: 100%;
       height: 300px;
@@ -661,7 +693,10 @@
     <div class="modal" id="modalMap">
       <span class="modal-close" data-modal="modalOverlayMap">&times;</span>
       <p class="address-label">Вкажіть вашу адресу:</p>
-      <input type="text" id="addressInput" placeholder="( Місто , вулиця , номер будинку )" style="width:100%; padding: 8px; margin: 10px 0; box-sizing: border-box;">
+      <div class="address-search-wrap">
+        <input type="text" id="addressInput" placeholder="( Місто , вулиця , номер будинку )">
+        <button id="searchAddressBtn">Пошук</button>
+      </div>
       
       <p class="address-label" style="position: relative;">
         Або позначте місце подачі асенізатора на карті:
@@ -846,7 +881,7 @@
       // Кнопка подтверждения заказа
       document.getElementById('confirmOrderBtn').addEventListener('click', confirmUserData);
       
-      // Слушатель изменения адреса для геокодирования (по событию change)
+      // Слушатель изменения адреса (по событию change)
       document.getElementById('addressInput').addEventListener('change', (e) => {
         const address = e.target.value.trim();
         if(address) {
@@ -854,13 +889,22 @@
         }
       });
       
-      // Дополнительно: слушатель keydown – при нажатии Enter запускается геокодирование
+      // Слушатель keydown – при нажатии Enter запускается геокодирование
       document.getElementById('addressInput').addEventListener('keydown', (e) => {
         if(e.key === "Enter") {
           const address = e.target.value.trim();
           if(address) {
             geocodeAddress(address);
           }
+        }
+      });
+      
+      // Слушатель для кнопки "Пошук"
+      document.getElementById('searchAddressBtn').addEventListener('click', () => {
+        const address = document.getElementById('addressInput').value.trim();
+        if(address) {
+          openModal('modalOverlayMap');
+          geocodeAddress(address);
         }
       });
       
@@ -1103,6 +1147,7 @@
     
     /* Геокодування адреси (Nominatim) */
     function geocodeAddress(address) {
+      initMap();  // Инициализируем карту, если не инициализирована
       fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&countrycodes=ua&limit=1`)
         .then(response => response.json())
         .then(data => {
