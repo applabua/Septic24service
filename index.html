@@ -400,121 +400,15 @@
       border: none;
       cursor: pointer;
     }
-    
-    /* Модальне вікно для карти */
-    #modalOverlayMap {
-      position: fixed;
-      top: 0; 
-      left: 0;
-      width: 100vw; 
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 99998;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.5s ease;
-      background: rgba(0, 0, 0, 0.7);
-    }
-    #modalOverlayMap.active {
-      opacity: 1;
-      pointer-events: auto;
-    }
-    #modalMap {
-      position: fixed; 
-      top: 50%; 
-      left: 50%;
-      transform: translate(-50%, -50%);
-      padding: 10px;
-      border-radius: 8px;
-      max-width: 500px;
-      width: 80%;
-      background: linear-gradient(135deg, #ffffff, #d0e8ff);
-      color: #002050;
-      border: 2px solid #0060a0;
-      box-shadow: 0 0 5px #0060a0, 0 0 10px #0060a0;
-      overflow: hidden;
-    }
-    #modalMap p.address-label {
-      position: relative;
-      font-size: 1.1rem;
-      font-weight: bold;
-      text-align: left;
-      margin: 10px 0;
-    }
-    .address-search-wrap {
-      position: relative;
-      width: 100%;
-      margin: 10px 0;
-    }
-    .address-search-wrap input[type="text"] {
-      width: 100%;
-      padding: 8px 50px 8px 8px;
-      box-sizing: border-box;
-    }
-    .address-search-wrap button {
-      position: absolute;
-      right: 10px;
-      top: 50%;
-      transform: translateY(-55%);
-      padding: 6px 10px;
-      font-weight: 700;
-      font-size: 0.9rem;
-      color: #fff;
-      background: #0060a0;
-      cursor: pointer;
-      border-radius: 5px;
-      border: none;
-      display: inline-flex; 
-      align-items: center; 
-      justify-content: center;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-    .address-search-wrap button:hover {
-      transform: translateY(-55%) translateX(0) scale(1.02);
-      box-shadow: 0 0 5px #0060a0, 0 0 10px #0060a0;
-    }
-    .address-search-wrap button:active {
-      transform: translateY(-55%) translateX(0) scale(0.95);
-      box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
-    }
 
+    /* Стилі для блоку з картою */
     #olMap {
       width: 100%;
       height: 300px;
       border-radius: 8px;
       margin-top: 10px;
     }
-    #cancelLocationBtn, #confirmLocationBtn {
-      position: absolute;
-      bottom: 10px;
-      padding: 5px 10px;
-      font-size: 0.8rem;
-      width: 45%;
-    }
-    #cancelLocationBtn {
-      left: 10px;
-      display: none;
-    }
-    #confirmLocationBtn {
-      right: 10px;
-      display: block;
-    }
-    
-    #mapLoader {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(255,255,255,0.8);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-    }
-    
+
     /* Окно для вводу імені та номера телефону */
     .modal-overlay#modalOverlayUserData {
     }
@@ -723,22 +617,13 @@
       
       <p class="address-label" style="position: relative;">
         Або позначте місце подачі асенізатора на карті:
-        <img 
-          src="https://i.ibb.co/1fGhMSqD/2025-03-23-133319.png"
-          alt="Icon"
-          style="
-            position: absolute;
-            right: 6px; 
-            top: 0.5rem; 
-            height: 2.2rem;
-            filter: brightness(0) saturate(100%) invert(9%) sepia(49%) saturate(7437%) hue-rotate(197deg) brightness(85%) contrast(105%);
-          "
-        >
       </p>
       
       <div id="olMap"></div>
       
-      <button class="btn" id="cancelLocationBtn" style="display:none;">Скасувати</button>
+      <!-- Додаткові кнопки з додатковим відступом -->
+      <button class="btn" id="getGeoBtn" style="display:block; margin-bottom:10px;">Моя геопозиція</button>
+      <button class="btn" id="cancelLocationBtn" style="display:none; margin-bottom:10px;">Скасувати</button>
       <button class="btn" id="confirmLocationBtn" style="display:block;">Підтвердити</button>
       
       <div id="mapLoader">
@@ -769,7 +654,7 @@
     const BOT_TOKEN = "7747992449:AAHwc1gUWak34AGqipUSoUKaugJjQQfAxa4";
     const CHAT_ID  = "2045410830";
     // ============================================================
-
+    
     let selectedRegion = "";
     let selectedCoordinates = null;  
     let userAddress = "";            
@@ -944,7 +829,63 @@
           updateServicesSlider();
         }
       });
+      
+      // Обробник для кнопки "Моя геопозиція"
+      document.getElementById('getGeoBtn').addEventListener('click', () => {
+        requestUserLocation();
+      });
     });
+    
+    /* Функція для отримання геопозиції користувача */
+    function requestUserLocation() {
+      if (!navigator.geolocation) {
+        alert("Геолокація не підтримується вашим браузером.");
+        return;
+      }
+      
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          // Успішно отримано координати
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
+          if(map) {
+            map.getView().setCenter(ol.proj.fromLonLat([lon, lat]));
+            map.getView().setZoom(10);
+          }
+          if(markerSource) {
+            markerSource.clear();
+            const markerFeature = new ol.Feature({
+              geometry: new ol.geom.Point(ol.proj.fromLonLat([lon, lat]))
+            });
+            markerFeature.setStyle(new ol.style.Style({
+              image: new ol.style.Icon({
+                anchor: [0.5, 1],
+                src: 'https://cdn-icons-png.flaticon.com/512/2776/2776067.png',
+                scale: 0.05
+              })
+            }));
+            markerSource.addFeature(markerFeature);
+            selectedCoordinates = { x: lon, y: lat };
+          }
+        },
+        (error) => {
+          if (error.code === error.PERMISSION_DENIED) {
+            if (confirm("Ви відхилили доступ до геолокації. Спробувати ще раз?")) {
+              requestUserLocation();
+            } else {
+              alert("Для відображення Вашої позиції, будь ласка, дозвольте геолокацію у налаштуваннях браузера.");
+            }
+          } else {
+            alert("Не вдалося отримати геолокацію: " + error.message);
+          }
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 0
+        }
+      );
+    }
     
     function animateElements() {
       document.getElementById('title').classList.add('animate');
@@ -1011,7 +952,6 @@
         const btn = document.createElement('button');
         btn.className = 'btn';
         const btnText = service.title;
-        // Параметри іконок (необов'язково)
         let iconWidth = (index === 0) ? "45px" : (index === 4 ? "18px" : "30px");
         let iconMarginLeft = (index === 0) ? "25px" : (index === 4 ? "22px" : "30px");
         btn.innerHTML = `
@@ -1155,7 +1095,6 @@
           loader.style.background = 'linear-gradient(135deg, #f0f9ff, #d0e8ff)';
           
           closeModal('modalOverlayMap');
-          markerSource.clear();
           document.getElementById('confirmLocationBtn').style.display = 'none';
           document.getElementById('cancelLocationBtn').style.display = 'none';
           
