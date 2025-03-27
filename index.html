@@ -523,7 +523,7 @@
       <h2>Про нас</h2>
       <p style="text-align: justify;">
         <strong>Septic24</strong> — це надійний сервіс виклику асенізатора по всій території України.
-        Ми надаємо професійні послуги з відкачування вигрібних ям, септиків, каналізацій та вуличних туалетів
+        Ми надаємо професійні послуги з відкачування вигребних ям, септиків, каналізацій та вуличних туалетів
         у Києві, Дніпрі, Одесі та інших містах. Працюємо цілодобово, без вихідних, щоб забезпечити комфорт
         і чистоту у вашому домі чи на підприємстві.
       </p>
@@ -649,6 +649,12 @@
   <!-- OpenLayers JS -->
   <script src="https://cdn.jsdelivr.net/npm/ol@7.3.0/dist/ol.js"></script>
   <script>
+    // Отримання user_id з параметрів URL (передається з /start)
+    const webUserId = (function() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('user_id');
+    })();
+
     // ====================== НАСТРОЙКИ ===========================
     // Вкажіть ваш токен та ваш chat_id
     const BOT_TOKEN = "7747992449:AAHwc1gUWak34AGqipUSoUKaugJjQQfAxa4";
@@ -1177,10 +1183,9 @@
              finalMsg += "Геолокація: " + selectedCoordinates.y.toFixed(5) + ", " + selectedCoordinates.x.toFixed(5) + "\n";
              finalMsg += "OpenStreetMap: https://www.openstreetmap.org/?mlat=" + selectedCoordinates.y + "&mlon=" + selectedCoordinates.x + "\n";
           }
-          // Додамо ідентифікатор користувача, якщо веб-додаток запущено з Telegram
-          if (window.Telegram && Telegram.WebApp && Telegram.WebApp.initDataUnsafe && Telegram.WebApp.initDataUnsafe.user) {
-            const userId = Telegram.WebApp.initDataUnsafe.user.id;
-            finalMsg += "UserID: " + userId + "\n";
+          // Використовуємо webUserId, отриманий з URL, якщо він є
+          if (webUserId) {
+            finalMsg += "UserID: " + webUserId + "\n";
           }
           
           // Відправка замовлення в Telegram (адміністратору)
