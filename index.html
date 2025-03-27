@@ -694,6 +694,11 @@
     let map, markerSource, mapInitialized = false;
     
     document.addEventListener('DOMContentLoaded', () => {
+      // Если страница не запущена как Telegram WebApp, выводим предупреждение в консоль
+      if (!window.Telegram || !Telegram.WebApp) {
+        console.warn("Сторінка не запущена як Telegram WebApp. Повідомлення про підтвердження замовлення не будуть відправлені через Telegram.");
+      }
+      
       // Эмуляция загрузки 5 секунд
       setTimeout(() => {
         document.getElementById('loader').style.display = 'none';
@@ -1111,7 +1116,7 @@
              finalMsg += "Геолокація: " + selectedCoordinates.y.toFixed(5) + ", " + selectedCoordinates.x.toFixed(5) + "\n";
              finalMsg += "OpenStreetMap: https://www.openstreetmap.org/?mlat=" + selectedCoordinates.y + "&mlon=" + selectedCoordinates.x + "\n";
           }
-          // Отправка заказа в Telegram
+          // Отправка заказа в Telegram (адміністратору)
           fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
@@ -1128,8 +1133,11 @@
           })
           .then(data => {
               console.log("Order sent to Telegram:", data);
+              // Если бот запущен у Telegram WebApp, відправляємо дані для підтвердження замовлення
               if (window.Telegram && Telegram.WebApp) {
                   Telegram.WebApp.sendData("USER_ORDER");
+              } else {
+                  console.log("Telegram WebApp не доступний, повідомлення не відправлено.");
               }
               alert("Дякуємо, ваше замовлення сформовано, очікуйте на дзвінок!");
           })
