@@ -167,6 +167,7 @@
       width: 100%;
       height: auto;
     }
+    <!-- Змінено текст: "вигребних" → "вигрібних" -->
     #description {
       font-size: 1rem;
       line-height: 1.4;
@@ -500,8 +501,9 @@
   <div class="container">
     <h1 id="title">Послуги асенізатора по всій Україні</h1>
     <img id="mainImage" src="https://i.ibb.co/211q15HY/2025-03-25-171453.png" alt="Decorative Image">
+    <!-- Змінено: "вигребних" → "вигрібних" -->
     <p id="description">
-      Викачка вигребних ям, викачка сливних ям і каналізацій, відкачка септиків та туалетів.
+      Викачка вигрібних ям, викачка сливних ям і каналізацій, відкачка септиків та туалетів.
     </p>
     <p id="boldLine">
       Потрібен асенізатор?<br>
@@ -523,7 +525,7 @@
       <h2>Про нас</h2>
       <p style="text-align: justify;">
         <strong>Septic24</strong> — це надійний сервіс виклику асенізатора по всій території України.
-        Ми надаємо професійні послуги з відкачування вигребних ям, септиків, каналізацій та вуличних туалетів
+        Ми надаємо професійні послуги з відкачування вигрібних ям, септиків, каналізацій та вуличних туалетів
         у Києві, Дніпрі, Одесі та інших містах. Працюємо цілодобово, без вихідних, щоб забезпечити комфорт
         і чистоту у вашому домі чи на підприємстві.
       </p>
@@ -671,14 +673,14 @@
     // Дані по послугам із розширеним описом
     const servicesData = [
       { 
-        title: "Викачка вигребних ям", 
+        title: "Викачка вигрібних ям", 
         image: "https://i.ibb.co/XkpD4t4K/uslugi-assenizatora-ukraina-1.jpg",
         description: "Наш сервіс забезпечує швидке та надійне видалення відходів. Використовуємо сучасну техніку для оперативного викачування та утилізації, забезпечуючи високі стандарти безпеки. Ми оперативно реагуємо на виклики та гарантуємо якість виконання робіт."
       },
       { 
         title: "Викачка каналізації", 
         image: "https://i.ibb.co/Q7y9Fk3h/uslugi-assenizatora-ukraina-5.jpg",
-        description: "Ми пропонуємо професійне очищення та викачку каналізаційних систем. Швидко вирішуємо проблеми із засміченнями та запобігаємо аваріям. Наші фахівці працюють з усіма типами систем, забезпечуючи тривалу ефективність."
+        description: "Ми пропонуємо професійне очищення та викачку каналізаційних систем. Швидко вирішуємо проблеми із засміченнями та запобігаємо аварям. Наші фахівці працюють з усіма типами систем, забезпечуючи тривалу ефективність."
       },
       { 
         title: "Викачка септика", 
@@ -871,6 +873,9 @@
             }));
             markerSource.addFeature(markerFeature);
             selectedCoordinates = { x: lon, y: lat };
+
+            // Автоматичне заповнення поля адреси через зворотне геокодування
+            reverseGeocode(lat, lon);
           }
         },
         (error) => {
@@ -890,6 +895,20 @@
           maximumAge: 0
         }
       );
+    }
+
+    // Функція зворотного геокодування (Nominatim)
+    function reverseGeocode(lat, lon) {
+      fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=18&addressdetails=1`)
+      .then(response => response.json())
+      .then(data => {
+        if(data && data.display_name) {
+          document.getElementById('addressInput').value = data.display_name;
+        }
+      })
+      .catch(error => {
+        console.error("Reverse geocoding error:", error);
+      });
     }
     
     function animateElements() {
@@ -913,8 +932,9 @@
       servicesData.forEach(service => {
         const card = document.createElement('div');
         card.className = 'service-card';
+        // Замінюємо "вигребних" на "вигрібних" у заголовках
         card.innerHTML = `
-          <h3>${service.title}</h3>
+          <h3>${service.title.replace("вигребних", "вигрібних")}</h3>
           <img src="${service.image}" alt="${service.title}">
           <p>${service.description}</p>
         `;
@@ -956,7 +976,8 @@
       servicesData.forEach((service, index) => {
         const btn = document.createElement('button');
         btn.className = 'btn';
-        const btnText = service.title;
+        // Замінюємо "вигребних" → "вигрібних"
+        const btnText = service.title.replace("вигребних", "вигрібних");
         let iconWidth = (index === 0) ? "45px" : (index === 4 ? "18px" : "30px");
         let iconMarginLeft = (index === 0) ? "25px" : (index === 4 ? "22px" : "30px");
         btn.innerHTML = `
@@ -1043,6 +1064,10 @@
           }));
           markerSource.addFeature(markerFeature);
           selectedCoordinates = { x: coords[0], y: coords[1] };
+
+          // Автоматичне заповнення поля адреси через зворотне геокодування
+          reverseGeocode(coords[1], coords[0]);
+
           document.getElementById('cancelLocationBtn').style.display = 'block';
         });
         
@@ -1135,6 +1160,9 @@
               }));
               markerSource.addFeature(markerFeature);
               selectedCoordinates = { x: lon, y: lat };
+
+              // Автоматичне заповнення поля адреси з отриманою адресою
+              document.getElementById('addressInput').value = result.display_name;
             }
           } else {
             alert("Місто не знайдено, спробуйте інший запит.");
@@ -1174,7 +1202,7 @@
           finalMsg += "Ім'я: " + userName + "\n";
           finalMsg += "Телефон: " + userPhone + "\n";
           if(selectedOrderServiceIndex !== null) {
-            finalMsg += "Послуга: " + servicesData[selectedOrderServiceIndex].title + "\n";
+            finalMsg += "Послуга: " + servicesData[selectedOrderServiceIndex].title.replace("вигребних", "вигрібних") + "\n";
             finalMsg += "Обʼєм: " + document.getElementById('capacityRange').value + " м³\n";
             finalMsg += "Довжина шлангу: " + document.getElementById('hoseRange').value + " м\n";
           }
@@ -1187,7 +1215,23 @@
             finalMsg += "UserID: " + webUserId + "\n";
           }
           
-          // Відправка замовлення адміністратору
+          // Запис замовлення у файл orders.txt (збереження в папці з ботом)
+          fetch("/save_order", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ order: finalMsg })
+          })
+          .then(response => response.json())
+          .then(data => {
+            console.log("Order saved:", data);
+          })
+          .catch(error => {
+            console.error("Error saving order:", error);
+          });
+          
+          // Відправка замовлення адміністратору через Telegram
           fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
               method: "POST",
               headers: {
