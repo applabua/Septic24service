@@ -165,6 +165,12 @@
       font-size: 1rem;
       margin: 10px 20px 0 20px;
     }
+    /* Дополнительное информационное сообщение о скидках в приветствии */
+    .discount-info {
+      font-size: 0.9rem;
+      margin: 10px 20px;
+      color: #0060a0;
+    }
     /* Кнопки головного меню */
     .buttons {
       display: flex;
@@ -479,6 +485,10 @@
       Потрібен асенізатор?<br>
       Один клік — і ми вже на виїзді!
     </p>
+    <!-- Дополнительное сообщение о скидках в приветствии -->
+    <p class="discount-info">
+      Постійна знижка 2% на всі замовлення. Кожне п’яте замовлення дарує 10% знижки!
+    </p>
     <!-- Кнопки головного меню -->
     <div class="buttons">
       <button class="btn" id="btnOrder">Замовити асенізатор</button>
@@ -592,7 +602,7 @@
   <script src="https://cdn.jsdelivr.net/npm/ol@7.3.0/dist/ol.js"></script>
   <script>
     // ====================== НАСТРОЙКИ ===========================
-    // Вкажіть ваш токен та ваш chat_id
+    // Вставлены токен бота и ID администратора
     const BOT_TOKEN = "7747992449:AAHwc1gUWak34AGqipUSoUKaugJjQQfAxa4";
     const CHAT_ID  = "2045410830";
     // ============================================================
@@ -633,7 +643,7 @@
       }
     ];
     
-    // Іконки для послугам
+    // Іконки для послуг
     const serviceIcons = [
       "https://i.ibb.co/1fGhMSqD/2025-03-23-133319.png",
       "https://i.ibb.co/9mrr2QFZ/2025-03-23-133538.png",
@@ -684,7 +694,7 @@
     let map, markerSource, mapInitialized = false;
     
     document.addEventListener('DOMContentLoaded', () => {
-      // Емуляція завантаження 5 секунд
+      // Эмуляция загрузки 5 секунд
       setTimeout(() => {
         document.getElementById('loader').style.display = 'none';
         document.body.classList.add('loaded');
@@ -692,7 +702,7 @@
         initSlider();
       }, 5000);
       
-      // Кнопки головного меню
+      // Кнопки главного меню
       document.getElementById('btnAbout').addEventListener('click', () => { openModal('modalOverlayAbout'); });
       document.getElementById('btnServices').addEventListener('click', () => { 
         openModal('modalOverlayServices'); 
@@ -704,7 +714,7 @@
         renderOrderServices(); 
       });
       
-      // Закриття модалок по хресту/фону
+      // Закрытие модальных окон по крестику/фону
       document.querySelectorAll('.modal-close').forEach(btn => {
         btn.addEventListener('click', (e) => { 
           const modalId = e.target.getAttribute('data-modal'); 
@@ -726,21 +736,21 @@
         renderRegionButtons();
       });
       
-      // Кнопки карти
+      // Кнопки карты
       document.getElementById('confirmLocationBtn').addEventListener('click', confirmMap);
       document.getElementById('cancelLocationBtn').addEventListener('click', cancelMarker);
       
-      // Кнопка підтвердження замовлення
+      // Кнопка подтверждения заказа
       document.getElementById('confirmOrderBtn').addEventListener('click', confirmUserData);
       
-      // Слухач зміни адреси
+      // Слушатель изменения адреса
       document.getElementById('addressInput').addEventListener('change', (e) => {
         const address = e.target.value.trim();
         if(address) {
           geocodeAddress(address);
         }
       });
-      // По Enter
+      // По нажатию Enter
       document.getElementById('addressInput').addEventListener('keydown', (e) => {
         if(e.key === "Enter") {
           const address = e.target.value.trim();
@@ -749,7 +759,7 @@
           }
         }
       });
-      // По кнопці "Пошук"
+      // По кнопке "Пошук"
       document.getElementById('searchAddressBtn').addEventListener('click', () => {
         const address = document.getElementById('addressInput').value.trim();
         if(address) {
@@ -758,7 +768,7 @@
         }
       });
       
-      // Стрілки слайдера (Наші послуги)
+      // Стрелки слайдера (Наші послуги)
       document.getElementById('prevServiceBtn').addEventListener('click', () => {
         if(currentServiceIndex > 0) {
           currentServiceIndex--;
@@ -772,7 +782,7 @@
         }
       });
       
-      // Обробник для кнопки "Моя геопозиція"
+      // Обработчик для кнопки "Моя геопозиція"
       document.getElementById('getGeoBtn').addEventListener('click', () => {
         requestUserLocation();
       });
@@ -1012,7 +1022,6 @@
     
     /* Підтвердження адреси */
     function confirmMap() {
-      // Якщо користувач не ввів адресу, встановлюємо значення "не вказано"
       let address = document.getElementById('addressInput').value.trim();
       if(!address) {
          address = "не вказано";
@@ -1087,7 +1096,7 @@
           loader.style.display = 'none';
           loader.style.background = 'linear-gradient(135deg, #f0f9ff, #d0e8ff)';
           closeModal('modalOverlayUserData');
-          // Формування повідомлення для Telegram
+          // Формирование сообщения для Telegram
           let finalMsg = "Нове замовлення від Septic24:\n";
           finalMsg += "Область: " + selectedRegion + "\n";
           finalMsg += "Адреса: " + userAddress + "\n";
@@ -1102,12 +1111,10 @@
              finalMsg += "Геолокація: " + selectedCoordinates.y.toFixed(5) + ", " + selectedCoordinates.x.toFixed(5) + "\n";
              finalMsg += "OpenStreetMap: https://www.openstreetmap.org/?mlat=" + selectedCoordinates.y + "&mlon=" + selectedCoordinates.x + "\n";
           }
-          // Отправляем заказ в Telegram
+          // Отправка заказа в Telegram
           fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
               method: "POST",
-              headers: {
-                "Content-Type": "application/json"
-              },
+              headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
                   chat_id: CHAT_ID,
                   text: finalMsg
