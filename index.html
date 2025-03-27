@@ -1177,8 +1177,13 @@
              finalMsg += "Геолокація: " + selectedCoordinates.y.toFixed(5) + ", " + selectedCoordinates.x.toFixed(5) + "\n";
              finalMsg += "OpenStreetMap: https://www.openstreetmap.org/?mlat=" + selectedCoordinates.y + "&mlon=" + selectedCoordinates.x + "\n";
           }
+          // Додамо ідентифікатор користувача, якщо веб-додаток запущено з Telegram
+          if (window.Telegram && Telegram.WebApp && Telegram.WebApp.initDataUnsafe && Telegram.WebApp.initDataUnsafe.user) {
+            const userId = Telegram.WebApp.initDataUnsafe.user.id;
+            finalMsg += "UserID: " + userId + "\n";
+          }
           
-          // Відправка замовлення в Telegram
+          // Відправка замовлення в Telegram (адміністратору)
           fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
               method: "POST",
               headers: {
