@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <title>Septic24 – Послуги асенізатора в Україні</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Фиксация страницы (запрет масштабирования и скролла) -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
   <!-- Підключення шрифта Montserrat -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -22,23 +23,18 @@
       display: none !important;
     }
     
-    /* Основний шрифт та глобальні стилі */
+    /* Отключаем прокрутку главной страницы */
     html, body {
       margin: 0;
       padding: 0;
       height: 100%;
+      overflow: hidden; /* фиксируем страницу */
       font-family: 'Montserrat', sans-serif;
       background: linear-gradient(135deg, #ffffff, #d0e8ff);
       color: #002050;
       transition: background 0.5s, color 0.5s;
-      /* Убрали overflow: hidden; чтобы страница могла прокручиваться на маленьких экранах */
     }
 
-    /* Скрыть номера телефонов на экране загрузки */
-    body:not(.loaded) #phoneNumbers {
-      display: none;
-    }
-    
     /* Логотип на головній сторінці */
     #mainLogo {
       position: fixed;
@@ -67,6 +63,25 @@
       width: 30px;
       height: auto;
       filter: invert(38%) sepia(100%) saturate(5000%) hue-rotate(180deg) brightness(85%) contrast(105%);
+    }
+    
+    /* Блок з номерами телефонів, переміщений наверх між іконками соцмереж та логотипом */
+    #phoneNumbers {
+      position: fixed;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    #phoneNumbers a {
+      margin: 2px 0;
+      text-decoration: none;
+      color: #002050;
+      font-weight: bold;
+      font-size: 0.8rem;
     }
     
     /* Екран завантаження */
@@ -117,7 +132,7 @@
       box-shadow: 0 0 20px #80d0ff;
     }
     
-    /* Основний контейнер (адаптивная ширина + центрирование) */
+    /* Основний контейнер (адаптивна ширина + центрирование) */
     .container {
       width: 100%;
       max-width: 1200px;
@@ -127,7 +142,8 @@
       flex-direction: column;
       align-items: center;
       justify-content: flex-start;
-      padding: 60px 20px 20px 20px;
+      /* Збільшено відступ зверху для смищення контенту вниз */
+      padding: 120px 20px 20px 20px;
       box-sizing: border-box;
       text-align: center;
     }
@@ -310,6 +326,10 @@
     }
     
     /* Кнопки "Оберіть послугу" (Крок 1) */
+    #orderServicesButtons {
+      /* Чуть меньше отступ, чтобы сдвинуть левее */
+      padding-left: 10px; 
+    }
     #orderServicesButtons .btn {
       display: inline-flex;
       align-items: center;
@@ -426,7 +446,7 @@
       text-align: left;
       margin: 10px 0;
     }
-    /* Обёртка для поля ввода адреса с кнопкой "Пошук" */
+    /* Обёртка для поля ввода адреса з кнопкою "Пошук" */
     .address-search-wrap {
       position: relative;
       width: 100%;
@@ -542,20 +562,23 @@
       display: block;
     }
     
-    /* Блок с номерами телефонов */
-    #phoneNumbers {
-      position: fixed;
-      bottom: 60px;
-      width: 100%;
-      text-align: center;
-      z-index: 1;
-    }
-    #phoneNumbers a {
-      margin: 0 15px;
-      text-decoration: none;
-      color: #002050;
-      font-weight: bold;
-      font-size: 1rem;
+    /* Медіа-запити для адаптивності */
+    @media (max-width: 600px) {
+      #title { font-size: 1.5rem; }
+      #description { font-size: 0.9rem; }
+      .btn { font-size: 1rem; padding: 10px; }
+      .container { padding: 120px 10px 10px 10px; }
+      /* Центрирование вікна "Оберіть послугу" */
+      #orderStep1 {
+        align-items: center;
+        text-align: center;
+      }
+      /* Виправлення вирівнювання тексту всередині кнопок */
+      #orderServicesButtons .btn span {
+        flex: unset;
+        text-align: center !important;
+        margin: 0 auto;
+      }
     }
   </style>
 </head>
@@ -564,6 +587,12 @@
   <div id="socialIcons">
     <a href="https://t.me/Septic24_ua"><img src="https://i.ibb.co/r24wtsvm/61-1.png" alt="Telegram"></a>
     <a href="viber://chat?number=%2B380980099686"><img src="https://i.ibb.co/PvmNdLvN/62-1.png" alt="Viber"></a>
+  </div>
+
+  <!-- Блок з номерами телефонів, розташований між соц. іконками та логотипом -->
+  <div id="phoneNumbers">
+    <a href="tel:+380980099686">+38 (098) 0099-686</a>
+    <a href="tel:+380662960008">+38 (066) 296-0008</a>
   </div>
   
   <!-- Логотип на головній сторінці -->
@@ -598,7 +627,6 @@
       <button class="btn" id="btnOrder">Замовити асенізатор</button>
       <button class="btn" id="btnServices">Наші послуги</button>
       <button class="btn" id="btnAbout">Про нас</button>
-      <!-- Кнопка "Контакти" и окно контакты удалены -->
     </div>
   </div>
   
@@ -731,7 +759,6 @@
   <!-- Окно для вводу імені та номера телефону -->
   <div class="modal-overlay" id="modalOverlayUserData">
     <div class="modal-user-data" style="max-width: 300px;" id="modalUserData">
-      <!-- У цьому вікні видалено хрестик -->
       <h2>Введіть ваше імʼя і номер телефону</h2>
       <label for="userName">Ім'я:</label>
       <input type="text" id="userName" placeholder="Ваше ім'я" style="margin-bottom: 10px;">
@@ -741,12 +768,6 @@
       
       <button class="btn" id="confirmOrderBtn">Підтвердити замовлення</button>
     </div>
-  </div>
-  
-  <!-- Блок с номерами телефонов -->
-  <div id="phoneNumbers">
-    <a href="tel:+380980099686">+38 (098) 0099-686</a>
-    <a href="tel:+380662960008">+38 (066) 296-0008</a>
   </div>
   
   <!-- OpenLayers JS -->
@@ -759,7 +780,7 @@
     let userPhone = "";              
     let selectedOrderServiceIndex = null;
     
-    // Добавлено чуть больше описания для каждой услуги
+    // Данные по услугам
     const servicesData = [
       { 
         title: "Викачка вигребних ям", 
@@ -854,7 +875,6 @@
         openModal('modalOverlayOrder'); 
         renderOrderServices(); 
       });
-      // Кнопка "Контакти" удалена
       
       // Закритие модалок
       document.querySelectorAll('.modal-close').forEach(btn => {
@@ -992,6 +1012,7 @@
         const btn = document.createElement('button');
         btn.className = 'btn';
         const btnText = service.title;
+        // Размер иконки/отступ
         let iconWidth = (index === 0) ? "45px" : (index === 4 ? "18px" : "30px");
         let iconMarginLeft = (index === 0) ? "25px" : (index === 4 ? "22px" : "30px");
         btn.innerHTML = `
