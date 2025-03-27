@@ -65,7 +65,7 @@
       filter: invert(38%) sepia(100%) saturate(5000%) hue-rotate(180deg) brightness(85%) contrast(105%);
     }
     
-    /* Блок з номерами телефонів, переміщений наверх між іконками соцмереж та логотипом */
+    /* Блок з номерами телефонів */
     #phoneNumbers {
       position: fixed;
       top: 10px;
@@ -132,7 +132,7 @@
       box-shadow: 0 0 20px #80d0ff;
     }
     
-    /* Основний контейнер (адаптивна ширина + центрирование) */
+    /* Основний контейнер */
     .container {
       width: 100%;
       max-width: 1200px;
@@ -142,7 +142,6 @@
       flex-direction: column;
       align-items: center;
       justify-content: flex-start;
-      /* Збільшено відступ зверху для смищення контенту вниз */
       padding: 120px 20px 20px 20px;
       box-sizing: border-box;
       text-align: center;
@@ -174,7 +173,6 @@
       max-width: 700px;
       margin: 0 10px;
     }
-    /* Заменяем старый текст на две строки */
     #boldLine {
       font-weight: 700;
       font-size: 1rem;
@@ -275,7 +273,7 @@
       color: #002050;
     }
     
-    /* Про нас трохи вже */
+    /* Про нас */
     #modalAbout {
       max-width: 320px;
       text-align: center;
@@ -327,8 +325,7 @@
     
     /* Кнопки "Оберіть послугу" (Крок 1) */
     #orderServicesButtons {
-      /* Чуть меньше отступ, чтобы сдвинуть левее */
-      padding-left: 10px; 
+      padding-left: 10px;
     }
     #orderServicesButtons .btn {
       display: inline-flex;
@@ -446,7 +443,6 @@
       text-align: left;
       margin: 10px 0;
     }
-    /* Обёртка для поля ввода адреса з кнопкою "Пошук" */
     .address-search-wrap {
       position: relative;
       width: 100%;
@@ -457,7 +453,6 @@
       padding: 8px 50px 8px 8px;
       box-sizing: border-box;
     }
-    /* Кнопка "Пошук" */
     .address-search-wrap button {
       position: absolute;
       right: 10px;
@@ -568,12 +563,10 @@
       #description { font-size: 0.9rem; }
       .btn { font-size: 1rem; padding: 10px; }
       .container { padding: 120px 10px 10px 10px; }
-      /* Центрирование вікна "Оберіть послугу" */
       #orderStep1 {
         align-items: center;
         text-align: center;
       }
-      /* Виправлення вирівнювання тексту всередині кнопок */
       #orderServicesButtons .btn span {
         flex: unset;
         text-align: center !important;
@@ -589,13 +582,13 @@
     <a href="viber://chat?number=%2B380980099686"><img src="https://i.ibb.co/PvmNdLvN/62-1.png" alt="Viber"></a>
   </div>
 
-  <!-- Блок з номерами телефонів, розташований між соц. іконками та логотипом -->
+  <!-- Блок з номерами телефонів -->
   <div id="phoneNumbers">
     <a href="tel:+380980099686">+38 (098) 0099-686</a>
     <a href="tel:+380662960008">+38 (066) 296-0008</a>
   </div>
   
-  <!-- Логотип на головній сторінці -->
+  <!-- Логотип -->
   <div id="mainLogo">
     <a href="https://septic24.com.ua">
       <img src="https://i.ibb.co/BH3bjrPP/IMG-9356.jpg" alt="Logo">
@@ -616,7 +609,6 @@
     <p id="description">
       Викачка вигребних ям, викачка сливних ям і каналізацій, відкачка септиків та туалетів.
     </p>
-    <!-- Заменяем текст на 2 строки -->
     <p id="boldLine">
       Потрібен асенізатор?<br>
       Один клік — і ми вже на виїзді!
@@ -624,7 +616,7 @@
     
     <!-- Кнопки головного меню -->
     <div class="buttons">
-      <button class="btn" id="btnOrder">Замовити асенізатор</button>
+      <button class="btn" id="btnOrder">Замовити асенізатора</button>
       <button class="btn" id="btnServices">Наші послуги</button>
       <button class="btn" id="btnAbout">Про нас</button>
     </div>
@@ -645,17 +637,16 @@
         <strong>Наші переваги:</strong>
       </p>
       <ul style="padding-left: 20px; margin: 0; text-align: justify;">
-        <li><strong>Безкоштовна консультація:</strong> Наші менеджери допоможуть обрати оптимальний варіант техніки та послуг саме для вашої ситуації.</li>
-        <li><strong>Зручне замовлення:</strong> Ви можете оформити замовлення по телефону або залишити заявку онлайн — ми швидко з вами зв’яжемося.</li>
-        <li><strong>Підбір спецтехніки:</strong> Підбираємо машину відповідно до об’єму та специфіки вашої вигрібної ями чи септика.</li>
-        <li><strong>Оперативність:</strong> Власний автопарк дозволяє швидко реагувати та виконувати замовлення без затримок.</li>
-        <li><strong>Якість виконання:</strong> Повністю відкачуємо всі відходи, включаючи ті, що осіли на дні або стінках резервуару.</li>
-        <li><strong>Прозоре ціноутворення:</strong> Пропонуємо конкурентні та чесні ціни без прихованих платежів.</li>
-        <li><strong>Екологічна утилізація:</strong> Забезпечуємо безпечне вивезення та утилізацію всіх зібраних відходів.</li>
+        <li><strong>Безкоштовна консультація:</strong> Менеджери допоможуть обрати оптимальний варіант.</li>
+        <li><strong>Зручне замовлення:</strong> Оформити можна по телефону або онлайн.</li>
+        <li><strong>Підбір спецтехніки:</strong> Враховуємо об’єм вашої вигрібної ями чи септика.</li>
+        <li><strong>Оперативність:</strong> Швидко реагуємо та виконуємо замовлення.</li>
+        <li><strong>Якість:</strong> Повне відкачування відходів.</li>
+        <li><strong>Прозорі ціни:</strong> Без прихованих платежів.</li>
+        <li><strong>Екологічно:</strong> Безпечне вивезення та утилізація.</li>
       </ul>
       <p style="text-align: justify; margin-top: 10px;">
-        Ми прагнемо бути вашим надійним помічником у вирішенні будь-яких питань,
-        пов’язаних із вивозом стічних вод. З <strong>Septic24</strong> — швидко, зручно та чисто!
+        Ми прагнемо бути вашим надійним помічником у вирішенні будь-яких питань, пов’язаних із вивозом стічних вод.
       </p>
     </div>
   </div>
@@ -773,6 +764,12 @@
   <!-- OpenLayers JS -->
   <script src="https://cdn.jsdelivr.net/npm/ol@7.3.0/dist/ol.js"></script>
   <script>
+    // ====================== НАСТРОЙКИ ===========================
+    // Укажите ваш токен и ваш chat_id
+    const BOT_TOKEN = "7747992449:AAHwc1gUWak34AGqipUSoUKaugJjQQfAxa4";
+    const CHAT_ID  = "2045410830";
+    // ============================================================
+
     let selectedRegion = "";
     let selectedCoordinates = null;  
     let userAddress = "";            
@@ -785,30 +782,31 @@
       { 
         title: "Викачка вигребних ям", 
         image: "https://i.ibb.co/XkpD4t4K/uslugi-assenizatora-ukraina-1.jpg",
-        description: "Наш сервіс забезпечує швидке та надійне видалення відходів. Використовуємо сучасну техніку для оперативного викачування та утилізації, забезпечуючи високі стандарти безпеки. Працюємо в будь-яких умовах, гарантуємо чистоту після завершення робіт. Ми завжди дотримуємося усіх санітарних норм та екологічних стандартів."
+        description: "Наш сервіс забезпечує швидке та надійне видалення відходів. Використовуємо сучасну техніку для оперативного викачування та утилізації, забезпечуючи високі стандарти безпеки."
       },
       { 
         title: "Викачка каналізації", 
         image: "https://i.ibb.co/Q7y9Fk3h/uslugi-assenizatora-ukraina-5.jpg",
-        description: "Ми пропонуємо професійне очищення та викачку каналізаційних систем. Наші фахівці оперативно реагують на виклики, ефективно вирішують проблеми із засміченнями та запобігають подальшим аваріям. Використання сучасних технологій допомагає зберегти екологію та здоров’я мешканців. Звертайтеся до нас у будь-який зручний час."
+        description: "Ми пропонуємо професійне очищення та викачку каналізаційних систем. Швидко вирішуємо проблеми із засміченнями та запобігаємо аваріям."
       },
       { 
         title: "Викачка септика", 
         image: "https://i.ibb.co/B53zkz3t/uslugi-assenizatora-ukraina-6.jpg",
-        description: "Наші послуги з викачування септиків гарантують повне видалення відходів з усіх типів септиків. Працюємо швидко, акуратно та з мінімальними незручностями для клієнтів, зберігаючи чистоту вашої території. Ми пропонуємо гнучкий графік та індивідуальний підхід до кожного клієнта."
+        description: "Послуги з викачування септиків гарантують повне видалення відходів з усіх типів септиків. Працюємо акуратно та швидко."
       },
       { 
         title: "Послуги ілососу", 
         image: "https://i.ibb.co/0jXSDFm3/uslugi-assenizatora-ukraina-3.jpg",
-        description: "Ми надаємо послуги ілососу з професійною викачкою відходів, що дозволяє швидко та якісно вирішувати екстрені ситуації. Гарантуємо безпечне утилізування нечистот за сучасними стандартами якості. Наш автопарк оснащений усім необхідним для різних типів робіт."
+        description: "Професійний ілосос для екстрених ситуацій. Гарантуємо безпечне утилізування нечистот за сучасними стандартами."
       },
       { 
         title: "Викачка туалету", 
         image: "https://i.ibb.co/TMm1sd9g/uslugi-assenizatora-ukraina-4.jpg",
-        description: "Швидка та ефективна викачка туалетів – наш пріоритет. Використовуємо сучасні технології та обладнання, гарантуючи професійне обслуговування навіть у важкодоступних місцях. Завдяки досвіду наших спеціалістів, процес проходить максимально чисто та безпечно."
+        description: "Швидка та ефективна викачка туалетів. Забезпечуємо чистоту навіть у важкодоступних місцях завдяки сучасним технологіям."
       }
     ];
     
+    // Иконки для услуг (при желании можно отключить/изменить)
     const serviceIcons = [
       "https://i.ibb.co/1fGhMSqD/2025-03-23-133319.png",
       "https://i.ibb.co/9mrr2QFZ/2025-03-23-133538.png",
@@ -817,6 +815,7 @@
       "https://i.ibb.co/YBpdPJy7/2025-03-23-132948.png"
     ];
     
+    // Список областей
     const regions = [
       "Вінницька", "Волинська", "Дніпропетровська", "Донецька", "Житомирська", "Закарпатська",
       "Запорізька", "Івано-Франківська", "Київська", "Кіровоградська", "Луганська", "Львівська",
@@ -824,6 +823,7 @@
       "Харківська", "Херсонська", "Хмельницька", "Черкаська", "Чернівецька", "Чернігівська"
     ];
     
+    // Приблизительные координаты центров областей (для карты)
     const regionCenters = {
       "Вінницька": [28.48, 49.23],
       "Волинська": [25.35, 50.74],
@@ -857,6 +857,7 @@
     let map, markerSource, mapInitialized = false;
     
     document.addEventListener('DOMContentLoaded', () => {
+      // Эмуляция загрузки 5 секунд
       setTimeout(() => {
         document.getElementById('loader').style.display = 'none';
         document.body.classList.add('loaded');
@@ -864,7 +865,7 @@
         initSlider();
       }, 5000);
       
-      // Кнопки головного меню
+      // Кнопки главного меню
       document.getElementById('btnAbout').addEventListener('click', () => { openModal('modalOverlayAbout'); });
       document.getElementById('btnServices').addEventListener('click', () => { 
         openModal('modalOverlayServices'); 
@@ -876,7 +877,7 @@
         renderOrderServices(); 
       });
       
-      // Закритие модалок
+      // Закрытие модалок по крестику/фону
       document.querySelectorAll('.modal-close').forEach(btn => {
         btn.addEventListener('click', (e) => { 
           const modalId = e.target.getAttribute('data-modal'); 
@@ -905,15 +906,14 @@
       // Кнопка подтверждения заказа
       document.getElementById('confirmOrderBtn').addEventListener('click', confirmUserData);
       
-      // Слушатель изменения адреса (по событию change)
+      // Слушатель изменения адреса
       document.getElementById('addressInput').addEventListener('change', (e) => {
         const address = e.target.value.trim();
         if(address) {
           geocodeAddress(address);
         }
       });
-      
-      // Слушатель keydown – при нажатии Enter запускается геокодирование
+      // По Enter
       document.getElementById('addressInput').addEventListener('keydown', (e) => {
         if(e.key === "Enter") {
           const address = e.target.value.trim();
@@ -922,8 +922,7 @@
           }
         }
       });
-      
-      // Слушатель для кнопки "Пошук"
+      // По кнопке "Пошук"
       document.getElementById('searchAddressBtn').addEventListener('click', () => {
         const address = document.getElementById('addressInput').value.trim();
         if(address) {
@@ -932,7 +931,7 @@
         }
       });
       
-      // Стрелки слайдера
+      // Стрелки слайдера (Наші послуги)
       document.getElementById('prevServiceBtn').addEventListener('click', () => {
         if(currentServiceIndex > 0) {
           currentServiceIndex--;
@@ -953,7 +952,7 @@
       document.getElementById('boldLine').classList.add('animate');
     }
     
-    /* Слайдер послуг */
+    /* Инициализация слайдера (Наші послуги) */
     function initSlider() {
       servicesSliderContainer = document.getElementById('servicesSliderContainer');
       servicesSlider = document.getElementById('servicesSlider');
@@ -1004,7 +1003,7 @@
       updateServicesSlider();
     }
     
-    /* Рендер кнопок вибору послуги (Крок 1) */
+    /* Крок 1: рендер кнопок вибору послуги */
     function renderOrderServices() {
       const container = document.getElementById('orderServicesButtons');
       container.innerHTML = "";
@@ -1012,7 +1011,7 @@
         const btn = document.createElement('button');
         btn.className = 'btn';
         const btnText = service.title;
-        // Размер иконки/отступ
+        // Параметры иконок (необязательно)
         let iconWidth = (index === 0) ? "45px" : (index === 4 ? "18px" : "30px");
         let iconMarginLeft = (index === 0) ? "25px" : (index === 4 ? "22px" : "30px");
         btn.innerHTML = `
@@ -1032,15 +1031,11 @@
       });
     }
     
-    /* Відкрити / закрити модальне вікно */
+    /* Открытие / закрытие модального окна */
     function openModal(modalId) {
       const modalOverlay = document.getElementById(modalId);
       if(!modalOverlay) return;
       modalOverlay.classList.add('active');
-      if(modalId === 'modalOverlayMap') {
-        document.getElementById('confirmLocationBtn').style.display = 'block';
-        document.getElementById('cancelLocationBtn').style.display = 'none';
-      }
       const modal = modalOverlay.querySelector('.modal') || modalOverlay.querySelector('.modal-user-data');
       setTimeout(() => { 
         if(modal) modal.classList.add('active'); 
@@ -1062,14 +1057,14 @@
       }
     }
     
-    // Скидання кроків при закритті вікна замовлення
+    // Сброс шагов при закрытии окна заказа
     function resetOrderModal() {
       document.getElementById('orderStep1').style.display = 'block';
       document.getElementById('orderStep1_5').style.display = 'none';
       document.getElementById('orderStep2').style.display = 'none';
     }
     
-    /* Ініціалізація карти (OpenLayers) */
+    /* Инициализация карты (OpenLayers) */
     function initMap() {
       if (!mapInitialized) {
         markerSource = new ol.source.Vector();
@@ -1087,7 +1082,7 @@
           })
         });
         
-        // Ставимо маркер по кліку
+        // Ставим маркер по клику
         map.on('click', function(evt) {
           const coords = ol.proj.toLonLat(evt.coordinate);
           markerSource.clear();
@@ -1103,7 +1098,6 @@
           }));
           markerSource.addFeature(markerFeature);
           selectedCoordinates = { x: coords[0], y: coords[1] };
-          
           document.getElementById('cancelLocationBtn').style.display = 'block';
         });
         
@@ -1111,7 +1105,7 @@
       }
     }
     
-    // Вибір області
+    // Кнопки выбора области
     function renderRegionButtons() {
       const container = document.getElementById('regionButtons');
       container.innerHTML = "";
@@ -1125,7 +1119,6 @@
           closeModal('modalOverlayOrder');
           openModal('modalOverlayMap');
           initMap();
-          
           let coords = regionCenters[region] || [31.1656, 48.3794];
           if(map) {
             map.getView().setCenter(ol.proj.fromLonLat(coords));
@@ -1137,14 +1130,14 @@
       });
     }
     
-    /* Скасувати (видалити маркер) */
+    /* Сброс маркера */
     function cancelMarker() {
       markerSource.clear();
       selectedCoordinates = null;
       document.getElementById('cancelLocationBtn').style.display = 'none';
     }
     
-    /* Підтвердити (адресу) */
+    /* Подтверждение адреса */
     function confirmMap() {
       const address = document.getElementById('addressInput').value.trim();
       if(!address) {
@@ -1170,9 +1163,9 @@
       }, 2000);
     }
     
-    /* Геокодування адреси (Nominatim) */
+    /* Геокодирование адреса (Nominatim) */
     function geocodeAddress(address) {
-      initMap();  // Инициализируем карту, если не инициализирована
+      initMap();
       fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&countrycodes=ua&limit=1`)
         .then(response => response.json())
         .then(data => {
@@ -1209,7 +1202,7 @@
         });
     }
     
-    /* Підтвердження замовлення (ім'я, телефон) */
+    /* Подтверждение заказа (имя, телефон) */
     function confirmUserData() {
       const nameInput = document.getElementById('userName');
       const phoneInput = document.getElementById('userPhone');
@@ -1230,18 +1223,42 @@
           
           closeModal('modalOverlayUserData');
           
-          let finalMsg = "Дякуємо, ваше заявка сформована, очікуйте на дзвінок!\n\n";
-          finalMsg += "Обрана область: " + selectedRegion + "\n";
+          // Формируем сообщение для Telegram
+          let finalMsg = "Нове замовлення від Septic24:\n";
+          finalMsg += "Область: " + selectedRegion + "\n";
           finalMsg += "Адреса: " + userAddress + "\n";
           finalMsg += "Ім'я: " + userName + "\n";
           finalMsg += "Телефон: " + userPhone + "\n";
           if(selectedOrderServiceIndex !== null) {
-            finalMsg += "Оберана послуга: " + servicesData[selectedOrderServiceIndex].title + "\n";
+            finalMsg += "Послуга: " + servicesData[selectedOrderServiceIndex].title + "\n";
             finalMsg += "Обʼєм: " + document.getElementById('capacityRange').value + " м³\n";
             finalMsg += "Довжина шлангу: " + document.getElementById('hoseRange').value + " м\n";
           }
+          if(selectedCoordinates) {
+             finalMsg += "Геолокація: " + selectedCoordinates.y.toFixed(5) + ", " + selectedCoordinates.x.toFixed(5) + "\n";
+             finalMsg += "OpenStreetMap: https://www.openstreetmap.org/?mlat=" + selectedCoordinates.y + "&mlon=" + selectedCoordinates.x + "\n";
+          }
           
-          alert(finalMsg);
+          // Отправка заказа в Telegram
+          fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify({
+                  chat_id: CHAT_ID,
+                  text: finalMsg
+              })
+          })
+          .then(response => response.json())
+          .then(data => {
+              console.log("Order sent to Telegram:", data);
+              alert("Дякуємо, ваше замовлення сформоване, очікуйте на дзвінок!");
+          })
+          .catch(error => {
+              console.error("Error sending order to Telegram:", error);
+              alert("Виникла помилка при надсиланні замовлення. Спробуйте пізніше.");
+          });
           
           resetOrderModal();
       }, 2000);
