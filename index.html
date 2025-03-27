@@ -5,21 +5,17 @@
   <title>Septic24 – Послуги асенізатора в Україні</title>
   <!-- Фіксація сторінки (заборона масштабування і скролла) -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
   <!-- Підключення шрифта Montserrat -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-  
   <!-- OpenLayers CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@7.3.0/dist/ol.css">
-  
   <style>
     /* Сховати атрибуцію OpenStreetMap */
     .ol-attribution {
       display: none !important;
     }
-    
     /* Відключаємо прокрутку головної сторінки */
     html, body {
       margin: 0;
@@ -31,7 +27,6 @@
       color: #002050;
       transition: background 0.5s, color 0.5s;
     }
-
     /* Логотип на головній сторінці */
     #mainLogo {
       position: fixed;
@@ -46,7 +41,6 @@
       object-fit: cover;
       background: transparent;
     }
-    
     /* Іконки месенджерів у лівому куті */
     #socialIcons {
       position: fixed;
@@ -61,7 +55,6 @@
       height: auto;
       filter: invert(38%) sepia(100%) saturate(5000%) hue-rotate(180deg) brightness(85%) contrast(105%);
     }
-    
     /* Блок з номерами телефонів */
     #phoneNumbers {
       position: fixed;
@@ -80,7 +73,6 @@
       font-weight: bold;
       font-size: 0.8rem;
     }
-    
     /* Екран завантаження */
     .loader {
       position: fixed;
@@ -128,7 +120,6 @@
       z-index: 1;
       box-shadow: 0 0 20px #80d0ff;
     }
-    
     /* Основний контейнер */
     .container {
       width: 100%;
@@ -150,7 +141,6 @@
       from { transform: translateY(20px); opacity: 0; }
       to   { transform: translateY(0);     opacity: 1; }
     }
-    
     /* Заголовок та опис */
     #title {
       font-size: 2rem;
@@ -175,7 +165,6 @@
       font-size: 1rem;
       margin: 10px 20px 0 20px;
     }
-    
     /* Кнопки головного меню */
     .buttons {
       display: flex;
@@ -214,7 +203,6 @@
     #btnOrder {
       box-shadow: 0 0 5px 1px #90EE90;
     }
-    
     /* Стилізація модальних вікон */
     .modal-overlay {
       position: fixed;
@@ -269,13 +257,11 @@
       line-height: 1;
       color: #002050;
     }
-    
     /* Про нас */
     #modalAbout {
       max-width: 320px;
       text-align: center;
     }
-    
     /* Слайдер (Послуги) */
     .slider-container {
       position: relative;
@@ -319,7 +305,6 @@
       text-align: justify;
       line-height: 1.2;
     }
-    
     /* Кнопки "Оберіть послугу" (Крок 1) */
     #orderServicesButtons {
       padding-left: 10px;
@@ -333,7 +318,6 @@
       margin-bottom: 10px;
       white-space: nowrap;
     }
-    
     /* Кнопки вибору областей (Крок 2) */
     #regionButtons {
       display: grid;
@@ -353,7 +337,6 @@
       min-height: 35px;
       padding: 6px 8px;
     }
-    
     /* Додаткові стилі для Кроку 1.5 */
     #orderStep1_5 {
       display: none; 
@@ -362,7 +345,6 @@
       box-sizing: border-box;
       margin-top: 50px;
     }
-    
     /* Стилі для range-інпутів */
     #orderStep1_5 input[type="range"] {
       -webkit-appearance: none;
@@ -397,7 +379,6 @@
       border: none;
       cursor: pointer;
     }
-
     /* Стилі для блоку з картою */
     #olMap {
       width: 100%;
@@ -405,7 +386,6 @@
       border-radius: 8px;
       margin-top: 10px;
     }
-    
     /* Окно для вводу імені та номера телефону */
     .modal-overlay#modalOverlayUserData {
     }
@@ -447,7 +427,6 @@
       text-align: center;
       display: block;
     }
-    
     /* Медіа-запити для адаптивності */
     @media (max-width: 600px) {
       #title { font-size: 1.5rem; }
@@ -472,27 +451,23 @@
     <a href="https://t.me/Septic24_ua"><img src="https://i.ibb.co/r24wtsvm/61-1.png" alt="Telegram"></a>
     <a href="viber://chat?number=+380980099686"><img src="https://i.ibb.co/PvmNdLvN/62-1.png" alt="Viber"></a>
   </div>
-
   <!-- Блок з номерами телефонів -->
   <div id="phoneNumbers">
     <a href="tel:+380980099686">+38 (098) 0099-686</a>
     <a href="tel:+380662960008">+38 (066) 296-0008</a>
   </div>
-  
   <!-- Логотип -->
   <div id="mainLogo">
     <a href="https://septic24.com.ua">
       <img src="https://i.ibb.co/BH3bjrPP/IMG-9356.jpg" alt="Logo">
     </a>
   </div>
-  
   <!-- Екран завантаження -->
   <div class="loader" id="loader">
     <div class="loader-logo-wrap">
       <img src="https://i.ibb.co/3Q3LXDk/IMG-9356.png" alt="Loader Logo">
     </div>
   </div>
-  
   <!-- Основний контейнер -->
   <div class="container">
     <h1 id="title">Послуги асенізатора по всій Україні</h1>
@@ -504,7 +479,6 @@
       Потрібен асенізатор?<br>
       Один клік — і ми вже на виїзді!
     </p>
-    
     <!-- Кнопки головного меню -->
     <div class="buttons">
       <button class="btn" id="btnOrder">Замовити асенізатор</button>
@@ -512,7 +486,6 @@
       <button class="btn" id="btnAbout">Про нас</button>
     </div>
   </div>
-  
   <!-- Модальні вікна (Про нас) -->
   <div class="modal-overlay" id="modalOverlayAbout">
     <div class="modal" id="modalAbout">
@@ -541,7 +514,6 @@
       </p>
     </div>
   </div>
-  
   <!-- Окно Наші послуги -->
   <div class="modal-overlay" id="modalOverlayServices">
     <div class="modal" id="modalServices">
@@ -555,18 +527,15 @@
       </div>
     </div>
   </div>
-  
   <!-- Окно оформлення замовлення -->
   <div class="modal-overlay" id="modalOverlayOrder">
     <div class="modal" id="modalOrder">
       <span class="modal-close" data-modal="modalOverlayOrder">&times;</span>
-      
       <!-- Крок 1: вибір послуги -->
       <div id="orderStep1">
         <h2>Оберіть послугу:</h2>
         <div id="orderServicesButtons" class="buttons" style="max-width: 300px;"></div>
       </div>
-      
       <!-- Крок 1.5: обʼєм та довжина шлангу -->
       <div id="orderStep1_5">
         <h3>Який обʼєм вашої ємності в кубах?</h3>
@@ -577,7 +546,6 @@
         <div id="hoseValue" style="margin-bottom: 20px;">1 м</div>
         <button class="btn" id="volumeNextBtn">Далі</button>
       </div>
-      
       <!-- Крок 2: вибір області -->
       <div id="orderStep2" style="display: none; position: relative;">
         <div id="orderStep2Header" style="display: flex; justify-content: center; align-items: center; padding: 5px 0; margin-top: 0;">
@@ -587,7 +555,6 @@
       </div>
     </div>
   </div>
-  
   <!-- Окно карти -->
   <div class="modal-overlay" id="modalOverlayMap">
     <div class="modal" id="modalMap">
@@ -597,38 +564,30 @@
         <input type="text" id="addressInput" placeholder="( Місто , вулиця , номер будинку )">
         <button id="searchAddressBtn">Пошук</button>
       </div>
-      
       <p class="address-label" style="position: relative;">
         Або позначте місце подачі асенізатора на карті:
       </p>
-      
       <div id="olMap"></div>
-      
       <!-- Кнопки с дополнительным отступом -->
       <button class="btn" id="getGeoBtn" style="display:block; margin-bottom:10px;">Моя геопозиція</button>
       <button class="btn" id="cancelLocationBtn" style="display:none; margin-bottom:10px;">Скасувати</button>
       <button class="btn" id="confirmLocationBtn" style="display:block;">Підтвердити</button>
-      
       <div id="mapLoader">
         <div class="spinner"></div>
       </div>
     </div>
   </div>
-  
   <!-- Окно для вводу імені та номера телефону -->
   <div class="modal-overlay" id="modalOverlayUserData">
     <div class="modal-user-data" style="max-width: 300px;" id="modalUserData">
       <h2>Введіть ваше імʼя і номер телефону</h2>
       <label for="userName">Ім'я:</label>
       <input type="text" id="userName" placeholder="Ваше ім'я" style="margin-bottom: 10px;">
-      
       <label for="userPhone">Номер телефону:</label>
       <input type="text" id="userPhone" placeholder="+380..." style="margin-bottom: 20px;">
-      
       <button class="btn" id="confirmOrderBtn">Підтвердити замовлення</button>
     </div>
   </div>
-  
   <!-- OpenLayers JS -->
   <script src="https://cdn.jsdelivr.net/npm/ol@7.3.0/dist/ol.js"></script>
   <script>
@@ -825,7 +784,6 @@
         alert("Геолокація не підтримується вашим браузером.");
         return;
       }
-      
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const lat = position.coords.latitude;
@@ -1144,7 +1102,7 @@
              finalMsg += "Геолокація: " + selectedCoordinates.y.toFixed(5) + ", " + selectedCoordinates.x.toFixed(5) + "\n";
              finalMsg += "OpenStreetMap: https://www.openstreetmap.org/?mlat=" + selectedCoordinates.y + "&mlon=" + selectedCoordinates.x + "\n";
           }
-          // Відправка замовлення в Telegram
+          // Отправляем заказ в Telegram
           fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
               method: "POST",
               headers: {
@@ -1165,8 +1123,6 @@
               console.log("Order sent to Telegram:", data);
               if (window.Telegram && Telegram.WebApp) {
                   Telegram.WebApp.sendData("USER_ORDER");
-              } else {
-                  alert("Замовлення сформовано. (Не забудьте, кожен 5-й заказ - скидка 10%)");
               }
               alert("Дякуємо, ваше замовлення сформовано, очікуйте на дзвінок!");
           })
