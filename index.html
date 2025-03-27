@@ -674,7 +674,7 @@
       }
     ];
     
-    // Іконки для послуг
+    // Іконки для послугам
     const serviceIcons = [
       "https://i.ibb.co/1fGhMSqD/2025-03-23-133319.png",
       "https://i.ibb.co/9mrr2QFZ/2025-03-23-133538.png",
@@ -1144,7 +1144,7 @@
              finalMsg += "Геолокація: " + selectedCoordinates.y.toFixed(5) + ", " + selectedCoordinates.x.toFixed(5) + "\n";
              finalMsg += "OpenStreetMap: https://www.openstreetmap.org/?mlat=" + selectedCoordinates.y + "&mlon=" + selectedCoordinates.x + "\n";
           }
-          // Відправка замовлення в Telegram та повідомлення WebApp (для оновлення замовлень)
+          // Відправка замовлення в Telegram
           fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
               method: "POST",
               headers: {
@@ -1155,11 +1155,18 @@
                   text: finalMsg
               })
           })
-          .then(response => response.json())
+          .then(response => {
+              if (!response.ok) {
+                  throw new Error("Network response was not ok");
+              }
+              return response.json();
+          })
           .then(data => {
               console.log("Order sent to Telegram:", data);
-              if (window.Telegram.WebApp) {
+              if (window.Telegram && Telegram.WebApp) {
                   Telegram.WebApp.sendData("USER_ORDER");
+              } else {
+                  alert("Замовлення сформовано. (Не забудьте, кожен 5-й заказ - скидка 10%)");
               }
               alert("Дякуємо, ваше замовлення сформовано, очікуйте на дзвінок!");
           })
