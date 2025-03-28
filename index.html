@@ -1244,12 +1244,12 @@
               alert("Виникла помилка при надсиланні замовлення. Спробуйте пізніше.");
           });
           
-          // Відправка даних у WebAppData (щоб бот зберіг у orders.txt)
+          // Відправка даних у WebAppData (щоб бот зберіг замовлення)
           if (typeof Telegram !== 'undefined' && Telegram.WebApp) {
             console.log("Sending data via Telegram.WebApp.sendData...");
             Telegram.WebApp.sendData(finalMsg);
           } else {
-            console.warn("Telegram.WebApp не доступний. Дані не будуть збережені в orders.txt, якщо не відкрито з Telegram.");
+            console.warn("Telegram.WebApp не доступний. Дані не будуть збережені, якщо не відкрито з Telegram.");
           }
 
           // Оновлення бонусного лічильника за допомогою localStorage
