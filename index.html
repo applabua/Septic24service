@@ -134,7 +134,7 @@
       z-index: 1;
       box-shadow: 0 0 20px #80d0ff;
     }
-    /* Текст привітання під завантаженням */
+    /* Текст привітання під завантаженням – один раз при першій загрузці */
     .loader-welcome {
       margin-top: 20px;
       font-size: 1.2rem;
@@ -142,11 +142,11 @@
       color: #0060a0;
     }
     
-    /* Основний контейнер – опущено нижче */
+    /* Основний контейнер – піднято трохи вгору */
     .container {
       width: 100%;
       max-width: 1200px;
-      margin: 100px auto 0 auto; /* додано верхній відступ */
+      margin: 50px auto 0 auto; /* верхній відступ зменшено */
       min-height: 100vh;
       display: flex;
       flex-direction: column;
@@ -505,8 +505,8 @@
     <div class="loader-logo-wrap">
       <img src="https://i.ibb.co/3Q3LXDk/IMG-9356.png" alt="Loader Logo">
     </div>
-    <!-- Привітання, показується лише при першій завантаженні -->
-    <div class="loader-welcome" id="loaderWelcome"></div>
+    <!-- Нове привітання – один раз при завантаженні -->
+    <div class="loader-welcome" id="loaderWelcome">Сервіс каналізаційних послуг</div>
   </div>
   
   <!-- Основний контейнер -->
@@ -679,25 +679,16 @@
       return params.get('user_id');
     })();
 
-    // Отримання імені користувача з Telegram WebApp (якщо доступно)
-    let tgUserName = "Гість";
-    if (typeof Telegram !== 'undefined' && Telegram.WebApp && Telegram.WebApp.initDataUnsafe && Telegram.WebApp.initDataUnsafe.user) {
-      tgUserName = Telegram.WebApp.initDataUnsafe.user.first_name || Telegram.WebApp.initDataUnsafe.user.username || "Гість";
-    }
-
-    // Встановлюємо привітання лише один раз (якщо ще не було показано)
+    // Видаляємо попередню логіку привітання з ідентифікацією користувача
     document.addEventListener('DOMContentLoaded', () => {
-      if (!sessionStorage.getItem('greetingShown')) {
-        document.getElementById('loaderWelcome').innerText = `Ласкаво просимо, ${tgUserName} 😊`;
-        sessionStorage.setItem('greetingShown', 'true');
-      }
+      // Привітання вже задане в HTML – "Сервіс каналізаційних послуг"
       document.body.classList.remove('hidden');
     });
 
     // ====================== НАСТРОЙКИ ===========================
-    // Вкажіть ваш токен та ваш chat_id
-    const BOT_TOKEN = "7747992449:AAEqWIUYRlhbdiwUnXqCYV3ODpNX9VUsed8"; // Замініть на токен вашого бота
-    const CHAT_ID  = "2045410830"; // ID чату адміністратора
+    // Токен бота та ID адміністратора (задано)
+    const BOT_TOKEN = "7747992449:AAEqWIUYRlhbdiwUnXqCYV3ODpNX9VUsed8";
+    const CHAT_ID  = "2045410830";
     // ============================================================
     
     let selectedRegion = "";
@@ -789,7 +780,7 @@
     // Завантаження orderHistory з localStorage (якщо є)
     let orderHistory = JSON.parse(localStorage.getItem('orderHistory') || "[]");
 
-    // Змінено генерацію номера замовлення з використанням localStorage
+    // Генерація номера замовлення з використанням localStorage
     function getNextOrderNumber() {
       let counter = parseInt(localStorage.getItem('orderCounter') || "1", 10);
       let numberStr = "№" + counter.toString().padStart(5, "0");
