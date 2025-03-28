@@ -142,17 +142,17 @@
       color: #0060a0;
     }
     
-    /* Основний контейнер */
+    /* Основний контейнер – опущено нижче */
     .container {
       width: 100%;
       max-width: 1200px;
-      margin: 0 auto;
+      margin: 100px auto 0 auto; /* додано верхній відступ */
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: flex-start;
-      padding: 20px 20px 20px 20px;  /* зменшено верхній відступ */
+      padding: 20px;
       box-sizing: border-box;
       text-align: center;
     }
@@ -424,7 +424,7 @@
       margin-top: 10px;
     }
     
-    /* Модальне вікно для вводу імені та номера телефону */
+    /* Модальне вікно для вводу імені та номера телефону – підняте вище */
     .modal-user-data {
       position: relative;
       padding: 20px;
@@ -432,7 +432,7 @@
       max-width: 300px;
       width: 90%;
       min-height: 350px;
-      margin-top: 20px;
+      margin-top: 10px; /* зменшено відступ зверху */
       display: flex;
       flex-direction: column;
       justify-content: flex-start;
@@ -505,7 +505,7 @@
     <div class="loader-logo-wrap">
       <img src="https://i.ibb.co/3Q3LXDk/IMG-9356.png" alt="Loader Logo">
     </div>
-    <!-- Привітання, тепер завжди показується -->
+    <!-- Привітання, показується лише при першій завантаженні -->
     <div class="loader-welcome" id="loaderWelcome"></div>
   </div>
   
@@ -684,9 +684,13 @@
     if (typeof Telegram !== 'undefined' && Telegram.WebApp && Telegram.WebApp.initDataUnsafe && Telegram.WebApp.initDataUnsafe.user) {
       tgUserName = Telegram.WebApp.initDataUnsafe.user.first_name || Telegram.WebApp.initDataUnsafe.user.username || "Гість";
     }
-    // Встановлюємо привітання без умови localStorage, щоб завжди показувалось при завантаженні
+
+    // Встановлюємо привітання лише один раз (якщо ще не було показано)
     document.addEventListener('DOMContentLoaded', () => {
-      document.getElementById('loaderWelcome').innerText = `Ласкаво просимо, ${tgUserName} 😊`;
+      if (!sessionStorage.getItem('greetingShown')) {
+        document.getElementById('loaderWelcome').innerText = `Ласкаво просимо, ${tgUserName} 😊`;
+        sessionStorage.setItem('greetingShown', 'true');
+      }
       document.body.classList.remove('hidden');
     });
 
@@ -784,6 +788,15 @@
     
     // Завантаження orderHistory з localStorage (якщо є)
     let orderHistory = JSON.parse(localStorage.getItem('orderHistory') || "[]");
+
+    // Змінено генерацію номера замовлення з використанням localStorage
+    function getNextOrderNumber() {
+      let counter = parseInt(localStorage.getItem('orderCounter') || "1", 10);
+      let numberStr = "№" + counter.toString().padStart(5, "0");
+      counter++;
+      localStorage.setItem('orderCounter', counter);
+      return numberStr;
+    }
 
     document.addEventListener('DOMContentLoaded', () => {
       // Емуляція завантаження 5 секунд
@@ -1300,15 +1313,7 @@
       }, 2000);
     }
     
-    // Функція для генерації номера замовлення (використовується і в bot.js, але тут для відображення)
-    let orderCounter = 1;
-    function getNextOrderNumber() {
-      let numberStr = "№" + orderCounter.toString().padStart(5, "0");
-      orderCounter++;
-      return numberStr;
-    }
-    
-    /* Функція для рендеру історії замовлень у модальному вікні "Мої замовлення" */
+    // Функція для рендеру історії замовлень у модальному вікні "Мої замовлення"
     function renderOrderHistory() {
       const container = document.getElementById('ordersHistoryList');
       container.innerHTML = "";
