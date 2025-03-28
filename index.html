@@ -134,7 +134,7 @@
       z-index: 1;
       box-shadow: 0 0 20px #80d0ff;
     }
-    /* Текст привітання під завантаженням */
+    /* Текст привітання під завантаженням – показується лише при першій загрузці */
     .loader-welcome {
       margin-top: 20px;
       font-size: 1.2rem;
@@ -229,24 +229,17 @@
       box-shadow: 0 0 5px 1px #90EE90;
     }
     
-    /* Стилізація модальних вікон */
+    /* Модальні вікна – за замовчуванням приховані */
     .modal-overlay {
+      display: none;
       position: fixed;
       top: 0; left: 0;
       width: 100vw; 
       height: 100vh;
-      display: flex;
       justify-content: center;
       align-items: center;
       z-index: 99998;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.5s ease;
       background: rgba(0, 0, 0, 0.7);
-    }
-    .modal-overlay.active {
-      opacity: 1;
-      pointer-events: auto;
     }
     .modal {
       position: relative;
@@ -255,24 +248,17 @@
       max-width: 300px;
       min-height: 400px;
       width: 90%;
-      transform: translateY(-20px);
-      opacity: 0;
       display: flex;
       flex-direction: column;
       justify-content: flex-start;
       align-items: flex-start;
       text-align: left;
-      transition: transform 0.5s ease, opacity 0.5s ease;
       background: linear-gradient(135deg, #ffffff, #d0e8ff);
       color: #002050;
       border: 2px solid #0060a0;
       box-shadow: 0 0 5px #0060a0, 0 0 10px #0060a0;
       max-height: 80vh;
       overflow-y: auto;
-    }
-    .modal.active {
-      transform: translateY(0);
-      opacity: 1;
     }
     .modal .modal-close {
       position: absolute;
@@ -286,20 +272,23 @@
     
     /* Модальне вікно для історії замовлень (Мої замовлення) */
     #modalOverlayMyOrders .modal {
-      max-width: 400px;
+      max-width: 300px;
+      padding: 15px;
     }
     .order-item {
       border-bottom: 1px solid #ccc;
       padding: 10px 0;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      position: relative;
       font-size: 0.9rem;
+      margin-bottom: 10px;
     }
-    .order-item:last-child {
-      border-bottom: none;
+    .order-text {
+      margin: 0;
     }
     .order-repeat-btn {
+      position: absolute;
+      right: 0;
+      bottom: 0;
       padding: 4px 8px;
       font-size: 0.8rem;
       background: #0060a0;
@@ -311,11 +300,14 @@
     
     /* Стилі для інпутів адреси, імені та номера телефону */
     input[type="text"] {
-      width: 90%;
+      width: 95%;
       padding: 10px;
       border: 1px solid green;
       border-radius: 4px;
       font-size: 1rem;
+      box-sizing: border-box;
+      margin: 0 auto;
+      display: block;
     }
     
     /* Про нас */
@@ -411,41 +403,6 @@
       margin-top: 50px;
     }
     
-    /* Стилі для range-інпутів */
-    #orderStep1_5 input[type="range"] {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 80%;
-      margin: 0 auto;
-      height: 8px;
-      border-radius: 4px;
-      background: #ccc;
-      outline: none;
-      cursor: pointer;
-    }
-    #orderStep1_5 input[type="range"]:focus {
-      outline: none;
-    }
-    #orderStep1_5 input[type="range"]::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 20px; 
-      height: 20px; 
-      border-radius: 50%;
-      background: #0060a0;
-      border: none;
-      cursor: pointer;
-      box-shadow: none;
-    }
-    #orderStep1_5 input[type="range"]::-moz-range-thumb {
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      background: #0060a0;
-      border: none;
-      cursor: pointer;
-    }
-
     /* Стилі для блоку з картою */
     #olMap {
       width: 100%;
@@ -454,34 +411,26 @@
       margin-top: 10px;
     }
     
-    /* Окно для вводу імені та номера телефону */
-    .modal-overlay#modalOverlayUserData {
-    }
+    /* Модальне вікно для вводу імені та номера телефону */
     .modal-user-data {
       position: relative;
       padding: 20px;
       border-radius: 8px;
       max-width: 300px;
       width: 90%;
-      min-height: 400px;
-      transform: translateY(-20px);
-      opacity: 0;
+      min-height: 350px;
+      margin-top: 20px;
       display: flex;
       flex-direction: column;
       justify-content: flex-start;
       align-items: flex-start;
       text-align: left;
-      transition: transform 0.5s ease, opacity 0.5s ease;
       background: linear-gradient(135deg, #ffffff, #d0e8ff);
       color: #002050;
       border: 2px solid #0060a0;
       box-shadow: 0 0 5px #0060a0, 0 0 10px #0060a0;
       max-height: 80vh;
       overflow-y: auto;
-    }
-    .modal-user-data.active {
-      transform: translateY(0);
-      opacity: 1;
     }
     .modal-user-data label {
       width: 80%;
@@ -490,11 +439,18 @@
       display: block;
     }
     .modal-user-data input {
-      width: 90%;
+      width: 95%;
       margin: 10px auto;
       text-align: center;
       display: block;
       font-size: 1rem;
+    }
+    /* Зменшено відступ кнопки підтвердити */
+    #modalUserData button {
+      margin-top: 20px;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
     }
   </style>
 </head>
@@ -523,7 +479,8 @@
     <div class="loader-logo-wrap">
       <img src="https://i.ibb.co/3Q3LXDk/IMG-9356.png" alt="Loader Logo">
     </div>
-    <div class="loader-welcome" id="loaderWelcome">Ласкаво просимо, Гість 😊</div>
+    <!-- Ласкаво просимо буде показано лише при першій загрузці -->
+    <div class="loader-welcome" id="loaderWelcome"></div>
   </div>
   
   <!-- Основний контейнер -->
@@ -701,9 +658,14 @@
     if (typeof Telegram !== 'undefined' && Telegram.WebApp && Telegram.WebApp.initDataUnsafe && Telegram.WebApp.initDataUnsafe.user) {
       tgUserName = Telegram.WebApp.initDataUnsafe.user.first_name;
     }
-    // Оновлення тексту привітання під завантаженням
+    // Показ привітання лише при першій загрузці
     document.addEventListener('DOMContentLoaded', () => {
-      document.getElementById('loaderWelcome').innerText = `Ласкаво просимо, ${tgUserName} 😊`;
+      if (!localStorage.getItem('hasLoaded')) {
+        document.getElementById('loaderWelcome').innerText = `Ласкаво просимо, ${tgUserName} 😊`;
+        localStorage.setItem('hasLoaded', 'true');
+      } else {
+        document.getElementById('loaderWelcome').style.display = 'none';
+      }
     });
 
     // ====================== НАСТРОЙКИ ===========================
@@ -851,11 +813,12 @@
         renderRegionButtons();
       });
       
-      // Кнопки карты
+      // Кнопки карти
       document.getElementById('confirmLocationBtn').addEventListener('click', confirmMap);
       document.getElementById('cancelLocationBtn').addEventListener('click', cancelMarker);
       
-      // Кнопка підтвердження замовлення
+      // Кнопка підтвердження замовлення – перевіряємо, щоб кнопка завжди була видимою
+      document.getElementById('confirmOrderBtn').style.display = 'block';
       document.getElementById('confirmOrderBtn').addEventListener('click', confirmUserData);
       
       // Слухач зміни адреси
@@ -1068,23 +1031,12 @@
     function openModal(modalId) {
       const modalOverlay = document.getElementById(modalId);
       if(!modalOverlay) return;
-      modalOverlay.classList.add('active');
-      const modal = modalOverlay.querySelector('.modal') || modalOverlay.querySelector('.modal-user-data');
-      setTimeout(() => { 
-        if(modal) modal.classList.add('active'); 
-        if(modalId === 'modalOverlayMap' && map) {
-          map.updateSize();
-        }
-      }, 10);
+      modalOverlay.style.display = "flex";
     }
     function closeModal(modalId) {
       const modalOverlay = document.getElementById(modalId);
       if(!modalOverlay) return;
-      const modal = modalOverlay.querySelector('.modal') || modalOverlay.querySelector('.modal-user-data');
-      if(modal) modal.classList.remove('active');
-      setTimeout(() => { 
-        modalOverlay.classList.remove('active'); 
-      }, 500);
+      modalOverlay.style.display = "none";
       if(modalId === 'modalOverlayOrder'){
         resetOrderModal();
       }
@@ -1095,6 +1047,8 @@
       document.getElementById('orderStep1').style.display = 'block';
       document.getElementById('orderStep1_5').style.display = 'none';
       document.getElementById('orderStep2').style.display = 'none';
+      // Забезпечуємо видимість кнопки підтвердження при повторному відкритті
+      document.getElementById('confirmOrderBtn').style.display = 'block';
     }
     
     /* Ініціалізація карти (OpenLayers) */
@@ -1334,13 +1288,18 @@
       orderHistory.forEach((order, index) => {
         const orderDiv = document.createElement('div');
         orderDiv.className = 'order-item';
-        orderDiv.innerHTML = `<span>${order.details}</span>`;
+        // Видаляємо посилання з тексту замовлення
+        let orderText = order.details.replace(/OpenStreetMap:.*\n?/, "");
+        const textElem = document.createElement('p');
+        textElem.className = 'order-text';
+        textElem.innerText = orderText;
+        orderDiv.appendChild(textElem);
         const repeatBtn = document.createElement('button');
         repeatBtn.className = 'order-repeat-btn';
         repeatBtn.innerText = "Замовити";
         repeatBtn.addEventListener('click', () => {
           if(confirm("Повторити це замовлення?")) {
-            // Повторне надсилання замовлення (можна викликати confirmUserData або власну логіку)
+            // Повторне надсилання замовлення
             fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
               method: "POST",
               headers: {
