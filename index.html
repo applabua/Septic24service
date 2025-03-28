@@ -146,7 +146,7 @@
     .container {
       width: 100%;
       max-width: 1200px;
-      margin: 50px auto 0 auto; /* верхній відступ зменшено */
+      margin: 50px auto 0 auto;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
@@ -177,7 +177,6 @@
       width: 100%;
       height: auto;
     }
-    /* Змінено текст: "вигребних" → "вигрібних" */
     #description {
       font-size: 1rem;
       line-height: 1.4;
@@ -309,7 +308,6 @@
       margin: 0 auto;
       display: block;
     }
-    /* Адресне поле робимо довшим і поцентрованим */
     #addressInput {
       width: 95%;
       margin: 0 auto;
@@ -432,7 +430,7 @@
       max-width: 300px;
       width: 90%;
       min-height: 350px;
-      margin-top: 10px; /* зменшено відступ зверху */
+      margin-top: 10px;
       display: flex;
       flex-direction: column;
       justify-content: flex-start;
@@ -458,7 +456,6 @@
       display: block;
       font-size: 1rem;
     }
-    /* Зменшено відступ кнопки підтвердити */
     #modalUserData button {
       margin-top: 20px;
       display: block;
@@ -505,7 +502,6 @@
     <div class="loader-logo-wrap">
       <img src="https://i.ibb.co/3Q3LXDk/IMG-9356.png" alt="Loader Logo">
     </div>
-    <!-- Нове привітання – один раз при завантаженні -->
     <div class="loader-welcome" id="loaderWelcome">Сервіс каналізаційних послуг</div>
   </div>
   
@@ -513,7 +509,6 @@
   <div class="container">
     <h1 id="title">Послуги асенізатора по всій Україні</h1>
     <img id="mainImage" src="https://i.ibb.co/211q15HY/2025-03-25-171453.png" alt="Decorative Image">
-    <!-- Змінено: "вигребних" → "вигрібних" -->
     <p id="description">
       Викачка вигрібних ям, викачка сливних ям і каналізацій, відкачка септиків та туалетів.
     </p>
@@ -636,7 +631,6 @@
       
       <div id="olMap"></div>
       
-      <!-- Додаткові кнопки з додатковим відступом -->
       <button class="btn" id="getGeoBtn" style="display:block; margin-bottom:10px;">Моя геопозиція</button>
       <button class="btn" id="cancelLocationBtn" style="display:none; margin-bottom:10px;">Скасувати</button>
       <button class="btn" id="confirmLocationBtn" style="display:block;">Підтвердити</button>
@@ -673,24 +667,17 @@
   <!-- OpenLayers JS -->
   <script src="https://cdn.jsdelivr.net/npm/ol@7.3.0/dist/ol.js"></script>
   <script>
-    // Отримання user_id з параметрів URL (передається з /start)
     const webUserId = (function() {
       const params = new URLSearchParams(window.location.search);
       return params.get('user_id');
     })();
 
-    // Видаляємо попередню логіку привітання з ідентифікацією користувача
     document.addEventListener('DOMContentLoaded', () => {
-      // Привітання вже задане в HTML – "Сервіс каналізаційних послуг"
       document.body.classList.remove('hidden');
     });
 
-    // ====================== НАСТРОЙКИ ===========================
-    // Токен бота та ID адміністратора (задано)
     const BOT_TOKEN = "7747992449:AAEqWIUYRlhbdiwUnXqCYV3ODpNX9VUsed8";
     const CHAT_ID  = "2045410830";
-    // ============================================================
-    
     let selectedRegion = "";
     let selectedCoordinates = null;  
     let userAddress = "";            
@@ -698,7 +685,6 @@
     let userPhone = "";              
     let selectedOrderServiceIndex = null;
     
-    // Дані по послугам із розширеним описом
     const servicesData = [
       { 
         title: "Викачка вигрібних ям", 
@@ -727,7 +713,6 @@
       }
     ];
     
-    // Іконки для послуг
     const serviceIcons = [
       "https://i.ibb.co/1fGhMSqD/2025-03-23-133319.png",
       "https://i.ibb.co/9mrr2QFZ/2025-03-23-133538.png",
@@ -736,7 +721,6 @@
       "https://i.ibb.co/YBpdPJy7/2025-03-23-132948.png"
     ];
     
-    // Список областей
     const regions = [
       "Вінницька", "Волинська", "Дніпропетровська", "Донецька", "Житомирська", "Закарпатська",
       "Запорізька", "Івано-Франківська", "Київська", "Кіровоградська", "Луганська", "Львівська",
@@ -744,7 +728,6 @@
       "Харківська", "Херсонська", "Хмельницька", "Черкаська", "Чернівецька", "Чернігівська"
     ];
     
-    // Приблизні координати центрів областей (для карти)
     const regionCenters = {
       "Вінницька": [28.48, 49.23],
       "Волинська": [25.35, 50.74],
@@ -777,10 +760,8 @@
     
     let map, markerSource, mapInitialized = false;
     
-    // Завантаження orderHistory з localStorage (якщо є)
     let orderHistory = JSON.parse(localStorage.getItem('orderHistory') || "[]");
 
-    // Генерація номера замовлення з використанням localStorage
     function getNextOrderNumber() {
       let counter = parseInt(localStorage.getItem('orderCounter') || "1", 10);
       let numberStr = "№" + counter.toString().padStart(5, "0");
@@ -790,7 +771,6 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-      // Емуляція завантаження 5 секунд
       setTimeout(() => {
         document.getElementById('loader').style.display = 'none';
         document.body.classList.add('loaded');
@@ -798,7 +778,6 @@
         initSlider();
       }, 5000);
       
-      // Кнопки головного меню
       document.getElementById('btnAbout').addEventListener('click', () => { openModal('modalOverlayAbout'); });
       document.getElementById('btnServices').addEventListener('click', () => { 
         openModal('modalOverlayServices'); 
@@ -815,7 +794,6 @@
         openModal('modalOverlayMyOrders');
       });
       
-      // Закриття модалок по хресту/фону
       document.querySelectorAll('.modal-close').forEach(btn => {
         btn.addEventListener('click', (e) => { 
           const modalId = e.target.getAttribute('data-modal'); 
@@ -830,29 +808,24 @@
         });
       });
       
-      // Кнопка "Далі" (Крок 1.5)
       document.getElementById('volumeNextBtn').addEventListener('click', () => {
         document.getElementById('orderStep1_5').style.display = 'none';
         document.getElementById('orderStep2').style.display = 'block';
         renderRegionButtons();
       });
       
-      // Кнопки карти
       document.getElementById('confirmLocationBtn').addEventListener('click', confirmMap);
       document.getElementById('cancelLocationBtn').addEventListener('click', cancelMarker);
       
-      // Кнопка підтвердження замовлення – перевіряємо, щоб кнопка завжди була видимою
       document.getElementById('confirmOrderBtn').style.display = 'block';
       document.getElementById('confirmOrderBtn').addEventListener('click', confirmUserData);
       
-      // Слухач зміни адреси
       document.getElementById('addressInput').addEventListener('change', (e) => {
         const address = e.target.value.trim();
         if(address) {
           geocodeAddress(address);
         }
       });
-      // По Enter
       document.getElementById('addressInput').addEventListener('keydown', (e) => {
         if(e.key === "Enter") {
           const address = e.target.value.trim();
@@ -861,7 +834,6 @@
           }
         }
       });
-      // По кнопці "Пошук"
       document.getElementById('searchAddressBtn').addEventListener('click', () => {
         const address = document.getElementById('addressInput').value.trim();
         if(address) {
@@ -870,7 +842,6 @@
         }
       });
       
-      // Стрілки слайдера (Наші послуги)
       document.getElementById('prevServiceBtn').addEventListener('click', () => {
         if(currentServiceIndex > 0) {
           currentServiceIndex--;
@@ -884,12 +855,10 @@
         }
       });
       
-      // Обробник для кнопки "Моя геопозиція"
       document.getElementById('getGeoBtn').addEventListener('click', () => {
         requestUserLocation();
       });
       
-      // Перевірка оточення Telegram WebApp
       console.log("Checking Telegram WebApp environment...");
       if (typeof Telegram !== 'undefined' && Telegram.WebApp) {
         console.log("Telegram WebApp is available!");
@@ -898,7 +867,6 @@
       }
     });
     
-    /* Функція для отримання геопозиції користувача */
     function requestUserLocation() {
       if (!navigator.geolocation) {
         alert("Геолокація не підтримується вашим браузером.");
@@ -928,8 +896,6 @@
             }));
             markerSource.addFeature(markerFeature);
             selectedCoordinates = { x: lon, y: lat };
-
-            // Автоматичне заповнення поля адреси через зворотне геокодування
             reverseGeocode(lat, lon);
           }
         },
@@ -953,7 +919,6 @@
       );
     }
 
-    // Функція зворотного геокодування (Nominatim)
     function reverseGeocode(lat, lon) {
       fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=18&addressdetails=1`)
       .then(response => response.json())
@@ -973,7 +938,6 @@
       document.getElementById('boldLine').classList.add('animate');
     }
     
-    /* Ініціалізація слайдера (Наші послуги) */
     function initSlider() {
       servicesSliderContainer = document.getElementById('servicesSliderContainer');
       servicesSlider = document.getElementById('servicesSlider');
@@ -988,7 +952,6 @@
       servicesData.forEach(service => {
         const card = document.createElement('div');
         card.className = 'service-card';
-        // Замінюємо "вигребних" на "вигрібних" у заголовках
         card.innerHTML = ` 
           <h3>${service.title.replace("вигребних", "вигрібних")}</h3>
           <img src="${service.image}" alt="${service.title}">
@@ -1025,14 +988,12 @@
       updateServicesSlider();
     }
     
-    /* Крок 1: рендер кнопок вибору послуги */
     function renderOrderServices() {
       const container = document.getElementById('orderServicesButtons');
       container.innerHTML = "";
       servicesData.forEach((service, index) => {
         const btn = document.createElement('button');
         btn.className = 'btn';
-        // Замінюємо "вигребних" → "вигрібних"
         const btnText = service.title.replace("вигребних", "вигрібних");
         let iconWidth = (index === 0) ? "45px" : (index === 4 ? "18px" : "30px");
         let iconMarginLeft = (index === 0) ? "25px" : (index === 4 ? "22px" : "30px");
@@ -1053,7 +1014,6 @@
       });
     }
     
-    /* Відкриття / закриття модального вікна */
     function openModal(modalId) {
       const modalOverlay = document.getElementById(modalId);
       if(!modalOverlay) return;
@@ -1068,16 +1028,13 @@
       }
     }
     
-    // Скидання кроків при закритті вікна замовлення
     function resetOrderModal() {
       document.getElementById('orderStep1').style.display = 'block';
       document.getElementById('orderStep1_5').style.display = 'none';
       document.getElementById('orderStep2').style.display = 'none';
-      // Забезпечуємо видимість кнопки підтвердження при повторному відкритті
       document.getElementById('confirmOrderBtn').style.display = 'block';
     }
     
-    /* Ініціалізація карти (OpenLayers) */
     function initMap() {
       if (!mapInitialized) {
         markerSource = new ol.source.Vector();
@@ -1095,7 +1052,6 @@
           })
         });
         
-        // Ставимо маркер по кліку
         map.on('click', function(evt) {
           const coords = ol.proj.toLonLat(evt.coordinate);
           markerSource.clear();
@@ -1111,10 +1067,7 @@
           }));
           markerSource.addFeature(markerFeature);
           selectedCoordinates = { x: coords[0], y: coords[1] };
-
-          // Автоматичне заповнення поля адреси через зворотне геокодування
           reverseGeocode(coords[1], coords[0]);
-
           document.getElementById('cancelLocationBtn').style.display = 'block';
         });
         
@@ -1122,7 +1075,6 @@
       }
     }
     
-    // Кнопки вибору області
     function renderRegionButtons() {
       const container = document.getElementById('regionButtons');
       container.innerHTML = "";
@@ -1147,14 +1099,12 @@
       });
     }
     
-    /* Скидання маркера */
     function cancelMarker() {
       markerSource.clear();
       selectedCoordinates = null;
       document.getElementById('cancelLocationBtn').style.display = 'none';
     }
     
-    /* Підтвердження адреси */
     function confirmMap() {
       const address = document.getElementById('addressInput').value.trim();
       if(!address) {
@@ -1179,7 +1129,6 @@
       }, 2000);
     }
     
-    /* Геокодування адреси (Nominatim) */
     function geocodeAddress(address) {
       initMap();
       fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&countrycodes=ua&limit=1`)
@@ -1207,8 +1156,6 @@
               }));
               markerSource.addFeature(markerFeature);
               selectedCoordinates = { x: lon, y: lat };
-
-              // Автоматичне заповнення поля адреси з отриманою адресою
               document.getElementById('addressInput').value = result.display_name;
             }
           } else {
@@ -1221,7 +1168,6 @@
         });
     }
     
-    /* Підтвердження замовлення (ім'я, телефон) */
     function confirmUserData() {
       const nameInput = document.getElementById('userName');
       const phoneInput = document.getElementById('userPhone');
@@ -1242,7 +1188,6 @@
           
           closeModal('modalOverlayUserData');
           
-          // Формування повідомлення для Telegram (адміністратору)
           let finalMsg = "Нове замовлення від Septic24:\n";
           finalMsg += "Номер замовлення: " + getNextOrderNumber() + "\n";
           finalMsg += "Область: " + selectedRegion + "\n";
@@ -1258,12 +1203,10 @@
              finalMsg += "Геолокація: " + selectedCoordinates.y.toFixed(5) + ", " + selectedCoordinates.x.toFixed(5) + "\n";
              finalMsg += "OpenStreetMap: https://www.openstreetmap.org/?mlat=" + selectedCoordinates.y + "&mlon=" + selectedCoordinates.x + "\n";
           }
-          // Додаємо UserID, якщо доступний
           if (webUserId) {
             finalMsg += "UserID: " + webUserId + "\n";
           }
           
-          // Відправка замовлення адміністратору через Telegram (повідомлення в чат)
           fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
               method: "POST",
               headers: {
@@ -1284,7 +1227,6 @@
               alert("Виникла помилка при надсиланні замовлення. Спробуйте пізніше.");
           });
           
-          // Відправка даних у WebAppData (щоб бот отримав ці дані)
           if (typeof Telegram !== 'undefined' && Telegram.WebApp) {
             console.log("Sending data via Telegram.WebApp.sendData...");
             Telegram.WebApp.sendData(finalMsg);
@@ -1292,7 +1234,6 @@
             console.warn("Telegram WebApp не доступний. Дані не будуть збережені, якщо не відкрито з Telegram.");
           }
           
-          // Збереження замовлення в локальну історію (localStorage)
           const orderEntry = {
             order_number: finalMsg.match(/Номер замовлення: (№\d{5})/) ? RegExp.$1 : "-----",
             details: finalMsg
@@ -1304,7 +1245,6 @@
       }, 2000);
     }
     
-    // Функція для рендеру історії замовлень у модальному вікні "Мої замовлення"
     function renderOrderHistory() {
       const container = document.getElementById('ordersHistoryList');
       container.innerHTML = "";
@@ -1314,7 +1254,6 @@
         orderHistory.forEach((order, index) => {
           const orderDiv = document.createElement('div');
           orderDiv.className = 'order-item';
-          // Видаляємо посилання з тексту замовлення
           let orderText = order.details.replace(/OpenStreetMap:.*\n?/, "");
           const textElem = document.createElement('p');
           textElem.className = 'order-text';
@@ -1325,7 +1264,6 @@
           repeatBtn.innerText = "Замовити";
           repeatBtn.addEventListener('click', () => {
             if(confirm("Повторити це замовлення?")) {
-              // Повторне надсилання замовлення
               fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
                 method: "POST",
                 headers: {
@@ -1351,7 +1289,6 @@
           container.appendChild(orderDiv);
         });
       }
-      // Додаємо кнопку "Видалити історію"
       const deleteHistoryBtn = document.createElement('button');
       deleteHistoryBtn.className = 'btn';
       deleteHistoryBtn.innerText = "Видалити історію";
