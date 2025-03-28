@@ -492,7 +492,7 @@
     <div class="loader-logo-wrap">
       <img src="https://i.ibb.co/3Q3LXDk/IMG-9356.png" alt="Loader Logo">
     </div>
-    <!-- Ласкаво просимо буде показано лише при першій загрузці -->
+    <!-- Привітання: якщо дані з Telegram доступні, виводимо first_name/username, інакше Гість -->
     <div class="loader-welcome" id="loaderWelcome"></div>
   </div>
   
@@ -669,7 +669,8 @@
     // Отримання імені користувача з Telegram WebApp (якщо доступно)
     let tgUserName = "Гість";
     if (typeof Telegram !== 'undefined' && Telegram.WebApp && Telegram.WebApp.initDataUnsafe && Telegram.WebApp.initDataUnsafe.user) {
-      tgUserName = Telegram.WebApp.initDataUnsafe.user.first_name;
+      // Використовуємо first_name, або username, якщо first_name не задано
+      tgUserName = Telegram.WebApp.initDataUnsafe.user.first_name || Telegram.WebApp.initDataUnsafe.user.username || "Гість";
     }
     // Показ привітання лише при першій загрузці
     document.addEventListener('DOMContentLoaded', () => {
@@ -679,6 +680,8 @@
       } else {
         document.getElementById('loaderWelcome').style.display = 'none';
       }
+      // Показати body після завантаження
+      document.body.classList.remove('hidden');
     });
 
     // ====================== НАСТРОЙКИ ===========================
@@ -694,7 +697,7 @@
     let userPhone = "";              
     let selectedOrderServiceIndex = null;
     
-    // Дані по послугам із розширеним описом (заміна Послуги ілососу → Викачка мулу та піску)
+    // Дані по послугам із розширеним описом
     const servicesData = [
       { 
         title: "Викачка вигрібних ям", 
@@ -777,9 +780,6 @@
     let orderHistory = JSON.parse(localStorage.getItem('orderHistory') || "[]");
 
     document.addEventListener('DOMContentLoaded', () => {
-      // Запобігання флешу: показати body лише після завантаження
-      document.body.classList.remove('hidden');
-      
       // Емуляція завантаження 5 секунд
       setTimeout(() => {
         document.getElementById('loader').style.display = 'none';
@@ -899,6 +899,7 @@
         (position) => {
           const lat = position.coords.latitude;
           const lon = position.coords.longitude;
+          console.log("Отримано координати:", lat, lon);
           if(map) {
             map.getView().setCenter(ol.proj.fromLonLat([lon, lat]));
             map.getView().setZoom(10);
@@ -923,6 +924,7 @@
           }
         },
         (error) => {
+          console.error("Помилка отримання геолокації:", error);
           if (error.code === error.PERMISSION_DENIED) {
             if (confirm("Ви відхилили доступ до геолокації. Спробувати ще раз?")) {
               requestUserLocation();
@@ -1264,7 +1266,8 @@
           .then(response => response.json())
           .then(data => {
               console.log("Order sent to Telegram:", data);
-              alert("Дякуємо, ваше замовлення сформовано, очікуйте на дзвінок!");
+              // Повідомлення користувачу з відповіддю та знижкою
+              alert("Дякуємо, ваше замовлення сформовано, очікуйте на дзвінок!\nВаша знижка 10% на наступне замовлення.");
           })
           .catch(error => {
               console.error("Error sending order to Telegram:", error);
