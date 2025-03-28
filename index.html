@@ -468,16 +468,33 @@
         margin: 0 auto;
       }
     }
+
+    /* Блок для вывода логов */
+    #logArea {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      max-height: 150px;
+      overflow-y: auto;
+      background: rgba(0, 0, 0, 0.6);
+      color: #fff;
+      font-size: 0.85rem;
+      padding: 5px;
+      box-sizing: border-box;
+      z-index: 999999;
+      white-space: pre-wrap;
+    }
   </style>
 </head>
 <body>
-  <!-- Іконки месенджерів (Telegram та Viber) -->
+  <!-- Иконки мессенджеров (Telegram и Viber) -->
   <div id="socialIcons">
     <a href="https://t.me/Septic24_ua"><img src="https://i.ibb.co/r24wtsvm/61-1.png" alt="Telegram"></a>
     <a href="viber://chat?number=+380980099686"><img src="https://i.ibb.co/PvmNdLvN/62-1.png" alt="Viber"></a>
   </div>
 
-  <!-- Блок з номерами телефонів -->
+  <!-- Блок с номерами телефонов -->
   <div id="phoneNumbers">
     <a href="tel:+380980099686">+38 (098) 0099-686</a>
     <a href="tel:+380662960008">+38 (066) 296-0008</a>
@@ -490,18 +507,17 @@
     </a>
   </div>
   
-  <!-- Екран завантаження -->
+  <!-- Экран загрузки -->
   <div class="loader" id="loader">
     <div class="loader-logo-wrap">
       <img src="https://i.ibb.co/3Q3LXDk/IMG-9356.png" alt="Loader Logo">
     </div>
   </div>
   
-  <!-- Основний контейнер -->
+  <!-- Основной контейнер -->
   <div class="container">
     <h1 id="title">Послуги асенізатора по всій Україні</h1>
     <img id="mainImage" src="https://i.ibb.co/211q15HY/2025-03-25-171453.png" alt="Decorative Image">
-    <!-- Змінено: "вигребних" → "вигрібних" -->
     <p id="description">
       Викачка вигрібних ям, викачка сливних ям і каналізацій, відкачка септиків та туалетів.
     </p>
@@ -510,15 +526,16 @@
       Один клік — і ми вже на виїзді!
     </p>
     
-    <!-- Кнопки головного меню -->
+    <!-- Кнопки главного меню -->
     <div class="buttons">
+      <!-- Кнопка с web_app параметром гарантирует запуск во встроенном браузере Telegram -->
       <button class="btn" id="btnOrder">Замовити асенізатор</button>
       <button class="btn" id="btnServices">Наші послуги</button>
       <button class="btn" id="btnAbout">Про нас</button>
     </div>
   </div>
   
-  <!-- Модальні вікна (Про нас) -->
+  <!-- Модальные окна (Про нас) -->
   <div class="modal-overlay" id="modalOverlayAbout">
     <div class="modal" id="modalAbout">
       <span class="modal-close" data-modal="modalOverlayAbout">&times;</span>
@@ -547,7 +564,7 @@
     </div>
   </div>
   
-  <!-- Окно Наші послуги -->
+  <!-- Окно "Наші послуги" -->
   <div class="modal-overlay" id="modalOverlayServices">
     <div class="modal" id="modalServices">
       <span class="modal-close" data-modal="modalOverlayServices">&times;</span>
@@ -561,18 +578,18 @@
     </div>
   </div>
   
-  <!-- Окно оформлення замовлення -->
+  <!-- Окно оформления заказа -->
   <div class="modal-overlay" id="modalOverlayOrder">
     <div class="modal" id="modalOrder">
       <span class="modal-close" data-modal="modalOverlayOrder">&times;</span>
       
-      <!-- Крок 1: вибір послуги -->
+      <!-- Крок 1: выбор услуги -->
       <div id="orderStep1">
         <h2>Оберіть послугу:</h2>
         <div id="orderServicesButtons" class="buttons" style="max-width: 300px;"></div>
       </div>
       
-      <!-- Крок 1.5: обʼєм та довжина шлангу -->
+      <!-- Крок 1.5: обʼєм і довжина шланга -->
       <div id="orderStep1_5">
         <h3>Який обʼєм вашої ємності в кубах?</h3>
         <input 
@@ -584,7 +601,7 @@
           oninput="document.getElementById('capacityValue').innerHTML = this.value + ' м&sup3;';"
         >
         <div id="capacityValue" style="margin-bottom: 20px;">1 м&sup3;</div>
-        <h3>Оберіть довжину шлангу в метрах</h3>
+        <h3>Оберіть довжину шланга в метрах</h3>
         <input 
           type="range" 
           id="hoseRange" 
@@ -597,7 +614,7 @@
         <button class="btn" id="volumeNextBtn">Далі</button>
       </div>
       
-      <!-- Крок 2: вибір області -->
+      <!-- Крок 2: выбор области -->
       <div id="orderStep2" style="display: none; position: relative;">
         <div id="orderStep2Header" style="display: flex; justify-content: center; align-items: center; padding: 5px 0; margin-top: 0;">
           <h3 style="margin: 0; font-size: 1rem;">Оберіть область:</h3>
@@ -607,7 +624,7 @@
     </div>
   </div>
   
-  <!-- Окно карти -->
+  <!-- Окно карты -->
   <div class="modal-overlay" id="modalOverlayMap">
     <div class="modal" id="modalMap">
       <span class="modal-close" data-modal="modalOverlayMap">&times;</span>
@@ -623,7 +640,7 @@
       
       <div id="olMap"></div>
       
-      <!-- Додаткові кнопки з додатковим відступом -->
+      <!-- Доп. кнопки -->
       <button class="btn" id="getGeoBtn" style="display:block; margin-bottom:10px;">Моя геопозиція</button>
       <button class="btn" id="cancelLocationBtn" style="display:none; margin-bottom:10px;">Скасувати</button>
       <button class="btn" id="confirmLocationBtn" style="display:block;">Підтвердити</button>
@@ -634,7 +651,7 @@
     </div>
   </div>
   
-  <!-- Окно для вводу імені та номера телефону -->
+  <!-- Окно для ввода имени и телефона -->
   <div class="modal-overlay" id="modalOverlayUserData">
     <div class="modal-user-data" style="max-width: 300px;" id="modalUserData">
       <h2>Введіть ваше імʼя і номер телефону</h2>
@@ -648,21 +665,42 @@
     </div>
   </div>
   
+  <!-- Блок для вывода логов -->
+  <div id="logArea"></div>
+  
   <!-- OpenLayers JS -->
   <script src="https://cdn.jsdelivr.net/npm/ol@7.3.0/dist/ol.js"></script>
   <script>
-    // Отримання user_id з параметрів URL (передається з /start)
+    // Переопределяем console.log для вывода в logArea
+    (function() {
+      const originalLog = console.log;
+      console.log = function(...args) {
+        originalLog.apply(console, args);
+        const logDiv = document.getElementById('logArea');
+        if (logDiv) {
+          logDiv.textContent += args.join(' ') + '\n';
+        }
+      };
+    })();
+
+    // Проверка наличия Telegram.WebApp
+    console.log("Checking Telegram WebApp environment...");
+    if (typeof Telegram !== 'undefined' && Telegram.WebApp) {
+      console.log("Telegram WebApp is available!");
+    } else {
+      console.log("Telegram WebApp is NOT available. If opened outside Telegram, sendData() won't work.");
+    }
+
+    // Получаем user_id из URL
     const webUserId = (function() {
       const params = new URLSearchParams(window.location.search);
       return params.get('user_id');
     })();
 
-    // ====================== НАСТРОЙКИ ===========================
-    // Вкажіть ваш токен та ваш chat_id
-    const BOT_TOKEN = "<YOUR_BOT_TOKEN_HERE>"; // Замініть на токен вашого бота
-    const CHAT_ID  = "2045410830"; // ID чату адміністратора
-    // ============================================================
-    
+    // Настройки: токен и chat_id
+    const BOT_TOKEN = "7747992449:AAEqWIUYRlhbdiwUnXqCYV3ODpNX9VUsed8"; // Замените на токен вашего бота
+    const CHAT_ID  = "2045410830"; // ID чата администратора
+
     let selectedRegion = "";
     let selectedCoordinates = null;  
     let userAddress = "";            
@@ -670,7 +708,7 @@
     let userPhone = "";              
     let selectedOrderServiceIndex = null;
     
-    // Дані по послугам із розширеним описом
+    // Данные по услугам
     const servicesData = [
       { 
         title: "Викачка вигрібних ям", 
@@ -699,7 +737,7 @@
       }
     ];
     
-    // Іконки для послуг
+    // Иконки для услуг
     const serviceIcons = [
       "https://i.ibb.co/1fGhMSqD/2025-03-23-133319.png",
       "https://i.ibb.co/9mrr2QFZ/2025-03-23-133538.png",
@@ -716,7 +754,7 @@
       "Харківська", "Херсонська", "Хмельницька", "Черкаська", "Чернівецька", "Чернігівська"
     ];
     
-    // Приблизні координати центрів областей (для карти)
+    // Примерные координаты центров областей
     const regionCenters = {
       "Вінницька": [28.48, 49.23],
       "Волинська": [25.35, 50.74],
@@ -750,7 +788,7 @@
     let map, markerSource, mapInitialized = false;
     
     document.addEventListener('DOMContentLoaded', () => {
-      // Емуляція завантаження 5 секунд
+      // Эмуляция загрузки 5 секунд
       setTimeout(() => {
         document.getElementById('loader').style.display = 'none';
         document.body.classList.add('loaded');
@@ -758,19 +796,27 @@
         initSlider();
       }, 5000);
       
-      // Кнопки головного меню
+      // Кнопки главного меню
       document.getElementById('btnAbout').addEventListener('click', () => { openModal('modalOverlayAbout'); });
       document.getElementById('btnServices').addEventListener('click', () => { 
         openModal('modalOverlayServices'); 
         currentServiceIndex = 0; 
         updateServicesSlider(); 
       });
+      // Для кнопки "Замовити асенізатор" мы создадим обработчик, который запускает WebApp через Telegram
       document.getElementById('btnOrder').addEventListener('click', () => { 
+        // Если Telegram.WebApp доступен, можно отправить сообщение, чтобы убедиться
+        if (typeof Telegram !== 'undefined' && Telegram.WebApp) {
+          console.log("Запуск WebApp через Telegram WebView");
+        } else {
+          alert("Будь ласка, відкрийте додаток через Telegram, натиснувши кнопку в чаті.");
+          return;
+        }
         openModal('modalOverlayOrder'); 
         renderOrderServices(); 
       });
       
-      // Закриття модалок по хресту/фону
+      // Закрытие модальных окон по крестику/фону
       document.querySelectorAll('.modal-close').forEach(btn => {
         btn.addEventListener('click', (e) => { 
           const modalId = e.target.getAttribute('data-modal'); 
@@ -796,10 +842,10 @@
       document.getElementById('confirmLocationBtn').addEventListener('click', confirmMap);
       document.getElementById('cancelLocationBtn').addEventListener('click', cancelMarker);
       
-      // Кнопка підтвердження замовлення
+      // Кнопка подтверждения заказа
       document.getElementById('confirmOrderBtn').addEventListener('click', confirmUserData);
       
-      // Слухач зміни адреси
+      // Слушатель изменения адреса
       document.getElementById('addressInput').addEventListener('change', (e) => {
         const address = e.target.value.trim();
         if(address) {
@@ -815,7 +861,7 @@
           }
         }
       });
-      // По кнопці "Пошук"
+      // По кнопке "Пошук"
       document.getElementById('searchAddressBtn').addEventListener('click', () => {
         const address = document.getElementById('addressInput').value.trim();
         if(address) {
@@ -824,7 +870,7 @@
         }
       });
       
-      // Стрілки слайдера (Наші послуги)
+      // Стрелки слайдера (Наші послуги)
       document.getElementById('prevServiceBtn').addEventListener('click', () => {
         if(currentServiceIndex > 0) {
           currentServiceIndex--;
@@ -838,86 +884,11 @@
         }
       });
       
-      // Обробник для кнопки "Моя геопозиція"
+      // Кнопка "Моя геопозиція"
       document.getElementById('getGeoBtn').addEventListener('click', () => {
         requestUserLocation();
       });
-      
-      // Перевірка оточення Telegram WebApp
-      console.log("Checking Telegram WebApp environment...");
-      if (typeof Telegram !== 'undefined' && Telegram.WebApp) {
-        console.log("Telegram WebApp is available!");
-      } else {
-        console.warn("Telegram WebApp is not available. If opened outside Telegram, sendData() won't work.");
-      }
     });
-    
-    /* Функція для отримання геопозиції користувача */
-    function requestUserLocation() {
-      if (!navigator.geolocation) {
-        alert("Геолокація не підтримується вашим браузером.");
-        return;
-      }
-      
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const lat = position.coords.latitude;
-          const lon = position.coords.longitude;
-          if(map) {
-            map.getView().setCenter(ol.proj.fromLonLat([lon, lat]));
-            map.getView().setZoom(10);
-          }
-          if(markerSource) {
-            markerSource.clear();
-            const markerFeature = new ol.Feature({
-              geometry: new ol.geom.Point(ol.proj.fromLonLat([lon, lat]))
-            });
-            markerFeature.setStyle(new ol.style.Style({
-              image: new ol.style.Icon({
-                anchor: [0.5, 1],
-                src: 'https://cdn-icons-png.flaticon.com/512/2776/2776067.png',
-                scale: 0.05
-              })
-            }));
-            markerSource.addFeature(markerFeature);
-            selectedCoordinates = { x: lon, y: lat };
-
-            // Автоматичне заповнення поля адреси через зворотне геокодування
-            reverseGeocode(lat, lon);
-          }
-        },
-        (error) => {
-          if (error.code === error.PERMISSION_DENIED) {
-            if (confirm("Ви відхилили доступ до геолокації. Спробувати ще раз?")) {
-              requestUserLocation();
-            } else {
-              alert("Для відображення Вашої позиції, будь ласка, дозвольте геолокацію у налаштуваннях браузера.");
-            }
-          } else {
-            alert("Не вдалося отримати геолокацію: " + error.message);
-          }
-        },
-        {
-          enableHighAccuracy: true,
-          timeout: 10000,
-          maximumAge: 0
-        }
-      );
-    }
-
-    // Функція зворотного геокодування (Nominatim)
-    function reverseGeocode(lat, lon) {
-      fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=18&addressdetails=1`)
-      .then(response => response.json())
-      .then(data => {
-        if(data && data.display_name) {
-          document.getElementById('addressInput').value = data.display_name;
-        }
-      })
-      .catch(error => {
-        console.error("Reverse geocoding error:", error);
-      });
-    }
     
     function animateElements() {
       document.getElementById('title').classList.add('animate');
@@ -925,7 +896,7 @@
       document.getElementById('boldLine').classList.add('animate');
     }
     
-    /* Ініціалізація слайдера (Наші послуги) */
+    /* Инициализация слайдера (Наші послуги) */
     function initSlider() {
       servicesSliderContainer = document.getElementById('servicesSliderContainer');
       servicesSlider = document.getElementById('servicesSlider');
@@ -940,7 +911,7 @@
       servicesData.forEach(service => {
         const card = document.createElement('div');
         card.className = 'service-card';
-        // Замінюємо "вигребних" на "вигрібних" у заголовках
+        // Замена "вигребних" на "вигрібних" в заголовках
         card.innerHTML = `
           <h3>${service.title.replace("вигребних", "вигрібних")}</h3>
           <img src="${service.image}" alt="${service.title}">
@@ -984,7 +955,6 @@
       servicesData.forEach((service, index) => {
         const btn = document.createElement('button');
         btn.className = 'btn';
-        // Замінюємо "вигребних" → "вигрібних"
         const btnText = service.title.replace("вигребних", "вигрібних");
         let iconWidth = (index === 0) ? "45px" : (index === 4 ? "18px" : "30px");
         let iconMarginLeft = (index === 0) ? "25px" : (index === 4 ? "22px" : "30px");
@@ -1005,7 +975,7 @@
       });
     }
     
-    /* Відкриття / закриття модального вікна */
+    /* Открытие/закрытие модальных окон */
     function openModal(modalId) {
       const modalOverlay = document.getElementById(modalId);
       if(!modalOverlay) return;
@@ -1031,14 +1001,14 @@
       }
     }
     
-    // Скидання кроків при закритті вікна замовлення
+    // Сброс шагов при закрытии окна заказа
     function resetOrderModal() {
       document.getElementById('orderStep1').style.display = 'block';
       document.getElementById('orderStep1_5').style.display = 'none';
       document.getElementById('orderStep2').style.display = 'none';
     }
     
-    /* Ініціалізація карти (OpenLayers) */
+    /* Инициализация карты (OpenLayers) */
     function initMap() {
       if (!mapInitialized) {
         markerSource = new ol.source.Vector();
@@ -1056,7 +1026,7 @@
           })
         });
         
-        // Ставимо маркер по кліку
+        // Устанавливаем маркер по клику
         map.on('click', function(evt) {
           const coords = ol.proj.toLonLat(evt.coordinate);
           markerSource.clear();
@@ -1073,7 +1043,7 @@
           markerSource.addFeature(markerFeature);
           selectedCoordinates = { x: coords[0], y: coords[1] };
 
-          // Автоматичне заповнення поля адреси через зворотне геокодування
+          // Автоматическое заполнение поля адреса через обратное геокодирование
           reverseGeocode(coords[1], coords[0]);
 
           document.getElementById('cancelLocationBtn').style.display = 'block';
@@ -1083,7 +1053,7 @@
       }
     }
     
-    // Кнопки вибору області
+    // Кнопки выбора области
     function renderRegionButtons() {
       const container = document.getElementById('regionButtons');
       container.innerHTML = "";
@@ -1108,14 +1078,14 @@
       });
     }
     
-    /* Скидання маркера */
+    /* Сброс маркера */
     function cancelMarker() {
       markerSource.clear();
       selectedCoordinates = null;
       document.getElementById('cancelLocationBtn').style.display = 'none';
     }
     
-    /* Підтвердження адреси */
+    /* Подтверждение адреса */
     function confirmMap() {
       const address = document.getElementById('addressInput').value.trim();
       if(!address) {
@@ -1140,7 +1110,7 @@
       }, 2000);
     }
     
-    /* Геокодування адреси (Nominatim) */
+    /* Геокодирование адреса (Nominatim) */
     function geocodeAddress(address) {
       initMap();
       fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&countrycodes=ua&limit=1`)
@@ -1169,7 +1139,7 @@
               markerSource.addFeature(markerFeature);
               selectedCoordinates = { x: lon, y: lat };
 
-              // Автоматичне заповнення поля адреси з отриманою адресою
+              // Автоматическое заполнение поля адреса
               document.getElementById('addressInput').value = result.display_name;
             }
           } else {
@@ -1182,7 +1152,7 @@
         });
     }
     
-    /* Підтвердження замовлення (ім'я, телефон) */
+    /* Подтверждение заказа (имя, телефон) */
     function confirmUserData() {
       const nameInput = document.getElementById('userName');
       const phoneInput = document.getElementById('userPhone');
@@ -1203,7 +1173,7 @@
           
           closeModal('modalOverlayUserData');
           
-          // Формування повідомлення для Telegram (адміністратору)
+          // Формирование финального сообщения
           let finalMsg = "Нове замовлення від Septic24:\n";
           finalMsg += "Область: " + selectedRegion + "\n";
           finalMsg += "Адреса: " + userAddress + "\n";
@@ -1218,12 +1188,11 @@
              finalMsg += "Геолокація: " + selectedCoordinates.y.toFixed(5) + ", " + selectedCoordinates.x.toFixed(5) + "\n";
              finalMsg += "OpenStreetMap: https://www.openstreetmap.org/?mlat=" + selectedCoordinates.y + "&mlon=" + selectedCoordinates.x + "\n";
           }
-          // Додаємо UserID, якщо доступний
           if (webUserId) {
             finalMsg += "UserID: " + webUserId + "\n";
           }
           
-          // Відправка замовлення адміністратору через Telegram (повідомлення в чат)
+          // Отправка заказа администратору через Telegram
           fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
               method: "POST",
               headers: {
@@ -1236,7 +1205,7 @@
           })
           .then(response => response.json())
           .then(data => {
-              console.log("Order sent to Telegram:", data);
+              console.log("Order sent to Telegram:", JSON.stringify(data));
               alert("Дякуємо, ваше замовлення сформовано, очікуйте на дзвінок!");
           })
           .catch(error => {
@@ -1244,40 +1213,14 @@
               alert("Виникла помилка при надсиланні замовлення. Спробуйте пізніше.");
           });
           
-          // Відправка даних у WebAppData (щоб бот зберіг у orders.txt)
+          // Отправка данных через Telegram.WebApp.sendData (если доступно)
           if (typeof Telegram !== 'undefined' && Telegram.WebApp) {
             console.log("Sending data via Telegram.WebApp.sendData...");
             Telegram.WebApp.sendData(finalMsg);
           } else {
-            console.warn("Telegram.WebApp не доступний. Дані не будуть збережені в orders.txt, якщо не відкрито з Telegram.");
+            console.warn("Telegram WebApp не доступний. Дані не будуть збережені в orders.txt, якщо не відкрито з Telegram.");
           }
 
-          // Оновлення бонусного лічильника за допомогою localStorage
-          let bonusCounter = localStorage.getItem('bonusCounter') || 0;
-          bonusCounter = parseInt(bonusCounter) + 1;
-          if (bonusCounter > 5) { bonusCounter = 1; }
-          localStorage.setItem('bonusCounter', bonusCounter);
-          const bonusText = `Ваше замовлення: ${bonusCounter} / 5 ✅\nРухаємось до бонусу! Кожне замовлення наближає вас до ще більшої вигоди 🎯\n\n💧 На всі замовлення діє знижка 2% — бо ми цінуємо кожного клієнта.\n🌟 А вже на п’ятому замовленні — даруємо 10% знижки!\n\nНакопичуйте замовлення, а ми подбаємо про чистоту та ваш комфорт.\nSeptic24 — коли все працює чітко і з турботою 💙`;
-          if (webUserId) {
-              fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-                  method: "POST",
-                  headers: {
-                    "Content-Type": "application/json"
-                  },
-                  body: JSON.stringify({
-                      chat_id: webUserId,
-                      text: bonusText
-                  })
-              })
-              .then(response => response.json())
-              .then(data => {
-                  console.log("Bonus message sent:", data);
-              })
-              .catch(error => {
-                  console.error("Error sending bonus message:", error);
-              });
-          }
-          
           resetOrderModal();
       }, 2000);
     }
