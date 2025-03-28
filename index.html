@@ -18,6 +18,9 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ol@7.3.0/dist/ol.css">
   
   <style>
+    /* Запобігання "миганню" головної сторінки до завантаження */
+    .hidden { display: none; }
+    
     /* Сховати атрибуцію OpenStreetMap */
     .ol-attribution {
       display: none !important;
@@ -130,6 +133,13 @@
       border-radius: 50%;
       z-index: 1;
       box-shadow: 0 0 20px #80d0ff;
+    }
+    /* Текст привітання під завантаженням */
+    .loader-welcome {
+      margin-top: 20px;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #0060a0;
     }
     
     /* Основний контейнер */
@@ -274,6 +284,40 @@
       color: #002050;
     }
     
+    /* Модальне вікно для історії замовлень (Мої замовлення) */
+    #modalOverlayMyOrders .modal {
+      max-width: 400px;
+    }
+    .order-item {
+      border-bottom: 1px solid #ccc;
+      padding: 10px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.9rem;
+    }
+    .order-item:last-child {
+      border-bottom: none;
+    }
+    .order-repeat-btn {
+      padding: 4px 8px;
+      font-size: 0.8rem;
+      background: #0060a0;
+      border: none;
+      border-radius: 3px;
+      color: #fff;
+      cursor: pointer;
+    }
+    
+    /* Стилі для інпутів адреси, імені та номера телефону */
+    input[type="text"] {
+      width: 90%;
+      padding: 10px;
+      border: 1px solid green;
+      border-radius: 4px;
+      font-size: 1rem;
+    }
+    
     /* Про нас */
     #modalAbout {
       max-width: 320px;
@@ -409,7 +453,7 @@
       border-radius: 8px;
       margin-top: 10px;
     }
-
+    
     /* Окно для вводу імені та номера телефону */
     .modal-overlay#modalOverlayUserData {
     }
@@ -446,31 +490,15 @@
       display: block;
     }
     .modal-user-data input {
-      width: 80%;
+      width: 90%;
       margin: 10px auto;
       text-align: center;
       display: block;
-    }
-    
-    /* Медіа-запити для адаптивності */
-    @media (max-width: 600px) {
-      #title { font-size: 1.5rem; }
-      #description { font-size: 0.9rem; }
-      .btn { font-size: 1rem; padding: 10px; }
-      .container { padding: 120px 10px 10px 10px; }
-      #orderStep1 {
-        align-items: center;
-        text-align: center;
-      }
-      #orderServicesButtons .btn span {
-        flex: unset;
-        text-align: center !important;
-        margin: 0 auto;
-      }
+      font-size: 1rem;
     }
   </style>
 </head>
-<body>
+<body class="hidden">
   <!-- Іконки месенджерів (Telegram та Viber) -->
   <div id="socialIcons">
     <a href="https://t.me/Septic24_ua"><img src="https://i.ibb.co/r24wtsvm/61-1.png" alt="Telegram"></a>
@@ -495,6 +523,7 @@
     <div class="loader-logo-wrap">
       <img src="https://i.ibb.co/3Q3LXDk/IMG-9356.png" alt="Loader Logo">
     </div>
+    <div class="loader-welcome" id="loaderWelcome">Ласкаво просимо, Гість 😊</div>
   </div>
   
   <!-- Основний контейнер -->
@@ -513,6 +542,7 @@
     <!-- Кнопки головного меню -->
     <div class="buttons">
       <button class="btn" id="btnOrder">Замовити асенізатор</button>
+      <button class="btn" id="btnMyOrders">Мої замовлення</button>
       <button class="btn" id="btnServices">Наші послуги</button>
       <button class="btn" id="btnAbout">Про нас</button>
     </div>
@@ -547,7 +577,7 @@
     </div>
   </div>
   
-  <!-- Окно Наші послуги -->
+  <!-- Модальне вікно "Наші послуги" -->
   <div class="modal-overlay" id="modalOverlayServices">
     <div class="modal" id="modalServices">
       <span class="modal-close" data-modal="modalOverlayServices">&times;</span>
@@ -561,7 +591,7 @@
     </div>
   </div>
   
-  <!-- Окно оформлення замовлення -->
+  <!-- Модальне вікно оформлення замовлення -->
   <div class="modal-overlay" id="modalOverlayOrder">
     <div class="modal" id="modalOrder">
       <span class="modal-close" data-modal="modalOverlayOrder">&times;</span>
@@ -607,7 +637,7 @@
     </div>
   </div>
   
-  <!-- Окно карти -->
+  <!-- Модальне вікно карти -->
   <div class="modal-overlay" id="modalOverlayMap">
     <div class="modal" id="modalMap">
       <span class="modal-close" data-modal="modalOverlayMap">&times;</span>
@@ -634,17 +664,26 @@
     </div>
   </div>
   
-  <!-- Окно для вводу імені та номера телефону -->
+  <!-- Модальне вікно для вводу імені та номера телефону -->
   <div class="modal-overlay" id="modalOverlayUserData">
     <div class="modal-user-data" style="max-width: 300px;" id="modalUserData">
       <h2>Введіть ваше імʼя і номер телефону</h2>
       <label for="userName">Ім'я:</label>
-      <input type="text" id="userName" placeholder="Ваше ім'я" style="margin-bottom: 10px;">
+      <input type="text" id="userName" placeholder="Ваше ім'я">
       
       <label for="userPhone">Номер телефону:</label>
-      <input type="text" id="userPhone" placeholder="+380..." style="margin-bottom: 20px;">
+      <input type="text" id="userPhone" placeholder="+380...">
       
       <button class="btn" id="confirmOrderBtn">Підтвердити замовлення</button>
+    </div>
+  </div>
+  
+  <!-- Модальне вікно історії замовлень (Мої замовлення) -->
+  <div class="modal-overlay" id="modalOverlayMyOrders">
+    <div class="modal" id="modalMyOrders">
+      <span class="modal-close" data-modal="modalOverlayMyOrders">&times;</span>
+      <h2>Історія замовлень</h2>
+      <div id="ordersHistoryList"></div>
     </div>
   </div>
   
@@ -656,6 +695,16 @@
       const params = new URLSearchParams(window.location.search);
       return params.get('user_id');
     })();
+
+    // Отримання імені користувача з Telegram WebApp (якщо доступно)
+    let tgUserName = "Гість";
+    if (typeof Telegram !== 'undefined' && Telegram.WebApp && Telegram.WebApp.initDataUnsafe && Telegram.WebApp.initDataUnsafe.user) {
+      tgUserName = Telegram.WebApp.initDataUnsafe.user.first_name;
+    }
+    // Оновлення тексту привітання під завантаженням
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('loaderWelcome').innerText = `Ласкаво просимо, ${tgUserName} 😊`;
+    });
 
     // ====================== НАСТРОЙКИ ===========================
     // Вкажіть ваш токен та ваш chat_id
@@ -670,7 +719,7 @@
     let userPhone = "";              
     let selectedOrderServiceIndex = null;
     
-    // Дані по послугам із розширеним описом
+    // Дані по послугам із розширеним описом (заміна Послуги ілососу → Викачка мулу та піску)
     const servicesData = [
       { 
         title: "Викачка вигрібних ям", 
@@ -688,9 +737,9 @@
         description: "Послуги з викачування септиків гарантують повне видалення відходів з усіх типів септиків. Працюємо акуратно та швидко. Гарантуємо чистоту та безпеку для вашого будинку чи підприємства."
       },
       { 
-        title: "Послуги ілососу", 
+        title: "Викачка мулу та піску", 
         image: "https://i.ibb.co/0jXSDFm3/uslugi-assenizatora-ukraina-3.jpg",
-        description: "Професійний ілосос для екстрених ситуацій. Гарантуємо безпечне утилізування нечистот за сучасними стандартами. Наш сервіс доступний 24/7 для екстрених викликів, забезпечуючи надійність у кожному випадку."
+        description: "Професійна викачка мулу та піску для екстрених ситуацій. Гарантуємо безпечне утилізування нечистот за сучасними стандартами. Наш сервіс доступний 24/7 для викликів, забезпечуючи надійність у кожному випадку."
       },
       { 
         title: "Викачка туалету", 
@@ -749,7 +798,13 @@
     
     let map, markerSource, mapInitialized = false;
     
+    // Завантаження orderHistory з localStorage (якщо є)
+    let orderHistory = JSON.parse(localStorage.getItem('orderHistory') || "[]");
+
     document.addEventListener('DOMContentLoaded', () => {
+      // Запобігання флешу: показати body лише після завантаження
+      document.body.classList.remove('hidden');
+      
       // Емуляція завантаження 5 секунд
       setTimeout(() => {
         document.getElementById('loader').style.display = 'none';
@@ -768,6 +823,10 @@
       document.getElementById('btnOrder').addEventListener('click', () => { 
         openModal('modalOverlayOrder'); 
         renderOrderServices(); 
+      });
+      document.getElementById('btnMyOrders').addEventListener('click', () => {
+        renderOrderHistory();
+        openModal('modalOverlayMyOrders');
       });
       
       // Закриття модалок по хресту/фону
@@ -848,7 +907,7 @@
       if (typeof Telegram !== 'undefined' && Telegram.WebApp) {
         console.log("Telegram WebApp is available!");
       } else {
-        console.warn("Telegram WebApp is not available. If opened outside Telegram, sendData() won't work.");
+        console.warn("Telegram WebApp не доступний. Якщо відкрито поза Telegram, sendData() не спрацює.");
       }
     });
     
@@ -1244,42 +1303,68 @@
               alert("Виникла помилка при надсиланні замовлення. Спробуйте пізніше.");
           });
           
-          // Відправка даних у WebAppData (щоб бот получил эти данные)
+          // Відправка даних у WebAppData (щоб бот отримав ці дані)
           if (typeof Telegram !== 'undefined' && Telegram.WebApp) {
             console.log("Sending data via Telegram.WebApp.sendData...");
             Telegram.WebApp.sendData(finalMsg);
           } else {
             console.warn("Telegram.WebApp не доступний. Дані не будуть збережені, якщо не відкрито з Telegram.");
           }
-
-          // Оновлення бонусного лічильника за допомогою localStorage
-          let bonusCounter = localStorage.getItem('bonusCounter') || 0;
-          bonusCounter = parseInt(bonusCounter) + 1;
-          if (bonusCounter > 5) { bonusCounter = 1; }
-          localStorage.setItem('bonusCounter', bonusCounter);
-          const bonusText = `Ваше замовлення: ${bonusCounter} / 5 ✅\nРухаємось до бонусу! Кожне замовлення наближає вас до ще більшої вигоди 🎯\n\n💧 На всі замовлення діє знижка 2% — бо ми цінуємо кожного клієнта.\n🌟 А вже на п’ятому замовленні — даруємо 10% знижки!\n\nНакопичуйте замовлення, а ми подбаємо про чистоту та ваш комфорт.\nSeptic24 — коли все працює чітко і з турботою 💙`;
-          if (webUserId) {
-              fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-                  method: "POST",
-                  headers: {
-                    "Content-Type": "application/json"
-                  },
-                  body: JSON.stringify({
-                      chat_id: webUserId,
-                      text: bonusText
-                  })
-              })
-              .then(response => response.json())
-              .then(data => {
-                  console.log("Bonus message sent:", data);
-              })
-              .catch(error => {
-                  console.error("Error sending bonus message:", error);
-              });
-          }
+          
+          // Збереження замовлення в локальну історію (localStorage)
+          const orderEntry = {
+            order_number: finalMsg.match(/Номер замовлення: (\d{5})/) ? RegExp.$1 : "-----",
+            details: finalMsg
+          };
+          orderHistory.push(orderEntry);
+          localStorage.setItem('orderHistory', JSON.stringify(orderHistory));
           
           resetOrderModal();
       }, 2000);
+    }
+    
+    /* Функція для рендеру історії замовлень у модальному вікні "Мої замовлення" */
+    function renderOrderHistory() {
+      const container = document.getElementById('ordersHistoryList');
+      container.innerHTML = "";
+      if (orderHistory.length === 0) {
+        container.innerHTML = "<p>Історія замовлень порожня.</p>";
+        return;
+      }
+      orderHistory.forEach((order, index) => {
+        const orderDiv = document.createElement('div');
+        orderDiv.className = 'order-item';
+        orderDiv.innerHTML = `<span>${order.details}</span>`;
+        const repeatBtn = document.createElement('button');
+        repeatBtn.className = 'order-repeat-btn';
+        repeatBtn.innerText = "Замовити";
+        repeatBtn.addEventListener('click', () => {
+          if(confirm("Повторити це замовлення?")) {
+            // Повторне надсилання замовлення (можна викликати confirmUserData або власну логіку)
+            fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify({
+                  chat_id: CHAT_ID,
+                  text: order.details
+              })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Repeated order sent:", data);
+                alert("Замовлення повторено!");
+            })
+            .catch(error => {
+                console.error("Error repeating order:", error);
+                alert("Помилка при повторенні замовлення.");
+            });
+          }
+        });
+        orderDiv.appendChild(repeatBtn);
+        container.appendChild(orderDiv);
+      });
     }
   </script>
 </body>
