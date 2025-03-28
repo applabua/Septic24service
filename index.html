@@ -134,7 +134,7 @@
       z-index: 1;
       box-shadow: 0 0 20px #80d0ff;
     }
-    /* Текст привітання під завантаженням – показується лише при першій загрузці */
+    /* Текст привітання під завантаженням */
     .loader-welcome {
       margin-top: 20px;
       font-size: 1.2rem;
@@ -152,7 +152,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: flex-start;
-      padding: 120px 20px 20px 20px;
+      padding: 20px 20px 20px 20px;  /* зменшено верхній відступ */
       box-sizing: border-box;
       text-align: center;
     }
@@ -311,7 +311,7 @@
     }
     /* Адресне поле робимо довшим і поцентрованим */
     #addressInput {
-      width: 90%;
+      width: 95%;
       margin: 0 auto;
       display: block;
     }
@@ -465,6 +465,19 @@
       margin-left: auto;
       margin-right: auto;
     }
+    
+    /* Стилі для блоку з пошуком адреси: */
+    .address-search-wrap {
+      width: 95%;
+      margin: 0 auto;
+    }
+    .address-search-wrap input[type="text"] {
+      width: 100%;
+    }
+    .address-search-wrap button {
+      display: block;
+      margin: 10px 0 0 auto;
+    }
   </style>
 </head>
 <body class="hidden">
@@ -492,7 +505,7 @@
     <div class="loader-logo-wrap">
       <img src="https://i.ibb.co/3Q3LXDk/IMG-9356.png" alt="Loader Logo">
     </div>
-    <!-- Привітання: якщо дані з Telegram доступні, виводимо first_name/username, інакше Гість -->
+    <!-- Привітання, тепер завжди показується -->
     <div class="loader-welcome" id="loaderWelcome"></div>
   </div>
   
@@ -669,18 +682,11 @@
     // Отримання імені користувача з Telegram WebApp (якщо доступно)
     let tgUserName = "Гість";
     if (typeof Telegram !== 'undefined' && Telegram.WebApp && Telegram.WebApp.initDataUnsafe && Telegram.WebApp.initDataUnsafe.user) {
-      // Використовуємо first_name, або username, якщо first_name не задано
       tgUserName = Telegram.WebApp.initDataUnsafe.user.first_name || Telegram.WebApp.initDataUnsafe.user.username || "Гість";
     }
-    // Показ привітання лише при першій загрузці
+    // Встановлюємо привітання без умови localStorage, щоб завжди показувалось при завантаженні
     document.addEventListener('DOMContentLoaded', () => {
-      if (!localStorage.getItem('hasLoaded')) {
-        document.getElementById('loaderWelcome').innerText = `Ласкаво просимо, ${tgUserName} 😊`;
-        localStorage.setItem('hasLoaded', 'true');
-      } else {
-        document.getElementById('loaderWelcome').style.display = 'none';
-      }
-      // Показати body після завантаження
+      document.getElementById('loaderWelcome').innerText = `Ласкаво просимо, ${tgUserName} 😊`;
       document.body.classList.remove('hidden');
     });
 
@@ -1234,6 +1240,7 @@
           
           // Формування повідомлення для Telegram (адміністратору)
           let finalMsg = "Нове замовлення від Septic24:\n";
+          finalMsg += "Номер замовлення: " + getNextOrderNumber() + "\n";
           finalMsg += "Область: " + selectedRegion + "\n";
           finalMsg += "Адреса: " + userAddress + "\n";
           finalMsg += "Ім'я: " + userName + "\n";
@@ -1266,8 +1273,7 @@
           .then(response => response.json())
           .then(data => {
               console.log("Order sent to Telegram:", data);
-              // Повідомлення користувачу з бонусним текстом.
-              alert("Ваше замовлення: " + bonusDisplay() + "\nРухаємось до бонусу! Кожне замовлення наближає вас до ще більшої вигоди 🎯\n\n💧 На всі замовлення діє знижка 2% — бо ми цінуємо кожного клієнта.\n🌟 А вже на п’ятому замовленні — даруємо 10% знижки!\n\nНакопичуйте замовлення, а ми подбаємо про чистоту та ваш комфорт.\nSeptic24 — коли все працює чітко і з турботою 💙");
+              alert("Дякуємо, ваше замовлення сформовано, очікуйте на дзвінок!");
           })
           .catch(error => {
               console.error("Error sending order to Telegram:", error);
@@ -1279,7 +1285,7 @@
             console.log("Sending data via Telegram.WebApp.sendData...");
             Telegram.WebApp.sendData(finalMsg);
           } else {
-            console.warn("Telegram.WebApp не доступний. Дані не будуть збережені, якщо не відкрито з Telegram.");
+            console.warn("Telegram WebApp не доступний. Дані не будуть збережені, якщо не відкрито з Telegram.");
           }
           
           // Збереження замовлення в локальну історію (localStorage)
@@ -1292,6 +1298,14 @@
           
           resetOrderModal();
       }, 2000);
+    }
+    
+    // Функція для генерації номера замовлення (використовується і в bot.js, але тут для відображення)
+    let orderCounter = 1;
+    function getNextOrderNumber() {
+      let numberStr = "№" + orderCounter.toString().padStart(5, "0");
+      orderCounter++;
+      return numberStr;
     }
     
     /* Функція для рендеру історії замовлень у модальному вікні "Мої замовлення" */
@@ -1353,14 +1367,6 @@
         }
       });
       container.appendChild(deleteHistoryBtn);
-    }
-    
-    // Бонус: функція для відображення бонусного номера замовлення в циклі 1-5.
-    let bonusCounter = 1;
-    function bonusDisplay() {
-      let current = bonusCounter;
-      bonusCounter = (bonusCounter % 5) + 1;
-      return current + " / 5 ✅";
     }
   </script>
 </body>
