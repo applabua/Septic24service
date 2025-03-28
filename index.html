@@ -167,7 +167,7 @@
       width: 100%;
       height: auto;
     }
-    <!-- Змінено текст: "вигребних" → "вигрібних" -->
+    /* Змінено текст: "вигребних" → "вигрібних" */
     #description {
       font-size: 1rem;
       line-height: 1.4;
@@ -1215,22 +1215,6 @@
             finalMsg += "UserID: " + webUserId + "\n";
           }
           
-          // Запис замовлення у файл orders.txt (збереження в папці з ботом)
-          fetch("/save_order", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ order: finalMsg })
-          })
-          .then(response => response.json())
-          .then(data => {
-            console.log("Order saved:", data);
-          })
-          .catch(error => {
-            console.error("Error saving order:", error);
-          });
-          
           // Відправка замовлення адміністратору через Telegram
           fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
               method: "POST",
@@ -1252,6 +1236,11 @@
               alert("Виникла помилка при надсиланні замовлення. Спробуйте пізніше.");
           });
           
+          // **ОНОВЛЕНО**: надсилаємо дані в Telegram WebApp, щоб бот зберіг їх у orders.txt
+          if (typeof Telegram !== 'undefined' && Telegram.WebApp) {
+            Telegram.WebApp.sendData(finalMsg);
+          }
+
           // Оновлення бонусного лічильника за допомогою localStorage
           let bonusCounter = localStorage.getItem('bonusCounter') || 0;
           bonusCounter = parseInt(bonusCounter) + 1;
