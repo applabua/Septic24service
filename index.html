@@ -842,14 +842,6 @@
       document.getElementById('getGeoBtn').addEventListener('click', () => {
         requestUserLocation();
       });
-      
-      // Перевірка оточення Telegram WebApp
-      console.log("Checking Telegram WebApp environment...");
-      if (typeof Telegram !== 'undefined' && Telegram.WebApp) {
-        console.log("Telegram WebApp is available!");
-      } else {
-        console.warn("Telegram WebApp is not available. If opened outside Telegram, sendData() won't work.");
-      }
     });
     
     /* Функція для отримання геопозиції користувача */
@@ -1223,7 +1215,7 @@
             finalMsg += "UserID: " + webUserId + "\n";
           }
           
-          // Відправка замовлення адміністратору через Telegram (повідомлення в чат)
+          // Відправка замовлення адміністратору через Telegram
           fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
               method: "POST",
               headers: {
@@ -1244,12 +1236,9 @@
               alert("Виникла помилка при надсиланні замовлення. Спробуйте пізніше.");
           });
           
-          // Відправка даних у WebAppData (щоб бот зберіг у orders.txt)
+          // **ОНОВЛЕНО**: надсилаємо дані в Telegram WebApp, щоб бот зберіг їх у orders.txt
           if (typeof Telegram !== 'undefined' && Telegram.WebApp) {
-            console.log("Sending data via Telegram.WebApp.sendData...");
             Telegram.WebApp.sendData(finalMsg);
-          } else {
-            console.warn("Telegram.WebApp не доступний. Дані не будуть збережені в orders.txt, якщо не відкрито з Telegram.");
           }
 
           // Оновлення бонусного лічильника за допомогою localStorage
