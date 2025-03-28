@@ -309,6 +309,19 @@
       margin: 0 auto;
       display: block;
     }
+    /* Адресне поле робимо довшим і поцентрованим */
+    #addressInput {
+      width: 80%;
+      margin: 0 auto;
+      display: block;
+    }
+    
+    /* Стилі для повзунків (діапазон) */
+    input[type="range"] {
+      width: 90%;
+      margin: 0 auto;
+      display: block;
+    }
     
     /* Про нас */
     #modalAbout {
@@ -784,6 +797,7 @@
       });
       document.getElementById('btnOrder').addEventListener('click', () => { 
         openModal('modalOverlayOrder'); 
+        resetOrderModal();
         renderOrderServices(); 
       });
       document.getElementById('btnMyOrders').addEventListener('click', () => {
@@ -963,7 +977,7 @@
         const card = document.createElement('div');
         card.className = 'service-card';
         // Замінюємо "вигребних" на "вигрібних" у заголовках
-        card.innerHTML = `
+        card.innerHTML = ` 
           <h3>${service.title.replace("вигребних", "вигрібних")}</h3>
           <img src="${service.image}" alt="${service.title}">
           <p>${service.description}</p>
@@ -1283,47 +1297,59 @@
       container.innerHTML = "";
       if (orderHistory.length === 0) {
         container.innerHTML = "<p>Історія замовлень порожня.</p>";
-        return;
-      }
-      orderHistory.forEach((order, index) => {
-        const orderDiv = document.createElement('div');
-        orderDiv.className = 'order-item';
-        // Видаляємо посилання з тексту замовлення
-        let orderText = order.details.replace(/OpenStreetMap:.*\n?/, "");
-        const textElem = document.createElement('p');
-        textElem.className = 'order-text';
-        textElem.innerText = orderText;
-        orderDiv.appendChild(textElem);
-        const repeatBtn = document.createElement('button');
-        repeatBtn.className = 'order-repeat-btn';
-        repeatBtn.innerText = "Замовити";
-        repeatBtn.addEventListener('click', () => {
-          if(confirm("Повторити це замовлення?")) {
-            // Повторне надсилання замовлення
-            fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json"
-              },
-              body: JSON.stringify({
-                  chat_id: CHAT_ID,
-                  text: order.details
+      } else {
+        orderHistory.forEach((order, index) => {
+          const orderDiv = document.createElement('div');
+          orderDiv.className = 'order-item';
+          // Видаляємо посилання з тексту замовлення
+          let orderText = order.details.replace(/OpenStreetMap:.*\n?/, "");
+          const textElem = document.createElement('p');
+          textElem.className = 'order-text';
+          textElem.innerText = orderText;
+          orderDiv.appendChild(textElem);
+          const repeatBtn = document.createElement('button');
+          repeatBtn.className = 'order-repeat-btn';
+          repeatBtn.innerText = "Замовити";
+          repeatBtn.addEventListener('click', () => {
+            if(confirm("Повторити це замовлення?")) {
+              // Повторне надсилання замовлення
+              fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    chat_id: CHAT_ID,
+                    text: order.details
+                })
               })
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log("Repeated order sent:", data);
-                alert("Замовлення повторено!");
-            })
-            .catch(error => {
-                console.error("Error repeating order:", error);
-                alert("Помилка при повторенні замовлення.");
-            });
-          }
+              .then(response => response.json())
+              .then(data => {
+                  console.log("Repeated order sent:", data);
+                  alert("Замовлення повторено!");
+              })
+              .catch(error => {
+                  console.error("Error repeating order:", error);
+                  alert("Помилка при повторенні замовлення.");
+              });
+            }
+          });
+          orderDiv.appendChild(repeatBtn);
+          container.appendChild(orderDiv);
         });
-        orderDiv.appendChild(repeatBtn);
-        container.appendChild(orderDiv);
+      }
+      // Додаємо кнопку "Видалити історію"
+      const deleteHistoryBtn = document.createElement('button');
+      deleteHistoryBtn.className = 'btn';
+      deleteHistoryBtn.innerText = "Видалити історію";
+      deleteHistoryBtn.addEventListener('click', () => {
+        if(confirm("Ви впевнені, що хочете видалити історію замовлень?")) {
+          orderHistory = [];
+          localStorage.setItem('orderHistory', JSON.stringify(orderHistory));
+          renderOrderHistory();
+        }
       });
+      container.appendChild(deleteHistoryBtn);
     }
   </script>
 </body>
