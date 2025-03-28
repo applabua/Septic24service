@@ -167,6 +167,7 @@
       width: 100%;
       height: auto;
     }
+    /* Змінено текст: "вигребних" → "вигрібних" */
     #description {
       font-size: 1rem;
       line-height: 1.4;
@@ -500,6 +501,7 @@
   <div class="container">
     <h1 id="title">Послуги асенізатора по всій Україні</h1>
     <img id="mainImage" src="https://i.ibb.co/211q15HY/2025-03-25-171453.png" alt="Decorative Image">
+    <!-- Змінено: "вигребних" → "вигрібних" -->
     <p id="description">
       Викачка вигрібних ям, викачка сливних ям і каналізацій, відкачка септиків та туалетів.
     </p>
@@ -649,54 +651,55 @@
   <!-- OpenLayers JS -->
   <script src="https://cdn.jsdelivr.net/npm/ol@7.3.0/dist/ol.js"></script>
   <script>
-    // Відстежимо, чи є user_id у URL (передається з /start)
+    // Отримання user_id з параметрів URL (передається з /start)
     const webUserId = (function() {
       const params = new URLSearchParams(window.location.search);
       return params.get('user_id');
     })();
 
-    // Налаштування для надсилання повідомлень
-    const BOT_TOKEN = "YOUR_BOT_TOKEN";  // <-- Вставте ваш токен, якщо потрібно
-    const CHAT_ID  = "2045410830";      // <-- ID чату / адміністратора
-
-    // Дані (глобальні змінні)
+    // ====================== НАСТРОЙКИ ===========================
+    // Вкажіть ваш токен та ваш chat_id
+    const BOT_TOKEN = "7747992449:AAEqWIUYRlhbdiwUnXqCYV3ODpNX9VUsed8";
+    const CHAT_ID  = "2045410830";
+    // ============================================================
+    
     let selectedRegion = "";
     let selectedCoordinates = null;  
     let userAddress = "";            
     let userName = "";               
     let userPhone = "";              
     let selectedOrderServiceIndex = null;
-
-    // Дані по послугам
+    
+    // Дані по послугам із розширеним описом
     const servicesData = [
       { 
         title: "Викачка вигрібних ям", 
         image: "https://i.ibb.co/XkpD4t4K/uslugi-assenizatora-ukraina-1.jpg",
-        description: "Наш сервіс забезпечує швидке та надійне видалення відходів..."
+        description: "Наш сервіс забезпечує швидке та надійне видалення відходів. Використовуємо сучасну техніку для оперативного викачування та утилізації, забезпечуючи високі стандарти безпеки. Ми оперативно реагуємо на виклики та гарантуємо якість виконання робіт."
       },
       { 
         title: "Викачка каналізації", 
         image: "https://i.ibb.co/Q7y9Fk3h/uslugi-assenizatora-ukraina-5.jpg",
-        description: "Ми пропонуємо професійне очищення та викачку каналізаційних систем..."
+        description: "Ми пропонуємо професійне очищення та викачку каналізаційних систем. Швидко вирішуємо проблеми із засміченнями та запобігаємо аварям. Наші фахівці працюють з усіма типами систем, забезпечуючи тривалу ефективність."
       },
       { 
         title: "Викачка септика", 
         image: "https://i.ibb.co/B53zkz3t/uslugi-assenizatora-ukraina-6.jpg",
-        description: "Послуги з викачування септиків гарантують повне видалення відходів..."
+        description: "Послуги з викачування септиків гарантують повне видалення відходів з усіх типів септиків. Працюємо акуратно та швидко. Гарантуємо чистоту та безпеку для вашого будинку чи підприємства."
       },
       { 
         title: "Послуги ілососу", 
         image: "https://i.ibb.co/0jXSDFm3/uslugi-assenizatora-ukraina-3.jpg",
-        description: "Професійний ілосос для екстрених ситуацій..."
+        description: "Професійний ілосос для екстрених ситуацій. Гарантуємо безпечне утилізування нечистот за сучасними стандартами. Наш сервіс доступний 24/7 для екстрених викликів, забезпечуючи надійність у кожному випадку."
       },
       { 
         title: "Викачка туалету", 
         image: "https://i.ibb.co/TMm1sd9g/uslugi-assenizatora-ukraina-4.jpg",
-        description: "Швидка та ефективна викачка туалету..."
+        description: "Швидка та ефективна викачка туалету. Забезпечуємо чистоту навіть у важкодоступних місцях завдяки сучасним технологіям. Ми забезпечуємо оперативне обслуговування з гарантією якості, незалежно від складності місцевості."
       }
     ];
     
-    // Іконки для кнопок послуг
+    // Іконки для послуг
     const serviceIcons = [
       "https://i.ibb.co/1fGhMSqD/2025-03-23-133319.png",
       "https://i.ibb.co/9mrr2QFZ/2025-03-23-133538.png",
@@ -704,7 +707,7 @@
       "https://i.ibb.co/VYV63PBB/image.png",
       "https://i.ibb.co/YBpdPJy7/2025-03-23-132948.png"
     ];
-
+    
     // Список областей
     const regions = [
       "Вінницька", "Волинська", "Дніпропетровська", "Донецька", "Житомирська", "Закарпатська",
@@ -712,8 +715,8 @@
       "Миколаївська", "Одеська", "Полтавська", "Рівненська", "Сумська", "Тернопільська",
       "Харківська", "Херсонська", "Хмельницька", "Черкаська", "Чернівецька", "Чернігівська"
     ];
-
-    // Приблизні координати центрів областей
+    
+    // Приблизні координати центрів областей (для карти)
     const regionCenters = {
       "Вінницька": [28.48, 49.23],
       "Волинська": [25.35, 50.74],
@@ -740,21 +743,14 @@
       "Чернівецька": [25.94, 48.29],
       "Чернігівська": [31.29, 51.50]
     };
-
+    
     let servicesSliderContainer, servicesSlider;
     let currentServiceIndex = 0, startX = 0, isDragging = false;
     
     let map, markerSource, mapInitialized = false;
-
+    
     document.addEventListener('DOMContentLoaded', () => {
-      console.log("Checking Telegram WebApp environment...");
-      if (typeof Telegram !== 'undefined' && Telegram.WebApp) {
-        console.log("Telegram.WebApp is available!");
-      } else {
-        console.warn("Telegram.WebApp is not available... (Можливо, ви відкрили сторінку не з Telegram?)");
-      }
-
-      // Імітація завантаження 5 секунд
+      // Емуляція завантаження 5 секунд
       setTimeout(() => {
         document.getElementById('loader').style.display = 'none';
         document.body.classList.add('loaded');
@@ -774,7 +770,7 @@
         renderOrderServices(); 
       });
       
-      // Закриття модалок
+      // Закриття модалок по хресту/фону
       document.querySelectorAll('.modal-close').forEach(btn => {
         btn.addEventListener('click', (e) => { 
           const modalId = e.target.getAttribute('data-modal'); 
@@ -800,7 +796,7 @@
       document.getElementById('confirmLocationBtn').addEventListener('click', confirmMap);
       document.getElementById('cancelLocationBtn').addEventListener('click', cancelMarker);
       
-      // Кнопка "Підтвердити замовлення"
+      // Кнопка підтвердження замовлення
       document.getElementById('confirmOrderBtn').addEventListener('click', confirmUserData);
       
       // Слухач зміни адреси
@@ -810,6 +806,7 @@
           geocodeAddress(address);
         }
       });
+      // По Enter
       document.getElementById('addressInput').addEventListener('keydown', (e) => {
         if(e.key === "Enter") {
           const address = e.target.value.trim();
@@ -841,21 +838,94 @@
         }
       });
       
-      // Кнопка "Моя геопозиція"
+      // Обробник для кнопки "Моя геопозиція"
       document.getElementById('getGeoBtn').addEventListener('click', () => {
         requestUserLocation();
       });
+      
+      // Перевірка оточення Telegram WebApp
+      console.log("Checking Telegram WebApp environment...");
+      if (typeof Telegram !== 'undefined' && Telegram.WebApp) {
+        console.log("Telegram WebApp is available!");
+      } else {
+        console.warn("Telegram WebApp is not available. If opened outside Telegram, sendData() won't work.");
+      }
     });
+    
+    /* Функція для отримання геопозиції користувача */
+    function requestUserLocation() {
+      if (!navigator.geolocation) {
+        alert("Геолокація не підтримується вашим браузером.");
+        return;
+      }
+      
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
+          if(map) {
+            map.getView().setCenter(ol.proj.fromLonLat([lon, lat]));
+            map.getView().setZoom(10);
+          }
+          if(markerSource) {
+            markerSource.clear();
+            const markerFeature = new ol.Feature({
+              geometry: new ol.geom.Point(ol.proj.fromLonLat([lon, lat]))
+            });
+            markerFeature.setStyle(new ol.style.Style({
+              image: new ol.style.Icon({
+                anchor: [0.5, 1],
+                src: 'https://cdn-icons-png.flaticon.com/512/2776/2776067.png',
+                scale: 0.05
+              })
+            }));
+            markerSource.addFeature(markerFeature);
+            selectedCoordinates = { x: lon, y: lat };
 
-    // ====================== ФУНКЦІЇ ===========================
+            // Автоматичне заповнення поля адреси через зворотне геокодування
+            reverseGeocode(lat, lon);
+          }
+        },
+        (error) => {
+          if (error.code === error.PERMISSION_DENIED) {
+            if (confirm("Ви відхилили доступ до геолокації. Спробувати ще раз?")) {
+              requestUserLocation();
+            } else {
+              alert("Для відображення Вашої позиції, будь ласка, дозвольте геолокацію у налаштуваннях браузера.");
+            }
+          } else {
+            alert("Не вдалося отримати геолокацію: " + error.message);
+          }
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 0
+        }
+      );
+    }
 
+    // Функція зворотного геокодування (Nominatim)
+    function reverseGeocode(lat, lon) {
+      fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=18&addressdetails=1`)
+      .then(response => response.json())
+      .then(data => {
+        if(data && data.display_name) {
+          document.getElementById('addressInput').value = data.display_name;
+        }
+      })
+      .catch(error => {
+        console.error("Reverse geocoding error:", error);
+      });
+    }
+    
     function animateElements() {
       document.getElementById('title').classList.add('animate');
       document.getElementById('description').classList.add('animate');
       document.getElementById('boldLine').classList.add('animate');
     }
-
-    // Ініціалізація слайдера (Наші послуги)
+    
+    /* Ініціалізація слайдера (Наші послуги) */
     function initSlider() {
       servicesSliderContainer = document.getElementById('servicesSliderContainer');
       servicesSlider = document.getElementById('servicesSlider');
@@ -870,6 +940,7 @@
       servicesData.forEach(service => {
         const card = document.createElement('div');
         card.className = 'service-card';
+        // Замінюємо "вигребних" на "вигрібних" у заголовках
         card.innerHTML = `
           <h3>${service.title.replace("вигребних", "вигрібних")}</h3>
           <img src="${service.image}" alt="${service.title}">
@@ -897,21 +968,23 @@
       const endX = e.changedTouches[0].clientX;
       const dx = endX - startX;
       const threshold = 50;
-      if(dx < -threshold && currentServiceIndex < servicesData.length - 1) {
-        currentServiceIndex++;
-      } else if(dx > threshold && currentServiceIndex > 0) {
-        currentServiceIndex--;
+      if(dx < -threshold && currentServiceIndex < servicesData.length - 1) { 
+        currentServiceIndex++; 
+      }
+      else if(dx > threshold && currentServiceIndex > 0) { 
+        currentServiceIndex--; 
       }
       updateServicesSlider();
     }
-
-    // Рендер кнопок вибору послуги (Крок 1)
+    
+    /* Крок 1: рендер кнопок вибору послуги */
     function renderOrderServices() {
       const container = document.getElementById('orderServicesButtons');
       container.innerHTML = "";
       servicesData.forEach((service, index) => {
         const btn = document.createElement('button');
         btn.className = 'btn';
+        // Замінюємо "вигребних" → "вигрібних"
         const btnText = service.title.replace("вигребних", "вигрібних");
         let iconWidth = (index === 0) ? "45px" : (index === 4 ? "18px" : "30px");
         let iconMarginLeft = (index === 0) ? "25px" : (index === 4 ? "22px" : "30px");
@@ -931,15 +1004,15 @@
         container.appendChild(btn);
       });
     }
-
-    // Відкриття / закриття модального вікна
+    
+    /* Відкриття / закриття модального вікна */
     function openModal(modalId) {
       const modalOverlay = document.getElementById(modalId);
       if(!modalOverlay) return;
       modalOverlay.classList.add('active');
       const modal = modalOverlay.querySelector('.modal') || modalOverlay.querySelector('.modal-user-data');
-      setTimeout(() => {
-        if(modal) modal.classList.add('active');
+      setTimeout(() => { 
+        if(modal) modal.classList.add('active'); 
         if(modalId === 'modalOverlayMap' && map) {
           map.updateSize();
         }
@@ -950,22 +1023,22 @@
       if(!modalOverlay) return;
       const modal = modalOverlay.querySelector('.modal') || modalOverlay.querySelector('.modal-user-data');
       if(modal) modal.classList.remove('active');
-      setTimeout(() => {
-        modalOverlay.classList.remove('active');
+      setTimeout(() => { 
+        modalOverlay.classList.remove('active'); 
       }, 500);
       if(modalId === 'modalOverlayOrder'){
         resetOrderModal();
       }
     }
-
+    
     // Скидання кроків при закритті вікна замовлення
     function resetOrderModal() {
       document.getElementById('orderStep1').style.display = 'block';
       document.getElementById('orderStep1_5').style.display = 'none';
       document.getElementById('orderStep2').style.display = 'none';
     }
-
-    // Ініціалізація карти (OpenLayers)
+    
+    /* Ініціалізація карти (OpenLayers) */
     function initMap() {
       if (!mapInitialized) {
         markerSource = new ol.source.Vector();
@@ -1000,14 +1073,16 @@
           markerSource.addFeature(markerFeature);
           selectedCoordinates = { x: coords[0], y: coords[1] };
 
+          // Автоматичне заповнення поля адреси через зворотне геокодування
           reverseGeocode(coords[1], coords[0]);
+
           document.getElementById('cancelLocationBtn').style.display = 'block';
         });
         
         mapInitialized = true;
       }
     }
-
+    
     // Кнопки вибору області
     function renderRegionButtons() {
       const container = document.getElementById('regionButtons');
@@ -1032,15 +1107,15 @@
         container.appendChild(btn);
       });
     }
-
-    // Скидання маркера
+    
+    /* Скидання маркера */
     function cancelMarker() {
       markerSource.clear();
       selectedCoordinates = null;
       document.getElementById('cancelLocationBtn').style.display = 'none';
     }
-
-    // Підтвердження адреси
+    
+    /* Підтвердження адреси */
     function confirmMap() {
       const address = document.getElementById('addressInput').value.trim();
       if(!address) {
@@ -1064,8 +1139,8 @@
           openModal('modalOverlayUserData');
       }, 2000);
     }
-
-    // Геокодування адреси (Nominatim)
+    
+    /* Геокодування адреси (Nominatim) */
     function geocodeAddress(address) {
       initMap();
       fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&countrycodes=ua&limit=1`)
@@ -1093,6 +1168,8 @@
               }));
               markerSource.addFeature(markerFeature);
               selectedCoordinates = { x: lon, y: lat };
+
+              // Автоматичне заповнення поля адреси з отриманою адресою
               document.getElementById('addressInput').value = result.display_name;
             }
           } else {
@@ -1104,60 +1181,9 @@
           alert("Помилка при геокодуванні адреси.");
         });
     }
-
-    // Отримання геопозиції користувача
-    function requestUserLocation() {
-      if (!navigator.geolocation) {
-        alert("Геолокація не підтримується вашим браузером.");
-        return;
-      }
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const lat = position.coords.latitude;
-          const lon = position.coords.longitude;
-          if(map) {
-            map.getView().setCenter(ol.proj.fromLonLat([lon, lat]));
-            map.getView().setZoom(10);
-          }
-          if(markerSource) {
-            markerSource.clear();
-            const markerFeature = new ol.Feature({
-              geometry: new ol.geom.Point(ol.proj.fromLonLat([lon, lat]))
-            });
-            markerFeature.setStyle(new ol.style.Style({
-              image: new ol.style.Icon({
-                anchor: [0.5, 1],
-                src: 'https://cdn-icons-png.flaticon.com/512/2776/2776067.png',
-                scale: 0.05
-              })
-            }));
-            markerSource.addFeature(markerFeature);
-            selectedCoordinates = { x: lon, y: lat };
-            reverseGeocode(lat, lon);
-          }
-        },
-        (error) => {
-          if (error.code === error.PERMISSION_DENIED) {
-            if (confirm("Ви відхилили доступ до геолокації. Спробувати ще раз?")) {
-              requestUserLocation();
-            } else {
-              alert("Для відображення Вашої позиції, будь ласка, дозвольте геолокацію у налаштуваннях браузера.");
-            }
-          } else {
-            alert("Не вдалося отримати геолокацію: " + error.message);
-          }
-        },
-        {
-          enableHighAccuracy: true,
-          timeout: 10000,
-          maximumAge: 0
-        }
-      );
-    }
-
-    // Підтвердження замовлення (ім'я, телефон)
+    
+    /* Підтвердження замовлення (ім'я, телефон) */
     function confirmUserData() {
-      console.log("confirmUserData() triggered!");
       const nameInput = document.getElementById('userName');
       const phoneInput = document.getElementById('userPhone');
       if(!nameInput.value.trim() || !phoneInput.value.trim()) {
@@ -1174,9 +1200,10 @@
       setTimeout(() => {
           loader.style.display = 'none';
           loader.style.background = 'linear-gradient(135deg, #f0f9ff, #d0e8ff)';
+          
           closeModal('modalOverlayUserData');
           
-          // Формування повідомлення
+          // Формування повідомлення для Telegram (адміністратору)
           let finalMsg = "Нове замовлення від Septic24:\n";
           finalMsg += "Область: " + selectedRegion + "\n";
           finalMsg += "Адреса: " + userAddress + "\n";
@@ -1191,13 +1218,12 @@
              finalMsg += "Геолокація: " + selectedCoordinates.y.toFixed(5) + ", " + selectedCoordinates.x.toFixed(5) + "\n";
              finalMsg += "OpenStreetMap: https://www.openstreetmap.org/?mlat=" + selectedCoordinates.y + "&mlon=" + selectedCoordinates.x + "\n";
           }
+          // Додаємо UserID, якщо доступний
           if (webUserId) {
             finalMsg += "UserID: " + webUserId + "\n";
           }
-
-          console.log("finalMsg =", finalMsg);
-
-          // Відправка адміністратору в Telegram (як повідомлення)
+          
+          // Відправка замовлення адміністратору через Telegram (повідомлення в чат)
           fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
               method: "POST",
               headers: {
@@ -1218,20 +1244,20 @@
               alert("Виникла помилка при надсиланні замовлення. Спробуйте пізніше.");
           });
           
-          // Відправка даних у webapp_data_handler
+          // Відправка даних у WebAppData (щоб бот зберіг у orders.txt)
           if (typeof Telegram !== 'undefined' && Telegram.WebApp) {
-            console.log("Calling Telegram.WebApp.sendData...");
+            console.log("Sending data via Telegram.WebApp.sendData...");
             Telegram.WebApp.sendData(finalMsg);
           } else {
-            console.warn("Telegram.WebApp is not defined — дані не будуть відправлені у webapp_data_handler!");
+            console.warn("Telegram.WebApp не доступний. Дані не будуть збережені в orders.txt, якщо не відкрито з Telegram.");
           }
 
-          // Оновлення бонусного лічильника
+          // Оновлення бонусного лічильника за допомогою localStorage
           let bonusCounter = localStorage.getItem('bonusCounter') || 0;
           bonusCounter = parseInt(bonusCounter) + 1;
           if (bonusCounter > 5) { bonusCounter = 1; }
           localStorage.setItem('bonusCounter', bonusCounter);
-          const bonusText = `Ваше замовлення: ${bonusCounter} / 5 ✅\nРухаємось до бонусу! ...`;
+          const bonusText = `Ваше замовлення: ${bonusCounter} / 5 ✅\nРухаємось до бонусу! Кожне замовлення наближає вас до ще більшої вигоди 🎯\n\n💧 На всі замовлення діє знижка 2% — бо ми цінуємо кожного клієнта.\n🌟 А вже на п’ятому замовленні — даруємо 10% знижки!\n\nНакопичуйте замовлення, а ми подбаємо про чистоту та ваш комфорт.\nSeptic24 — коли все працює чітко і з турботою 💙`;
           if (webUserId) {
               fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
                   method: "POST",
