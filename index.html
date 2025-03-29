@@ -131,6 +131,12 @@
       z-index: 1;
       box-shadow: 0 0 20px #80d0ff;
     }
+    /* Текст під завантажувачем */
+    .loader p {
+      margin-top: 10px;
+      font-weight: 700;
+      color: #002050;
+    }
     
     /* Основний контейнер */
     .container {
@@ -410,6 +416,24 @@
       margin-top: 10px;
     }
 
+    /* Збільшений input для адреси */
+    #addressInput {
+      width: 90%;
+      padding: 10px;
+      font-size: 1.1rem;
+    }
+
+    /* Окно для вводу імені та номера телефону – збільшені поля з зеленим тонким контуром */
+    .modal-user-data input {
+      width: 90%;
+      padding: 10px;
+      font-size: 1.1rem;
+      border: 1px solid green;
+      margin: 10px auto;
+      text-align: center;
+      display: block;
+    }
+    
     /* Окно для вводу імені та номера телефону */
     .modal-overlay#modalOverlayUserData {
     }
@@ -445,11 +469,11 @@
       text-align: left;
       display: block;
     }
-    .modal-user-data input {
-      width: 80%;
-      margin: 10px auto;
+    
+    /* Нове модальне вікно для "Мої замовлення" */
+    #modalMyOrders {
+      max-width: 320px;
       text-align: center;
-      display: block;
     }
     
     /* Медіа-запити для адаптивності */
@@ -495,6 +519,7 @@
     <div class="loader-logo-wrap">
       <img src="https://i.ibb.co/3Q3LXDk/IMG-9356.png" alt="Loader Logo">
     </div>
+    <p>Сервіс каналізаційних послуг</p>
   </div>
   
   <!-- Основний контейнер -->
@@ -513,6 +538,7 @@
     <!-- Кнопки головного меню -->
     <div class="buttons">
       <button class="btn" id="btnOrder">Замовити асенізатор</button>
+      <button class="btn" id="btnMyOrders">Мої замовлення</button>
       <button class="btn" id="btnServices">Наші послуги</button>
       <button class="btn" id="btnAbout">Про нас</button>
     </div>
@@ -639,12 +665,21 @@
     <div class="modal-user-data" style="max-width: 300px;" id="modalUserData">
       <h2>Введіть ваше імʼя і номер телефону</h2>
       <label for="userName">Ім'я:</label>
-      <input type="text" id="userName" placeholder="Ваше ім'я" style="margin-bottom: 10px;">
+      <input type="text" id="userName" placeholder="Ваше ім'я">
       
       <label for="userPhone">Номер телефону:</label>
-      <input type="text" id="userPhone" placeholder="+380..." style="margin-bottom: 20px;">
+      <input type="text" id="userPhone" placeholder="+380...">
       
       <button class="btn" id="confirmOrderBtn">Підтвердити замовлення</button>
+    </div>
+  </div>
+  
+  <!-- Нове модальне вікно для "Мої замовлення" -->
+  <div class="modal-overlay" id="modalOverlayMyOrders">
+    <div class="modal" id="modalMyOrders">
+      <span class="modal-close" data-modal="modalOverlayMyOrders">&times;</span>
+      <h2>Мої замовлення</h2>
+      <div id="myOrdersContainer" style="max-height: 400px; overflow-y: auto; margin-top: 10px;"></div>
     </div>
   </div>
   
@@ -688,9 +723,9 @@
         description: "Послуги з викачування септиків гарантують повне видалення відходів з усіх типів септиків. Працюємо акуратно та швидко. Гарантуємо чистоту та безпеку для вашого будинку чи підприємства."
       },
       { 
-        title: "Послуги ілососу", 
+        title: "Викачка мулу та піску", 
         image: "https://i.ibb.co/0jXSDFm3/uslugi-assenizatora-ukraina-3.jpg",
-        description: "Професійний ілосос для екстрених ситуацій. Гарантуємо безпечне утилізування нечистот за сучасними стандартами. Наш сервіс доступний 24/7 для екстрених викликів, забезпечуючи надійність у кожному випадку."
+        description: "Професійна викачка мулу та піску для екстрених ситуацій. Гарантуємо безпечне утилізування за сучасними стандартами. Наш сервіс доступний 24/7 для екстрених викликів."
       },
       { 
         title: "Викачка туалету", 
@@ -768,6 +803,10 @@
       document.getElementById('btnOrder').addEventListener('click', () => { 
         openModal('modalOverlayOrder'); 
         renderOrderServices(); 
+      });
+      document.getElementById('btnMyOrders').addEventListener('click', () => {
+        openModal('modalOverlayMyOrders');
+        renderMyOrders();
       });
       
       // Закриття модалок по хресту/фону
@@ -1252,6 +1291,11 @@
               alert("Виникла помилка при надсиланні замовлення. Спробуйте пізніше.");
           });
           
+          // Збереження замовлення в localStorage для "Мої замовлення"
+          let orders = JSON.parse(localStorage.getItem('userOrders') || '[]');
+          orders.push(finalMsg);
+          localStorage.setItem('userOrders', JSON.stringify(orders));
+          
           // Оновлення бонусного лічильника за допомогою localStorage
           let bonusCounter = localStorage.getItem('bonusCounter') || 0;
           bonusCounter = parseInt(bonusCounter) + 1;
@@ -1280,6 +1324,65 @@
           
           resetOrderModal();
       }, 2000);
+    }
+    
+    // Функція для рендеру історії замовлень у модальному вікні "Мої замовлення"
+    function renderMyOrders() {
+      const container = document.getElementById('myOrdersContainer');
+      container.innerHTML = "";
+      let orders = JSON.parse(localStorage.getItem('userOrders') || '[]');
+      if(orders.length === 0) {
+        container.innerHTML = "<p>Замовлення відсутні.</p>";
+        return;
+      }
+      orders.forEach((order, index) => {
+        // Видаляємо рядки з геолокацією та посиланням OpenStreetMap
+        let filteredOrder = order.split("\n").filter(line => 
+          !line.startsWith("Геолокація:") && !line.startsWith("OpenStreetMap:")
+        ).join("\n");
+        const orderDiv = document.createElement('div');
+        orderDiv.style.border = "1px solid #ccc";
+        orderDiv.style.padding = "10px";
+        orderDiv.style.marginBottom = "10px";
+        orderDiv.style.fontSize = "0.9rem";
+        orderDiv.style.whiteSpace = "pre-wrap";
+        orderDiv.textContent = filteredOrder;
+        
+        const repeatBtn = document.createElement('button');
+        repeatBtn.textContent = "Повторно замовити";
+        repeatBtn.style.marginTop = "5px";
+        repeatBtn.style.fontSize = "0.9rem";
+        repeatBtn.className = "btn";
+        repeatBtn.addEventListener('click', () => { confirmRepeat(filteredOrder); });
+        
+        orderDiv.appendChild(repeatBtn);
+        container.appendChild(orderDiv);
+      });
+    }
+    
+    // Функція підтвердження повторного замовлення
+    function confirmRepeat(orderText) {
+      if(confirm("Ви впевнені, що хочете повторити замовлення?")) {
+        // Відправка повторного замовлення через Telegram
+        fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+              chat_id: CHAT_ID,
+              text: orderText
+          })
+        })
+        .then(response => response.json())
+        .then(data => {
+          alert("Замовлення повторено!");
+        })
+        .catch(error => {
+          console.error("Error repeating order:", error);
+          alert("Виникла помилка при повторенні замовлення.");
+        });
+      }
     }
   </script>
 </body>
