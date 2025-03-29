@@ -658,12 +658,14 @@
   <!-- Окно для вводу імені та номера телефону -->
   <div class="modal-overlay" id="modalOverlayUserData">
     <div class="modal-user-data" style="max-width: 300px;" id="modalUserData">
-      <h2>Заповніть форму, і ми швидко зв'яжемось з Вами</h2>
+      <!-- Трохи зменшено розмір заголовку -->
+      <h3 style="font-size:1.5rem;">Заповніть форму, і ми швидко зв'яжемось з Вами</h3>
       <input type="text" id="userName" placeholder="Введіть ваше ім'я">
       
-      <input type="text" id="userPhone" placeholder="+380...">
+      <input type="text" id="userPhone" value="+380" placeholder="+380...">
       
-      <button class="btn" id="confirmOrderBtn">Підтвердити замовлення</button>
+      <!-- Змінено текст кнопки -->
+      <button class="btn" id="confirmOrderBtn">Відправити заявку</button>
     </div>
   </div>
   
@@ -1334,27 +1336,48 @@
         container.innerHTML = "<p>Замовлення відсутні.</p>";
         return;
       }
+      // Задаємо перелік ярликів, які потрібно виділити жирним
+      const boldLabels = new Set(["Область", "Адреса", "Ім'я", "Телефон", "Послуга", "Обʼєм", "Довжина шлангу"]);
+      
       orders.forEach((order, index) => {
-        // Видаляємо рядки з геолокацією та посиланням OpenStreetMap
-        let filteredOrder = order.split("\n").filter(line => 
-          !line.startsWith("Геолокація:") && !line.startsWith("OpenStreetMap:")
-        ).join("\n");
+        // Видаляємо рядки з геолокацією, посиланням OpenStreetMap, заголовок "Нове замовлення від Septic24:" та рядки з "UserID:"
+        let filteredLines = order.split("\n").filter(line => 
+          !line.startsWith("Геолокація:") &&
+          !line.startsWith("OpenStreetMap:") &&
+          !line.startsWith("Нове замовлення від Septic24") &&
+          !line.startsWith("UserID:")
+        );
+        // Перетворюємо кожен рядок: якщо містить ":", виділяємо ярлик жирним
+        let htmlContent = filteredLines.map(line => {
+          if(line.includes(":")) {
+            let parts = line.split(":", 2);
+            let label = parts[0].trim();
+            let value = parts[1].trim();
+            if(boldLabels.has(label)) {
+              return `<p><strong>${label}:</strong> ${value}</p>`;
+            } else {
+              return `<p>${label}: ${value}</p>`;
+            }
+          } else {
+            return `<p>${line}</p>`;
+          }
+        }).join("");
+        
         const orderDiv = document.createElement('div');
         orderDiv.style.border = "1px solid #ccc";
         orderDiv.style.padding = "10px";
         orderDiv.style.marginBottom = "10px";
         orderDiv.style.fontSize = "0.9rem";
         orderDiv.style.whiteSpace = "pre-wrap";
-        orderDiv.style.fontWeight = "bold";
         orderDiv.style.textAlign = "left";
-        orderDiv.textContent = filteredOrder;
+        orderDiv.innerHTML = htmlContent;
         
         const repeatBtn = document.createElement('button');
         repeatBtn.textContent = "Повторно замовити";
         repeatBtn.style.marginTop = "5px";
         repeatBtn.style.fontSize = "0.9rem";
         repeatBtn.className = "btn";
-        repeatBtn.addEventListener('click', () => { confirmRepeat(filteredOrder); });
+        repeatBtn.addEventListener('click', () => { confirmRepeat(filteredLines.join("\n")); });
         
         orderDiv.appendChild(repeatBtn);
         container.appendChild(orderDiv);
