@@ -365,6 +365,7 @@
     }
     
     /* Додаткові стилі для Кроку 1.5 */
+    /* Змінено вміст блоку з повзунками */
     #orderStep1_5 {
       display: none; 
       text-align: center; 
@@ -532,18 +533,18 @@
     
     <!-- Кнопки головного меню -->
     <div class="buttons">
-      <button class="btn" id="btnOrder">Замовити асенізатор</button>
+      <button class="btn" id="btnOrder">Замовити послугу</button>
       <button class="btn" id="btnMyOrders">Мої замовлення</button>
       <button class="btn" id="btnServices">Наші послуги</button>
-      <button class="btn" id="btnAbout">Про нас</button>
+      <button class="btn" id="btnAbout">Про компанію</button>
     </div>
   </div>
   
-  <!-- Модальні вікна (Про нас) -->
+  <!-- Модальні вікна (Про компанію) -->
   <div class="modal-overlay" id="modalOverlayAbout">
     <div class="modal" id="modalAbout">
       <span class="modal-close" data-modal="modalOverlayAbout">&times;</span>
-      <h2>Про нас</h2>
+      <h2>Про компанію</h2>
       <p style="text-align: justify;">
         <strong>Septic24</strong> — це надійний сервіс виклику асенізатора по всій території України.
         Ми надаємо професійні послуги з відкачування вигрібних ям, септиків, каналізацій та вуличних туалетів
@@ -593,28 +594,28 @@
         <div id="orderServicesButtons" class="buttons" style="max-width: 300px;"></div>
       </div>
       
-      <!-- Крок 1.5: обʼєм та довжина шлангу -->
+      <!-- Крок 1.5: параметри труб -->
       <div id="orderStep1_5">
-        <h3>Який обʼєм вашої ємності в кубах?</h3>
+        <h3>Яка довжина ваших труб в метрах</h3>
         <input 
           type="range" 
-          id="capacityRange" 
+          id="lengthRange" 
           min="1" 
-          max="25" 
+          max="400" 
           value="1" 
-          oninput="document.getElementById('capacityValue').innerHTML = this.value + ' м&sup3;';"
+          oninput="document.getElementById('lengthValue').innerHTML = this.value + ' м';"
         >
-        <div id="capacityValue" style="margin-bottom: 20px;">1 м&sup3;</div>
-        <h3>Оберіть довжину шлангу в метрах</h3>
+        <div id="lengthValue" style="margin-bottom: 20px;">1 м</div>
+        <h3>Оберіть діаметр ваших труб в міліметрах</h3>
         <input 
           type="range" 
-          id="hoseRange" 
-          min="1" 
-          max="70" 
-          value="1" 
-          oninput="document.getElementById('hoseValue').innerHTML = this.value + ' м';"
+          id="diameterRange" 
+          min="100" 
+          max="900" 
+          value="100" 
+          oninput="document.getElementById('diameterValue').innerHTML = this.value + ' мм';"
         >
-        <div id="hoseValue" style="margin-bottom: 20px;">1 м</div>
+        <div id="diameterValue" style="margin-bottom: 20px;">100 мм</div>
         <button class="btn" id="volumeNextBtn">Далі</button>
       </div>
       
@@ -662,8 +663,8 @@
       <h3 style="font-size:1.5rem;">Заповніть форму, і ми швидко зв'яжемось з Вами</h3>
       <input type="text" id="userName" placeholder="Введіть ваше ім'я">
       
-      <!-- Видалено readonly, щоб користувач міг доповнювати номер після +380 -->
-      <input type="text" id="userPhone" value="+380" placeholder="+380...">
+      <!-- Поле номера телефону з фіксованим шаблоном -->
+      <input type="text" id="userPhone" value="+38 (___)___-__-__" placeholder="+38 (___)___-__-__">
       
       <!-- Кнопка трохи нижче -->
       <button class="btn" id="confirmOrderBtn" style="margin-top:20px;">Відправити заявку</button>
@@ -701,7 +702,7 @@
     let userPhone = "";              
     let selectedOrderServiceIndex = null;
     
-    // Дані по послугам із розширеним описом
+    // Дані по послугам із розширеним описом – оновлено порядок і назви
     const servicesData = [
       { 
         title: "Викачка вигрібних ям", 
@@ -709,9 +710,9 @@
         description: "Наш сервіс забезпечує швидке та надійне видалення відходів. Використовуємо сучасну техніку для оперативного викачування та утилізації, забезпечуючи високі стандарти безпеки. Ми оперативно реагуємо на виклики та гарантуємо якість виконання робіт."
       },
       { 
-        title: "Викачка каналізації", 
-        image: "https://i.ibb.co/Q7y9Fk3h/uslugi-assenizatora-ukraina-5.jpg",
-        description: "Ми пропонуємо професійне очищення та викачку каналізаційних систем. Швидко вирішуємо проблеми із засміченнями та запобігаємо аварям. Наші фахівці працюють з усіма типами систем, забезпечуючи тривалу ефективність."
+        title: "Викачка мулу чи піску", 
+        image: "https://i.ibb.co/0jXSDFm3/uslugi-assenizatora-ukraina-3.jpg",
+        description: "Професійна викачка мулу та піску для екстрених ситуацій. Гарантуємо безпечне утилізування за сучасними стандартами. Наш сервіс доступний 24/7 для екстрених викликів."
       },
       { 
         title: "Викачка септика", 
@@ -719,9 +720,9 @@
         description: "Послуги з викачування септиків гарантують повне видалення відходів з усіх типів септиків. Працюємо акуратно та швидко. Гарантуємо чистоту та безпеку для вашого будинку чи підприємства."
       },
       { 
-        title: "Викачка мулу та піску", 
-        image: "https://i.ibb.co/0jXSDFm3/uslugi-assenizatora-ukraina-3.jpg",
-        description: "Професійна викачка мулу та піску для екстрених ситуацій. Гарантуємо безпечне утилізування за сучасними стандартами. Наш сервіс доступний 24/7 для екстрених викликів."
+        title: "Прочистка труб", 
+        image: "https://i.ibb.co/Q7y9Fk3h/uslugi-assenizatora-ukraina-5.jpg",
+        description: "Ми пропонуємо професійне очищення та прочистку труб. Швидко вирішуємо проблеми із засміченнями та запобігаємо аварям. Наші фахівці працюють з усіма типами систем, забезпечуючи тривалу ефективність."
       },
       { 
         title: "Викачка туалету", 
@@ -880,26 +881,35 @@
         requestUserLocation();
       });
       
-      // Забезпечення збереження префіксу +380 у полі телефону
+      // --- Маска для поля номера телефону ---
       const phoneInput = document.getElementById('userPhone');
-      phoneInput.addEventListener('input', function() {
-         if (!this.value.startsWith("+380")) {
-            // Відновлюємо префікс, якщо його видалено
-            let digits = this.value.replace(/[^0-9]/g, '');
-            if (!digits.startsWith("380")) {
-              digits = "380" + digits;
-            }
-            this.value = "+" + digits;
-         }
-      });
-      // Заборона Backspace, Delete для префіксу "+380"
+      function formatPhone() {
+          // Вилучаємо всі нецифрові символи
+          let digits = phoneInput.value.replace(/\D/g, '');
+          // Якщо є префікс "38", видаляємо його (бо він фіксований)
+          if(digits.startsWith("38")) {
+              digits = digits.substring(2);
+          }
+          // Обмежуємо до 10 цифр (3+3+2+2)
+          digits = digits.substring(0, 10);
+          // Формуємо відформатований рядок
+          let formatted = "+38 (";
+          formatted += digits.substring(0, 3).padEnd(3, "_");
+          formatted += ")";
+          formatted += digits.substring(3, 6).padEnd(3, "_");
+          formatted += "-";
+          formatted += digits.substring(6, 8).padEnd(2, "_");
+          formatted += "-";
+          formatted += digits.substring(8, 10).padEnd(2, "_");
+          phoneInput.value = formatted;
+      }
+      phoneInput.addEventListener('input', formatPhone);
       phoneInput.addEventListener('keydown', function(e) {
-         const selectionStart = this.selectionStart;
-         // Якщо курсор у зоні префіксу, забороняємо видалення
-         if ((e.key === 'Backspace' && selectionStart <= 4) || 
-             (e.key === 'Delete' && selectionStart < 4)) {
-           e.preventDefault();
-         }
+          // Забороняємо видалення фіксованої частини "+38 ("
+          const fixedLength = 5; // "+38 (" має довжину 5 символів
+          if ((e.key === 'Backspace' || e.key === 'Delete') && phoneInput.selectionStart < fixedLength) {
+              e.preventDefault();
+          }
       });
     });
     
@@ -1251,9 +1261,9 @@
       userName = nameInput.value.trim();
       userPhone = phoneInput.value.trim();
       
-      // Перевірка коректності українського номера телефону (формат: +380XXXXXXXXX)
-      if(!/^\+380\d{9}$/.test(userPhone)) {
-        alert("Будь ласка, введіть дійсний номер телефону (формат +380XXXXXXXXX)");
+      // Перевірка коректності номера телефону (формат: +38 (XXX)XXX-XX-XX)
+      if(!/^\+38 \(\d{3}\)\d{3}-\d{2}-\d{2}$/.test(userPhone)) {
+        alert("Будь ласка, введіть дійсний номер телефону (формат +38 (XXX)XXX-XX-XX)");
         return;
       }
       
@@ -1268,7 +1278,6 @@
           closeModal('modalOverlayUserData');
           
           // Формування повідомлення для Telegram (адміністратору)
-          // Текст будується у потрібному порядку: Ім'я, Телефон, Область, Адреса, Послуга, Обʼєм, Довжина шлангу
           let finalMsg = "Нове замовлення від Septic24:\n";
           finalMsg += "Ім'я: " + userName + "\n";
           finalMsg += "Телефон: " + userPhone + "\n";
@@ -1276,14 +1285,13 @@
           finalMsg += "Адреса: " + userAddress + "\n";
           if(selectedOrderServiceIndex !== null) {
             finalMsg += "Послуга: " + servicesData[selectedOrderServiceIndex].title.replace("вигребних", "вигрібних") + "\n";
-            finalMsg += "Обʼєм: " + document.getElementById('capacityRange').value + " м³\n";
-            finalMsg += "Довжина шлангу: " + document.getElementById('hoseRange').value + " м\n";
+            finalMsg += "Довжина труб: " + document.getElementById('lengthRange').value + " м\n";
+            finalMsg += "Діаметр труб: " + document.getElementById('diameterRange').value + " мм\n";
           }
           if(selectedCoordinates) {
              finalMsg += "Геолокація: " + selectedCoordinates.y.toFixed(5) + ", " + selectedCoordinates.x.toFixed(5) + "\n";
              finalMsg += "OpenStreetMap: https://www.openstreetmap.org/?mlat=" + selectedCoordinates.y + "&mlon=" + selectedCoordinates.x + "\n";
           }
-          // Додаємо UserID, якщо доступний
           if (webUserId) {
             finalMsg += "UserID: " + webUserId + "\n";
           }
@@ -1369,11 +1377,10 @@
         container.innerHTML = "<p>Замовлення відсутні.</p>";
         return;
       }
-      const desiredOrder = ["Ім'я", "Телефон", "Область", "Адреса", "Послуга", "Обʼєм", "Довжина шлангу"];
+      const desiredOrder = ["Ім'я", "Телефон", "Область", "Адреса", "Послуга", "Довжина труб", "Діаметр труб"];
       
       // Рендеримо замовлення в зворотному порядку (останній – перший)
       orders.slice().reverse().forEach((order, index) => {
-        // Розбираємо рядки замовлення для відображення, пропускаючи рядки з геолокацією та OpenStreetMap
         let linesForDisplay = order.split("\n").filter(line => {
           line = line.trim();
           return line && 
@@ -1389,7 +1396,6 @@
             orderMap[label] = value;
           }
         });
-        // Формуємо новий рядок за бажаним порядком
         let htmlContent = "";
         desiredOrder.forEach(label => {
           if(orderMap[label]) {
@@ -1406,7 +1412,6 @@
         orderDiv.style.textAlign = "left";
         orderDiv.innerHTML = htmlContent;
         
-        // Зберігаємо оригінальний текст замовлення (з інформацією про карту) як data-атрибут
         orderDiv.dataset.fullorder = order;
         
         const repeatBtn = document.createElement('button');
@@ -1415,7 +1420,6 @@
         repeatBtn.style.fontSize = "0.9rem";
         repeatBtn.className = "btn";
         repeatBtn.addEventListener('click', () => { 
-          // Використовуємо оригінальний текст замовлення, щоб включити посилання на карту
           confirmRepeat(orderDiv.dataset.fullorder); 
         });
         
@@ -1427,7 +1431,6 @@
     // Функція підтвердження повторного замовлення
     function confirmRepeat(orderText) {
       if(confirm("Ви впевнені, що хочете повторити замовлення?")) {
-        // Відправка повторного замовлення через Telegram
         fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
           method: "POST",
           headers: {
@@ -1440,7 +1443,6 @@
         })
         .then(response => response.json())
         .then(data => {
-          // Оновлюємо бонусний лічильник (повторне замовлення теж враховується)
           let bonusCounter = localStorage.getItem('bonusCounter') || 0;
           bonusCounter = parseInt(bonusCounter) + 1;
           if (bonusCounter > 5) { bonusCounter = 1; }
