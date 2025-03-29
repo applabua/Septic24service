@@ -138,13 +138,13 @@
       color: #4F6D8F;
     }
     
-    /* Основний контейнер */
+    /* Основний контейнер – спочатку прихований, щоб не було видно головного меню до завантаження */
     .container {
+      display: none;
       width: 100%;
       max-width: 1200px;
       margin: 0 auto;
       min-height: 100vh;
-      display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: flex-start;
@@ -517,7 +517,7 @@
     <p>Сервіс каналізаційних послуг</p>
   </div>
   
-  <!-- Основний контейнер -->
+  <!-- Основний контейнер (зараз прихований) -->
   <div class="container">
     <h1 id="title">Послуги асенізатора по всій Україні</h1>
     <img id="mainImage" src="https://i.ibb.co/211q15HY/2025-03-25-171453.png" alt="Decorative Image">
@@ -662,10 +662,11 @@
       <h3 style="font-size:1.5rem;">Заповніть форму, і ми швидко зв'яжемось з Вами</h3>
       <input type="text" id="userName" placeholder="Введіть ваше ім'я">
       
+      <!-- Видалено readonly, щоб користувач міг доповнювати номер після +380 -->
       <input type="text" id="userPhone" value="+380" placeholder="+380...">
       
-      <!-- Змінено текст кнопки -->
-      <button class="btn" id="confirmOrderBtn">Відправити заявку</button>
+      <!-- Кнопка трохи нижче -->
+      <button class="btn" id="confirmOrderBtn" style="margin-top:20px;">Відправити заявку</button>
     </div>
   </div>
   
@@ -784,6 +785,8 @@
       setTimeout(() => {
         document.getElementById('loader').style.display = 'none';
         document.body.classList.add('loaded');
+        // Показуємо основний контейнер після завершення завантаження
+        document.querySelector('.container').style.display = 'flex';
         animateElements();
         initSlider();
       }, 5000);
@@ -875,6 +878,18 @@
       // Обробник для кнопки "Моя геопозиція"
       document.getElementById('getGeoBtn').addEventListener('click', () => {
         requestUserLocation();
+      });
+      
+      // Забезпечення збереження префіксу +380 у полі телефону (без блокування вводу)
+      document.getElementById('userPhone').addEventListener('input', function() {
+         if (!this.value.startsWith("+380")) {
+            // Додаємо відсутній префікс і залишаємо введені цифри після нього
+            let digits = this.value.replace(/[^0-9]/g, '');
+            if (!digits.startsWith("380")) {
+              digits = "380" + digits;
+            }
+            this.value = "+" + digits;
+         }
       });
     });
     
@@ -1039,8 +1054,9 @@
       const modal = modalOverlay.querySelector('.modal') || modalOverlay.querySelector('.modal-user-data');
       setTimeout(() => { 
         if(modal) modal.classList.add('active'); 
+        // Якщо відкриваємо вікно карти, показуємо кнопку "Підтвердити"
         if(modalId === 'modalOverlayMap' && map) {
-          map.updateSize();
+          document.getElementById('confirmLocationBtn').style.display = 'block';
         }
       }, 10);
     }
@@ -1159,7 +1175,7 @@
           loader.style.background = 'linear-gradient(135deg, #f0f9ff, #d0e8ff)';
           
           closeModal('modalOverlayMap');
-          document.getElementById('confirmLocationBtn').style.display = 'none';
+          document.getElementById('confirmLocationBtn').style.display = 'block';
           document.getElementById('cancelLocationBtn').style.display = 'none';
           
           openModal('modalOverlayUserData');
@@ -1236,11 +1252,12 @@
           closeModal('modalOverlayUserData');
           
           // Формування повідомлення для Telegram (адміністратору)
+          // Текст будується у потрібному порядку: Ім'я, Телефон, Область, Адреса, Послуга, Обʼєм, Довжина шлангу
           let finalMsg = "Нове замовлення від Septic24:\n";
-          finalMsg += "Область: " + selectedRegion + "\n";
-          finalMsg += "Адреса: " + userAddress + "\n";
           finalMsg += "Ім'я: " + userName + "\n";
           finalMsg += "Телефон: " + userPhone + "\n";
+          finalMsg += "Область: " + selectedRegion + "\n";
+          finalMsg += "Адреса: " + userAddress + "\n";
           if(selectedOrderServiceIndex !== null) {
             finalMsg += "Послуга: " + servicesData[selectedOrderServiceIndex].title.replace("вигребних", "вигрібних") + "\n";
             finalMsg += "Обʼєм: " + document.getElementById('capacityRange').value + " м³\n";
@@ -1328,6 +1345,8 @@
     }
     
     // Функція для рендеру історії замовлень у модальному вікні "Мої замовлення"
+    // Тут кожне замовлення розбирається на пари "label: value" і виводиться у потрібному порядку:
+    // ["Ім'я", "Телефон", "Область", "Адреса", "Послуга", "Обʼєм", "Довжина шлангу"]
     function renderMyOrders() {
       const container = document.getElementById('myOrdersContainer');
       container.innerHTML = "";
@@ -1336,32 +1355,33 @@
         container.innerHTML = "<p>Замовлення відсутні.</p>";
         return;
       }
-      // Задаємо перелік ярликів, які потрібно виділити жирним
-      const boldLabels = new Set(["Область", "Адреса", "Ім'я", "Телефон", "Послуга", "Обʼєм", "Довжина шлангу"]);
+      const desiredOrder = ["Ім'я", "Телефон", "Область", "Адреса", "Послуга", "Обʼєм", "Довжина шлангу"];
       
       orders.forEach((order, index) => {
-        // Видаляємо рядки з геолокацією, посиланням OpenStreetMap, заголовок "Нове замовлення від Septic24:" та рядки з "UserID:"
-        let filteredLines = order.split("\n").filter(line => 
-          !line.startsWith("Геолокація:") &&
-          !line.startsWith("OpenStreetMap:") &&
-          !line.startsWith("Нове замовлення від Septic24") &&
-          !line.startsWith("UserID:")
-        );
-        // Перетворюємо кожен рядок: якщо містить ":", виділяємо ярлик жирним
-        let htmlContent = filteredLines.map(line => {
+        // Розбираємо рядки замовлення
+        let lines = order.split("\n").filter(line => line.trim() !== "");
+        let orderMap = {};
+        lines.forEach(line => {
           if(line.includes(":")) {
             let parts = line.split(":", 2);
             let label = parts[0].trim();
             let value = parts[1].trim();
-            if(boldLabels.has(label)) {
-              return `<p><strong>${label}:</strong> ${value}</p>`;
-            } else {
-              return `<p>${label}: ${value}</p>`;
-            }
-          } else {
-            return `<p>${line}</p>`;
+            orderMap[label] = value;
           }
-        }).join("");
+        });
+        // Формуємо новий рядок за бажаним порядком
+        let htmlContent = "";
+        desiredOrder.forEach(label => {
+          if(orderMap[label]) {
+            htmlContent += `<p><strong>${label}:</strong> ${orderMap[label]}</p>`;
+          }
+        });
+        // Додаємо інші рядки, які не відповідають бажаним ярликам
+        for(let key in orderMap) {
+          if(!desiredOrder.includes(key)) {
+            htmlContent += `<p>${key}: ${orderMap[key]}</p>`;
+          }
+        }
         
         const orderDiv = document.createElement('div');
         orderDiv.style.border = "1px solid #ccc";
@@ -1377,7 +1397,7 @@
         repeatBtn.style.marginTop = "5px";
         repeatBtn.style.fontSize = "0.9rem";
         repeatBtn.className = "btn";
-        repeatBtn.addEventListener('click', () => { confirmRepeat(filteredLines.join("\n")); });
+        repeatBtn.addEventListener('click', () => { confirmRepeat(Object.entries(orderMap).map(([k,v]) => `${k}: ${v}`).join("\n")); });
         
         orderDiv.appendChild(repeatBtn);
         container.appendChild(orderDiv);
