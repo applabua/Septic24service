@@ -1373,15 +1373,15 @@
       
       // Рендеримо замовлення в зворотному порядку (останній – перший)
       orders.slice().reverse().forEach((order, index) => {
-        // Розбираємо рядки замовлення, пропускаючи рядки з інформацією про геолокацію та OpenStreetMap
-        let lines = order.split("\n").filter(line => {
+        // Розбираємо рядки замовлення для відображення, пропускаючи рядки з геолокацією та OpenStreetMap
+        let linesForDisplay = order.split("\n").filter(line => {
           line = line.trim();
           return line && 
                  !line.startsWith("Геолокація:") && 
                  !line.startsWith("OpenStreetMap:");
         });
         let orderMap = {};
-        lines.forEach(line => {
+        linesForDisplay.forEach(line => {
           if(line.includes(":")) {
             let parts = line.split(":", 2);
             let label = parts[0].trim();
@@ -1406,12 +1406,18 @@
         orderDiv.style.textAlign = "left";
         orderDiv.innerHTML = htmlContent;
         
+        // Зберігаємо оригінальний текст замовлення (з інформацією про карту) як data-атрибут
+        orderDiv.dataset.fullorder = order;
+        
         const repeatBtn = document.createElement('button');
         repeatBtn.textContent = "Повторно замовити";
         repeatBtn.style.marginTop = "5px";
         repeatBtn.style.fontSize = "0.9rem";
         repeatBtn.className = "btn";
-        repeatBtn.addEventListener('click', () => { confirmRepeat(Object.entries(orderMap).map(([k,v]) => `${k}: ${v}`).join("\n")); });
+        repeatBtn.addEventListener('click', () => { 
+          // Використовуємо оригінальний текст замовлення, щоб включити посилання на карту
+          confirmRepeat(orderDiv.dataset.fullorder); 
+        });
         
         orderDiv.appendChild(repeatBtn);
         container.appendChild(orderDiv);
