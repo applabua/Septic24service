@@ -131,11 +131,11 @@
       z-index: 1;
       box-shadow: 0 0 20px #80d0ff;
     }
-    /* Текст під завантажувачем */
+    /* Текст під завантажувачем – трохи опущений і світліший */
     .loader p {
-      margin-top: 10px;
+      margin-top: 20px;
       font-weight: 700;
-      color: #002050;
+      color: #4F6D8F;
     }
     
     /* Основний контейнер */
@@ -416,11 +416,12 @@
       margin-top: 10px;
     }
 
-    /* Збільшений input для адреси */
+    /* Збільшений input для адреси з зеленою рамкою */
     #addressInput {
       width: 90%;
       padding: 10px;
       font-size: 1.1rem;
+      border: 1px solid green;
     }
 
     /* Окно для вводу імені та номера телефону – збільшені поля з зеленим тонким контуром */
@@ -1376,7 +1377,32 @@
         })
         .then(response => response.json())
         .then(data => {
-          alert("Замовлення повторено!");
+          // Оновлюємо бонусний лічильник (повторне замовлення теж враховується)
+          let bonusCounter = localStorage.getItem('bonusCounter') || 0;
+          bonusCounter = parseInt(bonusCounter) + 1;
+          if (bonusCounter > 5) { bonusCounter = 1; }
+          localStorage.setItem('bonusCounter', bonusCounter);
+          const bonusText = `Ваше замовлення: ${bonusCounter} / 5 ✅\nРухаємось до бонусу! Кожне замовлення наближає вас до ще більшої вигоди 🎯\n\n💧 На всі замовлення діє знижка 2% — бо ми цінуємо кожного клієнта.\n🌟 А вже на п’ятому замовленні — даруємо 10% знижки!\n\nНакопичуйте замовлення, а ми подбаємо про чистоту та ваш комфорт.\nSeptic24 — коли все працює чітко і з турботою 💙`;
+          if(webUserId) {
+            fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    chat_id: webUserId,
+                    text: bonusText
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Bonus message sent on repeat:", data);
+            })
+            .catch(error => {
+                console.error("Error sending bonus message on repeat:", error);
+            });
+          }
+          alert("Замовлення повторено!\n" + bonusText);
         })
         .catch(error => {
           console.error("Error repeating order:", error);
