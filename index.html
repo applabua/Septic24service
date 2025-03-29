@@ -173,7 +173,7 @@
       width: 100%;
       height: auto;
     }
-    <!-- Змінено текст: "вигребних" → "вигрібних" -->
+    /* Змінено: "вигребних" → "вигрібних" */
     #description {
       font-size: 1rem;
       line-height: 1.4;
@@ -464,12 +464,6 @@
       transform: translateY(0);
       opacity: 1;
     }
-    .modal-user-data label {
-      width: 80%;
-      margin: 10px auto;
-      text-align: left;
-      display: block;
-    }
     
     /* Нове модальне вікно для "Мої замовлення" */
     #modalMyOrders {
@@ -664,11 +658,9 @@
   <!-- Окно для вводу імені та номера телефону -->
   <div class="modal-overlay" id="modalOverlayUserData">
     <div class="modal-user-data" style="max-width: 300px;" id="modalUserData">
-      <h2>Введіть ваше імʼя і номер телефону</h2>
-      <label for="userName">Ім'я:</label>
-      <input type="text" id="userName" placeholder="Ваше ім'я">
+      <h2>Заповніть форму, і ми швидко зв'яжемось з Вами</h2>
+      <input type="text" id="userName" placeholder="Введіть ваше ім'я">
       
-      <label for="userPhone">Номер телефону:</label>
       <input type="text" id="userPhone" placeholder="+380...">
       
       <button class="btn" id="confirmOrderBtn">Підтвердити замовлення</button>
@@ -1225,6 +1217,12 @@
       userName = nameInput.value.trim();
       userPhone = phoneInput.value.trim();
       
+      // Перевірка коректності українського номера телефону (формат: +380XXXXXXXXX)
+      if(!/^\+380\d{9}$/.test(userPhone)) {
+        alert("Будь ласка, введіть дійсний номер телефону (формат +380XXXXXXXXX)");
+        return;
+      }
+      
       const loader = document.getElementById('loader');
       loader.style.display = 'flex';
       loader.style.background = 'rgba(255,255,255,0.8)';
@@ -1347,6 +1345,8 @@
         orderDiv.style.marginBottom = "10px";
         orderDiv.style.fontSize = "0.9rem";
         orderDiv.style.whiteSpace = "pre-wrap";
+        orderDiv.style.fontWeight = "bold";
+        orderDiv.style.textAlign = "left";
         orderDiv.textContent = filteredOrder;
         
         const repeatBtn = document.createElement('button');
