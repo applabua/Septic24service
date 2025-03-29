@@ -1365,7 +1365,8 @@
       }
       const desiredOrder = ["Ім'я", "Телефон", "Область", "Адреса", "Послуга", "Обʼєм", "Довжина шлангу"];
       
-      orders.forEach((order, index) => {
+      // Рендеримо замовлення в зворотному порядку (останній – перший)
+      orders.slice().reverse().forEach((order, index) => {
         // Розбираємо рядки замовлення, пропускаючи рядки з інформацією про геолокацію та OpenStreetMap
         let lines = order.split("\n").filter(line => {
           line = line.trim();
