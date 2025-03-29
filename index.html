@@ -1176,6 +1176,12 @@
       }
       userAddress = address;
       
+      // Якщо користувач не поставив маркер, беремо центр карти як координати
+      if(!selectedCoordinates && map) {
+         let center = ol.proj.toLonLat(map.getView().getCenter());
+         selectedCoordinates = { x: center[0], y: center[1] };
+      }
+      
       const loader = document.getElementById('loader');
       loader.style.display = 'flex';
       loader.style.background = 'rgba(255,255,255,0.8)';
