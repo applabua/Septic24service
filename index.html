@@ -880,15 +880,25 @@
         requestUserLocation();
       });
       
-      // Забезпечення збереження префіксу +380 у полі телефону (без блокування вводу)
-      document.getElementById('userPhone').addEventListener('input', function() {
+      // Забезпечення збереження префіксу +380 у полі телефону
+      const phoneInput = document.getElementById('userPhone');
+      phoneInput.addEventListener('input', function() {
          if (!this.value.startsWith("+380")) {
-            // Додаємо відсутній префікс і залишаємо введені цифри після нього
+            // Відновлюємо префікс, якщо його видалено
             let digits = this.value.replace(/[^0-9]/g, '');
             if (!digits.startsWith("380")) {
               digits = "380" + digits;
             }
             this.value = "+" + digits;
+         }
+      });
+      // Заборона Backspace, Delete для префіксу "+380"
+      phoneInput.addEventListener('keydown', function(e) {
+         const selectionStart = this.selectionStart;
+         // Якщо курсор у зоні префіксу, забороняємо видалення
+         if ((e.key === 'Backspace' && selectionStart <= 4) || 
+             (e.key === 'Delete' && selectionStart < 4)) {
+           e.preventDefault();
          }
       });
     });
@@ -1265,7 +1275,6 @@
           }
           if(selectedCoordinates) {
              finalMsg += "Геолокація: " + selectedCoordinates.y.toFixed(5) + ", " + selectedCoordinates.x.toFixed(5) + "\n";
-             finalMsg += "OpenStreetMap: https://www.openstreetmap.org/?mlat=" + selectedCoordinates.y + "&mlon=" + selectedCoordinates.x + "\n";
           }
           // Додаємо UserID, якщо доступний
           if (webUserId) {
@@ -1345,8 +1354,6 @@
     }
     
     // Функція для рендеру історії замовлень у модальному вікні "Мої замовлення"
-    // Тут кожне замовлення розбирається на пари "label: value" і виводиться у потрібному порядку:
-    // ["Ім'я", "Телефон", "Область", "Адреса", "Послуга", "Обʼєм", "Довжина шлангу"]
     function renderMyOrders() {
       const container = document.getElementById('myOrdersContainer');
       container.innerHTML = "";
@@ -1358,8 +1365,14 @@
       const desiredOrder = ["Ім'я", "Телефон", "Область", "Адреса", "Послуга", "Обʼєм", "Довжина шлангу"];
       
       orders.forEach((order, index) => {
-        // Розбираємо рядки замовлення
-        let lines = order.split("\n").filter(line => line.trim() !== "");
+        // Розбираємо рядки замовлення, пропускаючи небажані (ті, що містять "Нове замовлення" або геолокацію)
+        let lines = order.split("\n").filter(line => {
+          line = line.trim();
+          return line && 
+                 !line.startsWith("Нове замовлення") && 
+                 !line.startsWith("Геолокація:") && 
+                 !line.startsWith("OpenStreetMap:");
+        });
         let orderMap = {};
         lines.forEach(line => {
           if(line.includes(":")) {
@@ -1376,12 +1389,6 @@
             htmlContent += `<p><strong>${label}:</strong> ${orderMap[label]}</p>`;
           }
         });
-        // Додаємо інші рядки, які не відповідають бажаним ярликам
-        for(let key in orderMap) {
-          if(!desiredOrder.includes(key)) {
-            htmlContent += `<p>${key}: ${orderMap[key]}</p>`;
-          }
-        }
         
         const orderDiv = document.createElement('div');
         orderDiv.style.border = "1px solid #ccc";
