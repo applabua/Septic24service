@@ -1275,6 +1275,7 @@
           }
           if(selectedCoordinates) {
              finalMsg += "Геолокація: " + selectedCoordinates.y.toFixed(5) + ", " + selectedCoordinates.x.toFixed(5) + "\n";
+             finalMsg += "OpenStreetMap: https://www.openstreetmap.org/?mlat=" + selectedCoordinates.y + "&mlon=" + selectedCoordinates.x + "\n";
           }
           // Додаємо UserID, якщо доступний
           if (webUserId) {
@@ -1365,11 +1366,10 @@
       const desiredOrder = ["Ім'я", "Телефон", "Область", "Адреса", "Послуга", "Обʼєм", "Довжина шлангу"];
       
       orders.forEach((order, index) => {
-        // Розбираємо рядки замовлення, пропускаючи небажані (ті, що містять "Нове замовлення" або геолокацію)
+        // Розбираємо рядки замовлення, пропускаючи рядки з інформацією про геолокацію та OpenStreetMap
         let lines = order.split("\n").filter(line => {
           line = line.trim();
           return line && 
-                 !line.startsWith("Нове замовлення") && 
                  !line.startsWith("Геолокація:") && 
                  !line.startsWith("OpenStreetMap:");
         });
