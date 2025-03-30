@@ -1223,7 +1223,13 @@
           
           closeModal('modalOverlayUserData');
           
-          let finalMsg = "";
+          // Генерация глобального номера заказа
+          let globalOrderNumber = localStorage.getItem('globalOrderNumber') || 0;
+          globalOrderNumber = parseInt(globalOrderNumber) + 1;
+          localStorage.setItem('globalOrderNumber', globalOrderNumber);
+          let formattedOrderNumber = "№" + globalOrderNumber.toString().padStart(5, "0");
+          
+          let finalMsg = formattedOrderNumber + "\n";
           finalMsg += "Ім'я: " + userName + "\n";
           finalMsg += "Телефон: " + userPhone + "\n";
           finalMsg += "Область: " + selectedRegion + "\n";
@@ -1241,6 +1247,7 @@
             finalMsg += "UserID: " + webUserId + "\n";
           }
           
+          // Отправка заказа на сервер
           fetch("/save_order", {
             method: "POST",
             headers: {
@@ -1256,6 +1263,7 @@
             console.error("Error saving order:", error);
           });
           
+          // Отправка заказа админу через Telegram
           fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
               method: "POST",
               headers: {
@@ -1280,11 +1288,10 @@
           orders.push(finalMsg);
           localStorage.setItem('userOrders', JSON.stringify(orders));
           
-          let bonusCounter = localStorage.getItem('bonusCounter') || 0;
-          bonusCounter = parseInt(bonusCounter) + 1;
-          if (bonusCounter > 5) { bonusCounter = 1; }
-          localStorage.setItem('bonusCounter', bonusCounter);
-          const bonusText = `Ваше замовлення: ${bonusCounter} / 5 ✅\nРухаємось до бонусу! Кожне замовлення наближає вас до ще більшої вигоди 🎯\n\n💧 На всі замовлення діє знижка 2% — бо ми цінуємо кожного клієнта.\n🌟 А вже на п’ятому замовленні — даруємо 10% знижки!\n\nНакопичуйте замовлення, а ми подбаємо про чистоту та ваш комфорт.\nSeptic24 — коли все працює чітко і з турботою 💙`;
+          // Вычисление бонусного номера из глобального номера заказа
+          let bonusOrder = globalOrderNumber % 5;
+          if(bonusOrder === 0) bonusOrder = 5;
+          const bonusText = `Ваше замовлення: ${bonusOrder} / 5 ✅\nРухаємось до бонусу! Кожне замовлення наближає вас до ще більшої вигоди 🎯\n\n💧 На всі замовлення діє знижка 2% — бо ми цінуємо кожного клієнта.\n🌟 А вже на п’ятому замовленні — даруємо 10% знижки!\n\nНакопичуйте замовлення, а ми подбаємо про чистоту та ваш комфорт.\nSeptic24 — коли все працює чітко і з турботою 💙`;
           if (webUserId) {
               fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
                   method: "POST",
@@ -1307,6 +1314,68 @@
           
           resetOrderModal();
       }, 2000);
+    }
+    
+    // Функция для обновления номера заказа при повторном заказе
+    function updateOrderNumberInText(orderText) {
+      let lines = orderText.split("\n");
+      if(lines[0].startsWith("№")) {
+         lines.shift();
+      }
+      let globalOrderNumber = localStorage.getItem('globalOrderNumber') || 0;
+      globalOrderNumber = parseInt(globalOrderNumber) + 1;
+      localStorage.setItem('globalOrderNumber', globalOrderNumber);
+      let formattedOrderNumber = "№" + globalOrderNumber.toString().padStart(5, "0");
+      return formattedOrderNumber + "\n" + lines.join("\n");
+    }
+    
+    function confirmRepeat(orderText) {
+      if(confirm("Ви впевнені, що хочете повторити замовлення?")) {
+        orderText = updateOrderNumberInText(orderText);
+        fetch("/save_order", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ order: orderText })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.status === "ok") {
+              let globalOrderNumber = localStorage.getItem('globalOrderNumber') || 0;
+              globalOrderNumber = parseInt(globalOrderNumber);
+              let bonusOrder = globalOrderNumber % 5;
+              if(bonusOrder === 0) bonusOrder = 5;
+              const bonusText = `Ваше замовлення: ${bonusOrder} / 5 ✅\nРухаємось до бонусу! Кожне замовлення наближає вас до ще більшої вигоди 🎯\n\n💧 На всі замовлення діє знижка 2% — бо ми цінуємо кожного клієнта.\n🌟 А вже на п’ятому замовленні — даруємо 10% знижки!\n\nНакопичуйте замовлення, а ми подбаємо про чистоту та ваш комфорт.\nSeptic24 — коли все працює чітко і з турботою 💙`;
+              if(webUserId) {
+                fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        chat_id: webUserId,
+                        text: bonusText
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Bonus message sent on repeat:", data);
+                })
+                .catch(error => {
+                    console.error("Error sending bonus message on repeat:", error);
+                });
+              }
+              alert("Замовлення повторено!\n" + bonusText);
+            } else {
+              alert("Error saving order: " + data.error);
+            }
+        })
+        .catch(error => {
+          console.error("Error repeating order:", error);
+          alert("Виникла помилка при повторенні замовлення.");
+        });
+      }
     }
     
     function renderMyOrders() {
@@ -1365,54 +1434,6 @@
         orderDiv.appendChild(repeatBtn);
         container.appendChild(orderDiv);
       });
-    }
-    
-    function confirmRepeat(orderText) {
-      if(confirm("Ви впевнені, що хочете повторити замовлення?")) {
-        fetch("/save_order", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({ order: orderText })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if(data.status === "ok") {
-              let bonusCounter = localStorage.getItem('bonusCounter') || 0;
-              bonusCounter = parseInt(bonusCounter) + 1;
-              if (bonusCounter > 5) { bonusCounter = 1; }
-              localStorage.setItem('bonusCounter', bonusCounter);
-              const bonusText = `Ваше замовлення: ${bonusCounter} / 5 ✅\nРухаємось до бонусу! Кожне замовлення наближає вас до ще більшої вигоди 🎯\n\n💧 На всі замовлення діє знижка 2% — бо ми цінуємо кожного клієнта.\n🌟 А вже на п’ятому замовленні — даруємо 10% знижки!\n\nНакопичуйте замовлення, а ми подбаємо про чистоту та ваш комфорт.\nSeptic24 — коли все працює чітко і з турботою 💙`;
-              if(webUserId) {
-                fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-                    method: "POST",
-                    headers: {
-                      "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        chat_id: webUserId,
-                        text: bonusText
-                    })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    console.log("Bonus message sent on repeat:", data);
-                })
-                .catch(error => {
-                    console.error("Error sending bonus message on repeat:", error);
-                });
-              }
-              alert("Замовлення повторено!\n" + bonusText);
-            } else {
-              alert("Error saving order: " + data.error);
-            }
-        })
-        .catch(error => {
-          console.error("Error repeating order:", error);
-          alert("Виникла помилка при повторенні замовлення.");
-        });
-      }
     }
   </script>
 </body>
