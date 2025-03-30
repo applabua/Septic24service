@@ -968,7 +968,7 @@
 
     // Функція зворотного геокодування (Nominatim)
     function reverseGeocode(lat, lon) {
-      fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=18&addressdetails=1`)
+      fetch(https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=18&addressdetails=1)
       .then(response => response.json())
       .then(data => {
         if(data && data.display_name) {
@@ -1002,17 +1002,17 @@
         const card = document.createElement('div');
         card.className = 'service-card';
         // Замінюємо "вигребних" на "вигрібних" у заголовках
-        card.innerHTML = `
+        card.innerHTML = 
           <h3>${service.title.replace("вигребних", "вигрібних")}</h3>
           <img src="${service.image}" alt="${service.title}">
           <p>${service.description}</p>
-        `;
+        ;
         servicesSlider.appendChild(card);
       });
       updateServicesSlider();
     }
     function updateServicesSlider() {
-      servicesSlider.style.transform = `translateX(${-currentServiceIndex * servicesSliderContainer.clientWidth}px)`;
+      servicesSlider.style.transform = translateX(${-currentServiceIndex * servicesSliderContainer.clientWidth}px);
     }
     function handleTouchStart(e) {
       startX = e.touches[0].clientX;
@@ -1022,7 +1022,7 @@
       if(!isDragging) return;
       const currentX = e.touches[0].clientX;
       const dx = currentX - startX;
-      servicesSlider.style.transform = `translateX(${-currentServiceIndex * servicesSliderContainer.clientWidth + dx}px)`;
+      servicesSlider.style.transform = translateX(${-currentServiceIndex * servicesSliderContainer.clientWidth + dx}px);
     }
     function handleTouchEnd(e) {
       isDragging = false;
@@ -1049,14 +1049,14 @@
         const btnText = service.title.replace("вигребних", "вигрібних");
         let iconWidth = (index === 0) ? "45px" : (index === 4 ? "18px" : "30px");
         let iconMarginLeft = (index === 0) ? "25px" : (index === 4 ? "22px" : "30px");
-        btn.innerHTML = `
+        btn.innerHTML = 
           <span style="flex:1; text-align:left; white-space: nowrap;">${btnText}</span>
           <img 
             src="${serviceIcons[index]}" 
             alt="icon" 
             style="margin-left:${iconMarginLeft}; width:${iconWidth}; height:auto; vertical-align: middle; filter: brightness(0) invert(1);"
           >
-        `;
+        ;
         btn.addEventListener('click', () => {
           selectedOrderServiceIndex = index;
           document.getElementById('orderStep1').style.display = 'none';
@@ -1211,7 +1211,7 @@
     /* Геокодування адреси (Nominatim) */
     function geocodeAddress(address) {
       initMap();
-      fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&countrycodes=ua&limit=1`)
+      fetch(https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&countrycodes=ua&limit=1)
         .then(response => response.json())
         .then(data => {
           if(data && data.length > 0) {
@@ -1313,7 +1313,7 @@
           });
           
           // Відправка замовлення адміністратору через Telegram
-          fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+          fetch(https://api.telegram.org/bot${BOT_TOKEN}/sendMessage, {
               method: "POST",
               headers: {
                 "Content-Type": "application/json"
@@ -1343,9 +1343,9 @@
           bonusCounter = parseInt(bonusCounter) + 1;
           if (bonusCounter > 5) { bonusCounter = 1; }
           localStorage.setItem('bonusCounter', bonusCounter);
-          const bonusText = `Ваше замовлення: ${bonusCounter} / 5 ✅\nРухаємось до бонусу! Кожне замовлення наближає вас до ще більшої вигоди 🎯\n\n💧 На всі замовлення діє знижка 2% — бо ми цінуємо кожного клієнта.\n🌟 А вже на п’ятому замовленні — даруємо 10% знижки!\n\nНакопичуйте замовлення, а ми подбаємо про чистоту та ваш комфорт.\nSeptic24 — коли все працює чітко і з турботою 💙`;
+          const bonusText = Ваше замовлення: ${bonusCounter} / 5 ✅\nРухаємось до бонусу! Кожне замовлення наближає вас до ще більшої вигоди 🎯\n\n💧 На всі замовлення діє знижка 2% — бо ми цінуємо кожного клієнта.\n🌟 А вже на п’ятому замовленні — даруємо 10% знижки!\n\nНакопичуйте замовлення, а ми подбаємо про чистоту та ваш комфорт.\nSeptic24 — коли все працює чітко і з турботою 💙;
           if (webUserId) {
-              fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+              fetch(https://api.telegram.org/bot${BOT_TOKEN}/sendMessage, {
                   method: "POST",
                   headers: {
                     "Content-Type": "application/json"
@@ -1399,7 +1399,7 @@
         let htmlContent = "";
         desiredOrder.forEach(label => {
           if(orderMap[label]) {
-            htmlContent += `<p><strong>${label}:</strong> ${orderMap[label]}</p>`;
+            htmlContent += <p><strong>${label}:</strong> ${orderMap[label]}</p>;
           }
         });
         
@@ -1431,7 +1431,7 @@
     // Функція підтвердження повторного замовлення
     function confirmRepeat(orderText) {
       if(confirm("Ви впевнені, що хочете повторити замовлення?")) {
-        fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+        fetch(https://api.telegram.org/bot${BOT_TOKEN}/sendMessage, {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
@@ -1447,9 +1447,9 @@
           bonusCounter = parseInt(bonusCounter) + 1;
           if (bonusCounter > 5) { bonusCounter = 1; }
           localStorage.setItem('bonusCounter', bonusCounter);
-          const bonusText = `Ваше замовлення: ${bonusCounter} / 5 ✅\nРухаємось до бонусу! Кожне замовлення наближає вас до ще більшої вигоди 🎯\n\n💧 На всі замовлення діє знижка 2% — бо ми цінуємо кожного клієнта.\n🌟 А вже на п’ятому замовленні — даруємо 10% знижки!\n\nНакопичуйте замовлення, а ми подбаємо про чистоту та ваш комфорт.\nSeptic24 — коли все працює чітко і з турботою 💙`;
+          const bonusText = Ваше замовлення: ${bonusCounter} / 5 ✅\nРухаємось до бонусу! Кожне замовлення наближає вас до ще більшої вигоди 🎯\n\n💧 На всі замовлення діє знижка 2% — бо ми цінуємо кожного клієнта.\n🌟 А вже на п’ятому замовленні — даруємо 10% знижки!\n\nНакопичуйте замовлення, а ми подбаємо про чистоту та ваш комфорт.\nSeptic24 — коли все працює чітко і з турботою 💙;
           if(webUserId) {
-            fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+            fetch(https://api.telegram.org/bot${BOT_TOKEN}/sendMessage, {
                 method: "POST",
                 headers: {
                   "Content-Type": "application/json"
