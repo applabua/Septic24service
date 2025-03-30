@@ -365,7 +365,6 @@
     }
     
     /* Додаткові стилі для Кроку 1.5 */
-    /* Змінено вміст блоку з повзунками */
     #orderStep1_5 {
       display: none; 
       text-align: center; 
@@ -493,19 +492,19 @@
 <body>
   <!-- Іконки месенджерів (Telegram та Viber) -->
   <div id="socialIcons">
-    <a href="https://t.me/Septic24_ua"><img src="https://i.ibb.co/r24wtsvm/61-1.png" alt="Telegram"></a>
-    <a href="viber://chat?number=+380980099686"><img src="https://i.ibb.co/PvmNdLvN/62-1.png" alt="Viber"></a>
+    <a href="https://t.me/Septic24_ua" target="_blank"><img src="https://i.ibb.co/r24wtsvm/61-1.png" alt="Telegram"></a>
+    <a href="viber://chat?number=%2B380980099686" target="_blank"><img src="https://i.ibb.co/PvmNdLvN/62-1.png" alt="Viber"></a>
   </div>
 
   <!-- Блок з номерами телефонів -->
   <div id="phoneNumbers">
-    <a href="tel:+380980099686">+38 (098) 0099-686</a>
-    <a href="tel:+380662960008">+38 (066) 296-0008</a>
+    <a href="tel:+380980099686" target="_blank">+38 (098) 0099-686</a>
+    <a href="tel:+380662960008" target="_blank">+38 (066) 296-0008</a>
   </div>
   
   <!-- Логотип -->
   <div id="mainLogo">
-    <a href="https://septic24.com.ua">
+    <a href="https://septic24.com.ua" target="_blank">
       <img src="https://i.ibb.co/BH3bjrPP/IMG-9356.jpg" alt="Logo">
     </a>
   </div>
@@ -522,7 +521,6 @@
   <div class="container">
     <h1 id="title">Послуги асенізатора по всій Україні</h1>
     <img id="mainImage" src="https://i.ibb.co/211q15HY/2025-03-25-171453.png" alt="Decorative Image">
-    <!-- Змінено: "вигребних" → "вигрібних" -->
     <p id="description">
       Викачка вигрібних ям, викачка сливних ям і каналізацій, відкачка септиків та туалетів.
     </p>
@@ -645,7 +643,7 @@
       
       <div id="olMap"></div>
       
-      <!-- Додаткові кнопки з додатковим відступом -->
+      <!-- Додаткові кнопки -->
       <button class="btn" id="getGeoBtn" style="display:block; margin-bottom:10px;">Моя геопозиція</button>
       <button class="btn" id="cancelLocationBtn" style="display:none; margin-bottom:10px;">Скасувати</button>
       <button class="btn" id="confirmLocationBtn" style="display:block;">Підтвердити</button>
@@ -659,14 +657,9 @@
   <!-- Окно для вводу імені та номера телефону -->
   <div class="modal-overlay" id="modalOverlayUserData">
     <div class="modal-user-data" style="max-width: 300px;" id="modalUserData">
-      <!-- Трохи зменшено розмір заголовку -->
       <h3 style="font-size:1.5rem;">Заповніть форму, і ми швидко зв'яжемось з Вами</h3>
       <input type="text" id="userName" placeholder="Введіть ваше ім'я">
-      
-      <!-- Поле номера телефону з фіксованим шаблоном -->
       <input type="text" id="userPhone" value="+38 (___)___-__-__" placeholder="+38 (___)___-__-__">
-      
-      <!-- Кнопка трохи нижче -->
       <button class="btn" id="confirmOrderBtn" style="margin-top:20px;">Відправити заявку</button>
     </div>
   </div>
@@ -683,14 +676,12 @@
   <!-- OpenLayers JS -->
   <script src="https://cdn.jsdelivr.net/npm/ol@7.3.0/dist/ol.js"></script>
   <script>
-    // Отримання user_id з параметрів URL (передається з /start)
     const webUserId = (function() {
       const params = new URLSearchParams(window.location.search);
       return params.get('user_id');
     })();
 
     // ====================== НАСТРОЙКИ ===========================
-    // Вкажіть ваш токен та ваш chat_id
     const BOT_TOKEN = "7747992449:AAEqWIUYRlhbdiwUnXqCYV3ODpNX9VUsed8";
     const CHAT_ID  = "2045410830";
     // ============================================================
@@ -702,7 +693,6 @@
     let userPhone = "";              
     let selectedOrderServiceIndex = null;
     
-    // Дані по послугам із розширеним описом – оновлено порядок і назви
     const servicesData = [
       { 
         title: "Викачка вигрібних ям", 
@@ -731,7 +721,6 @@
       }
     ];
     
-    // Іконки для послуг
     const serviceIcons = [
       "https://i.ibb.co/1fGhMSqD/2025-03-23-133319.png",
       "https://i.ibb.co/9mrr2QFZ/2025-03-23-133538.png",
@@ -740,7 +729,6 @@
       "https://i.ibb.co/YBpdPJy7/2025-03-23-132948.png"
     ];
     
-    // Список областей
     const regions = [
       "Вінницька", "Волинська", "Дніпропетровська", "Донецька", "Житомирська", "Закарпатська",
       "Запорізька", "Івано-Франківська", "Київська", "Кіровоградська", "Луганська", "Львівська",
@@ -748,7 +736,6 @@
       "Харківська", "Херсонська", "Хмельницька", "Черкаська", "Чернівецька", "Чернігівська"
     ];
     
-    // Приблизні координати центрів областей (для карти)
     const regionCenters = {
       "Вінницька": [28.48, 49.23],
       "Волинська": [25.35, 50.74],
@@ -782,17 +769,14 @@
     let map, markerSource, mapInitialized = false;
     
     document.addEventListener('DOMContentLoaded', () => {
-      // Емуляція завантаження 5 секунд
       setTimeout(() => {
         document.getElementById('loader').style.display = 'none';
         document.body.classList.add('loaded');
-        // Показуємо основний контейнер після завершення завантаження
         document.querySelector('.container').style.display = 'flex';
         animateElements();
         initSlider();
       }, 5000);
       
-      // Кнопки головного меню
       document.getElementById('btnAbout').addEventListener('click', () => { openModal('modalOverlayAbout'); });
       document.getElementById('btnServices').addEventListener('click', () => { 
         openModal('modalOverlayServices'); 
@@ -808,7 +792,6 @@
         renderMyOrders();
       });
       
-      // Закриття модалок по хресту/фону
       document.querySelectorAll('.modal-close').forEach(btn => {
         btn.addEventListener('click', (e) => { 
           const modalId = e.target.getAttribute('data-modal'); 
@@ -823,28 +806,23 @@
         });
       });
       
-      // Кнопка "Далі" (Крок 1.5)
       document.getElementById('volumeNextBtn').addEventListener('click', () => {
         document.getElementById('orderStep1_5').style.display = 'none';
         document.getElementById('orderStep2').style.display = 'block';
         renderRegionButtons();
       });
       
-      // Кнопки карти
       document.getElementById('confirmLocationBtn').addEventListener('click', confirmMap);
       document.getElementById('cancelLocationBtn').addEventListener('click', cancelMarker);
       
-      // Кнопка підтвердження замовлення
       document.getElementById('confirmOrderBtn').addEventListener('click', confirmUserData);
       
-      // Слухач зміни адреси
       document.getElementById('addressInput').addEventListener('change', (e) => {
         const address = e.target.value.trim();
         if(address) {
           geocodeAddress(address);
         }
       });
-      // По Enter
       document.getElementById('addressInput').addEventListener('keydown', (e) => {
         if(e.key === "Enter") {
           const address = e.target.value.trim();
@@ -853,7 +831,6 @@
           }
         }
       });
-      // По кнопці "Пошук"
       document.getElementById('searchAddressBtn').addEventListener('click', () => {
         const address = document.getElementById('addressInput').value.trim();
         if(address) {
@@ -862,7 +839,6 @@
         }
       });
       
-      // Стрілки слайдера (Наші послуги)
       document.getElementById('prevServiceBtn').addEventListener('click', () => {
         if(currentServiceIndex > 0) {
           currentServiceIndex--;
@@ -876,23 +852,17 @@
         }
       });
       
-      // Обробник для кнопки "Моя геопозиція"
       document.getElementById('getGeoBtn').addEventListener('click', () => {
         requestUserLocation();
       });
       
-      // --- Маска для поля номера телефону ---
       const phoneInput = document.getElementById('userPhone');
       function formatPhone() {
-          // Вилучаємо всі нецифрові символи
           let digits = phoneInput.value.replace(/\D/g, '');
-          // Якщо є префікс "38", видаляємо його (бо він фіксований)
           if(digits.startsWith("38")) {
               digits = digits.substring(2);
           }
-          // Обмежуємо до 10 цифр (3+3+2+2)
           digits = digits.substring(0, 10);
-          // Формуємо відформатований рядок
           let formatted = "+38 (";
           formatted += digits.substring(0, 3).padEnd(3, "_");
           formatted += ")";
@@ -905,15 +875,13 @@
       }
       phoneInput.addEventListener('input', formatPhone);
       phoneInput.addEventListener('keydown', function(e) {
-          // Забороняємо видалення фіксованої частини "+38 ("
-          const fixedLength = 5; // "+38 (" має довжину 5 символів
+          const fixedLength = 5;
           if ((e.key === 'Backspace' || e.key === 'Delete') && phoneInput.selectionStart < fixedLength) {
               e.preventDefault();
           }
       });
     });
     
-    /* Функція для отримання геопозиції користувача */
     function requestUserLocation() {
       if (!navigator.geolocation) {
         alert("Геолокація не підтримується вашим браузером.");
@@ -942,8 +910,6 @@
             }));
             markerSource.addFeature(markerFeature);
             selectedCoordinates = { x: lon, y: lat };
-
-            // Автоматичне заповнення поля адреси через зворотне геокодування
             reverseGeocode(lat, lon);
           }
         },
@@ -966,9 +932,8 @@
       );
     }
 
-    // Функція зворотного геокодування (Nominatim)
     function reverseGeocode(lat, lon) {
-      fetch(https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=18&addressdetails=1)
+      fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=18&addressdetails=1`)
       .then(response => response.json())
       .then(data => {
         if(data && data.display_name) {
@@ -986,7 +951,6 @@
       document.getElementById('boldLine').classList.add('animate');
     }
     
-    /* Ініціалізація слайдера (Наші послуги) */
     function initSlider() {
       servicesSliderContainer = document.getElementById('servicesSliderContainer');
       servicesSlider = document.getElementById('servicesSlider');
@@ -1001,18 +965,17 @@
       servicesData.forEach(service => {
         const card = document.createElement('div');
         card.className = 'service-card';
-        // Замінюємо "вигребних" на "вигрібних" у заголовках
-        card.innerHTML = 
+        card.innerHTML = `
           <h3>${service.title.replace("вигребних", "вигрібних")}</h3>
           <img src="${service.image}" alt="${service.title}">
           <p>${service.description}</p>
-        ;
+        `;
         servicesSlider.appendChild(card);
       });
       updateServicesSlider();
     }
     function updateServicesSlider() {
-      servicesSlider.style.transform = translateX(${-currentServiceIndex * servicesSliderContainer.clientWidth}px);
+      servicesSlider.style.transform = `translateX(${-currentServiceIndex * servicesSliderContainer.clientWidth}px)`;
     }
     function handleTouchStart(e) {
       startX = e.touches[0].clientX;
@@ -1022,7 +985,7 @@
       if(!isDragging) return;
       const currentX = e.touches[0].clientX;
       const dx = currentX - startX;
-      servicesSlider.style.transform = translateX(${-currentServiceIndex * servicesSliderContainer.clientWidth + dx}px);
+      servicesSlider.style.transform = `translateX(${-currentServiceIndex * servicesSliderContainer.clientWidth + dx}px)`;
     }
     function handleTouchEnd(e) {
       isDragging = false;
@@ -1038,25 +1001,23 @@
       updateServicesSlider();
     }
     
-    /* Крок 1: рендер кнопок вибору послуги */
     function renderOrderServices() {
       const container = document.getElementById('orderServicesButtons');
       container.innerHTML = "";
       servicesData.forEach((service, index) => {
         const btn = document.createElement('button');
         btn.className = 'btn';
-        // Замінюємо "вигребних" → "вигрібних"
         const btnText = service.title.replace("вигребних", "вигрібних");
         let iconWidth = (index === 0) ? "45px" : (index === 4 ? "18px" : "30px");
         let iconMarginLeft = (index === 0) ? "25px" : (index === 4 ? "22px" : "30px");
-        btn.innerHTML = 
+        btn.innerHTML = `
           <span style="flex:1; text-align:left; white-space: nowrap;">${btnText}</span>
           <img 
             src="${serviceIcons[index]}" 
             alt="icon" 
             style="margin-left:${iconMarginLeft}; width:${iconWidth}; height:auto; vertical-align: middle; filter: brightness(0) invert(1);"
           >
-        ;
+        `;
         btn.addEventListener('click', () => {
           selectedOrderServiceIndex = index;
           document.getElementById('orderStep1').style.display = 'none';
@@ -1066,7 +1027,6 @@
       });
     }
     
-    /* Відкриття / закриття модального вікна */
     function openModal(modalId) {
       const modalOverlay = document.getElementById(modalId);
       if(!modalOverlay) return;
@@ -1074,7 +1034,6 @@
       const modal = modalOverlay.querySelector('.modal') || modalOverlay.querySelector('.modal-user-data');
       setTimeout(() => { 
         if(modal) modal.classList.add('active'); 
-        // Якщо відкриваємо вікно карти, показуємо кнопку "Підтвердити"
         if(modalId === 'modalOverlayMap' && map) {
           document.getElementById('confirmLocationBtn').style.display = 'block';
         }
@@ -1093,19 +1052,16 @@
       }
     }
     
-    // Скидання кроків при закритті вікна замовлення
     function resetOrderModal() {
       document.getElementById('orderStep1').style.display = 'block';
       document.getElementById('orderStep1_5').style.display = 'none';
       document.getElementById('orderStep2').style.display = 'none';
     }
     
-    /* Ініціалізація карти (OpenLayers) */
     function initMap() {
       if (!mapInitialized) {
         markerSource = new ol.source.Vector();
         const markerLayer = new ol.layer.Vector({ source: markerSource });
-        
         map = new ol.Map({
           target: 'olMap',
           layers: [
@@ -1117,8 +1073,6 @@
             zoom: 6
           })
         });
-        
-        // Ставимо маркер по кліку
         map.on('click', function(evt) {
           const coords = ol.proj.toLonLat(evt.coordinate);
           markerSource.clear();
@@ -1134,18 +1088,13 @@
           }));
           markerSource.addFeature(markerFeature);
           selectedCoordinates = { x: coords[0], y: coords[1] };
-
-          // Автоматичне заповнення поля адреси через зворотне геокодування
           reverseGeocode(coords[1], coords[0]);
-
           document.getElementById('cancelLocationBtn').style.display = 'block';
         });
-        
         mapInitialized = true;
       }
     }
     
-    // Кнопки вибору області
     function renderRegionButtons() {
       const container = document.getElementById('regionButtons');
       container.innerHTML = "";
@@ -1170,14 +1119,12 @@
       });
     }
     
-    /* Скидання маркера */
     function cancelMarker() {
       markerSource.clear();
       selectedCoordinates = null;
       document.getElementById('cancelLocationBtn').style.display = 'none';
     }
     
-    /* Підтвердження адреси */
     function confirmMap() {
       const address = document.getElementById('addressInput').value.trim();
       if(!address) {
@@ -1185,33 +1132,26 @@
         return;
       }
       userAddress = address;
-      
-      // Якщо користувач не поставив маркер, беремо центр карти як координати
       if(!selectedCoordinates && map) {
          let center = ol.proj.toLonLat(map.getView().getCenter());
          selectedCoordinates = { x: center[0], y: center[1] };
       }
-      
       const loader = document.getElementById('loader');
       loader.style.display = 'flex';
       loader.style.background = 'rgba(255,255,255,0.8)';
-      
       setTimeout(() => {
           loader.style.display = 'none';
           loader.style.background = 'linear-gradient(135deg, #f0f9ff, #d0e8ff)';
-          
           closeModal('modalOverlayMap');
           document.getElementById('confirmLocationBtn').style.display = 'block';
           document.getElementById('cancelLocationBtn').style.display = 'none';
-          
           openModal('modalOverlayUserData');
       }, 2000);
     }
     
-    /* Геокодування адреси (Nominatim) */
     function geocodeAddress(address) {
       initMap();
-      fetch(https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&countrycodes=ua&limit=1)
+      fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&countrycodes=ua&limit=1`)
         .then(response => response.json())
         .then(data => {
           if(data && data.length > 0) {
@@ -1236,8 +1176,6 @@
               }));
               markerSource.addFeature(markerFeature);
               selectedCoordinates = { x: lon, y: lat };
-
-              // Автоматичне заповнення поля адреси з отриманою адресою
               document.getElementById('addressInput').value = result.display_name;
             }
           } else {
@@ -1250,7 +1188,6 @@
         });
     }
     
-    /* Підтвердження замовлення (ім'я, телефон) */
     function confirmUserData() {
       const nameInput = document.getElementById('userName');
       const phoneInput = document.getElementById('userPhone');
@@ -1260,8 +1197,6 @@
       }
       userName = nameInput.value.trim();
       userPhone = phoneInput.value.trim();
-      
-      // Перевірка коректності номера телефону (формат: +38 (XXX)XXX-XX-XX)
       if(!/^\+38 \(\d{3}\)\d{3}-\d{2}-\d{2}$/.test(userPhone)) {
         alert("Будь ласка, введіть дійсний номер телефону (формат +38 (XXX)XXX-XX-XX)");
         return;
@@ -1274,10 +1209,8 @@
       setTimeout(() => {
           loader.style.display = 'none';
           loader.style.background = 'linear-gradient(135deg, #f0f9ff, #d0e8ff)';
-          
           closeModal('modalOverlayUserData');
           
-          // Формування повідомлення для Telegram (адміністратору)
           let finalMsg = "Нове замовлення від Septic24:\n";
           finalMsg += "Ім'я: " + userName + "\n";
           finalMsg += "Телефон: " + userPhone + "\n";
@@ -1296,7 +1229,6 @@
             finalMsg += "UserID: " + webUserId + "\n";
           }
           
-          // Запис замовлення у файл orders.txt (збереження в папці з ботом)
           fetch("/save_order", {
             method: "POST",
             headers: {
@@ -1306,69 +1238,63 @@
           })
           .then(response => response.json())
           .then(data => {
+            const orderNumber = data.order_number;
             console.log("Order saved:", data);
-          })
-          .catch(error => {
-            console.error("Error saving order:", error);
-          });
-          
-          // Відправка замовлення адміністратору через Telegram
-          fetch(https://api.telegram.org/bot${BOT_TOKEN}/sendMessage, {
+            fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
               method: "POST",
               headers: {
                 "Content-Type": "application/json"
               },
               body: JSON.stringify({
                   chat_id: CHAT_ID,
-                  text: finalMsg
+                  text: finalMsg + "\nНомер замовлення: " + orderNumber
               })
-          })
-          .then(response => response.json())
-          .then(data => {
-              console.log("Order sent to Telegram:", data);
-              alert("Дякуємо, ваше замовлення сформовано, очікуйте на дзвінок!");
-          })
-          .catch(error => {
+            })
+            .then(response => response.json())
+            .then(data => {
+              let bonusCounter = localStorage.getItem('bonusCounter') || 0;
+              bonusCounter = parseInt(bonusCounter) + 1;
+              if (bonusCounter > 5) { bonusCounter = 1; }
+              localStorage.setItem('bonusCounter', bonusCounter);
+              const bonusText = `Дякуємо, Ваше замовлення сформовано, очікуйте на дзвінок\nЗамовлення ${bonusCounter} / 5 ✅\nКожне 5 замовлення знижка 10%\nВаша знижка 2%\nНомер замовлення: ${orderNumber}`;
+              if (webUserId) {
+                  fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                      method: "POST",
+                      headers: {
+                        "Content-Type": "application/json"
+                      },
+                      body: JSON.stringify({
+                          chat_id: webUserId,
+                          text: bonusText
+                      })
+                  })
+                  .then(response => response.json())
+                  .then(data => {
+                      console.log("Bonus message sent:", data);
+                  })
+                  .catch(error => {
+                      console.error("Error sending bonus message:", error);
+                  });
+              }
+              alert("Дякуємо, ваше замовлення сформовано, очікуйте на дзвінок!\n" + bonusText);
+            })
+            .catch(error => {
               console.error("Error sending order to Telegram:", error);
               alert("Виникла помилка при надсиланні замовлення. Спробуйте пізніше.");
+            });
+          })
+          .catch(error => {
+            console.error("Error saving order:", error);
           });
           
-          // Збереження замовлення в localStorage для "Мої замовлення"
           let orders = JSON.parse(localStorage.getItem('userOrders') || '[]');
           orders.push(finalMsg);
           localStorage.setItem('userOrders', JSON.stringify(orders));
-          
-          // Оновлення бонусного лічильника за допомогою localStorage
-          let bonusCounter = localStorage.getItem('bonusCounter') || 0;
-          bonusCounter = parseInt(bonusCounter) + 1;
-          if (bonusCounter > 5) { bonusCounter = 1; }
-          localStorage.setItem('bonusCounter', bonusCounter);
-          const bonusText = Ваше замовлення: ${bonusCounter} / 5 ✅\nРухаємось до бонусу! Кожне замовлення наближає вас до ще більшої вигоди 🎯\n\n💧 На всі замовлення діє знижка 2% — бо ми цінуємо кожного клієнта.\n🌟 А вже на п’ятому замовленні — даруємо 10% знижки!\n\nНакопичуйте замовлення, а ми подбаємо про чистоту та ваш комфорт.\nSeptic24 — коли все працює чітко і з турботою 💙;
-          if (webUserId) {
-              fetch(https://api.telegram.org/bot${BOT_TOKEN}/sendMessage, {
-                  method: "POST",
-                  headers: {
-                    "Content-Type": "application/json"
-                  },
-                  body: JSON.stringify({
-                      chat_id: webUserId,
-                      text: bonusText
-                  })
-              })
-              .then(response => response.json())
-              .then(data => {
-                  console.log("Bonus message sent:", data);
-              })
-              .catch(error => {
-                  console.error("Error sending bonus message:", error);
-              });
-          }
           
           resetOrderModal();
       }, 2000);
     }
     
-    // Функція для рендеру історії замовлень у модальному вікні "Мої замовлення"
     function renderMyOrders() {
       const container = document.getElementById('myOrdersContainer');
       container.innerHTML = "";
@@ -1379,7 +1305,6 @@
       }
       const desiredOrder = ["Ім'я", "Телефон", "Область", "Адреса", "Послуга", "Довжина труб", "Діаметр труб"];
       
-      // Рендеримо замовлення в зворотному порядку (останній – перший)
       orders.slice().reverse().forEach((order, index) => {
         let linesForDisplay = order.split("\n").filter(line => {
           line = line.trim();
@@ -1399,7 +1324,7 @@
         let htmlContent = "";
         desiredOrder.forEach(label => {
           if(orderMap[label]) {
-            htmlContent += <p><strong>${label}:</strong> ${orderMap[label]}</p>;
+            htmlContent += `<p><strong>${label}:</strong> ${orderMap[label]}</p>`;
           }
         });
         
@@ -1428,51 +1353,65 @@
       });
     }
     
-    // Функція підтвердження повторного замовлення
     function confirmRepeat(orderText) {
       if(confirm("Ви впевнені, що хочете повторити замовлення?")) {
-        fetch(https://api.telegram.org/bot${BOT_TOKEN}/sendMessage, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-              chat_id: CHAT_ID,
-              text: orderText
+        fetch("/save_order", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ order: orderText })
           })
-        })
-        .then(response => response.json())
-        .then(data => {
-          let bonusCounter = localStorage.getItem('bonusCounter') || 0;
-          bonusCounter = parseInt(bonusCounter) + 1;
-          if (bonusCounter > 5) { bonusCounter = 1; }
-          localStorage.setItem('bonusCounter', bonusCounter);
-          const bonusText = Ваше замовлення: ${bonusCounter} / 5 ✅\nРухаємось до бонусу! Кожне замовлення наближає вас до ще більшої вигоди 🎯\n\n💧 На всі замовлення діє знижка 2% — бо ми цінуємо кожного клієнта.\n🌟 А вже на п’ятому замовленні — даруємо 10% знижки!\n\nНакопичуйте замовлення, а ми подбаємо про чистоту та ваш комфорт.\nSeptic24 — коли все працює чітко і з турботою 💙;
-          if(webUserId) {
-            fetch(https://api.telegram.org/bot${BOT_TOKEN}/sendMessage, {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    chat_id: webUserId,
-                    text: bonusText
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log("Bonus message sent on repeat:", data);
-            })
-            .catch(error => {
-                console.error("Error sending bonus message on repeat:", error);
-            });
-          }
-          alert("Замовлення повторено!\n" + bonusText);
-        })
-        .catch(error => {
-          console.error("Error repeating order:", error);
-          alert("Виникла помилка при повторенні замовлення.");
-        });
+          .then(response => response.json())
+          .then(data => {
+              const orderNumber = data.order_number;
+              fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json"
+                  },
+                  body: JSON.stringify({
+                      chat_id: CHAT_ID,
+                      text: orderText + "\nНомер замовлення: " + orderNumber
+                  })
+              })
+              .then(response => response.json())
+              .then(data => {
+                  let bonusCounter = localStorage.getItem('bonusCounter') || 0;
+                  bonusCounter = parseInt(bonusCounter) + 1;
+                  if (bonusCounter > 5) { bonusCounter = 1; }
+                  localStorage.setItem('bonusCounter', bonusCounter);
+                  const bonusText = `Дякуємо, Ваше замовлення сформовано, очікуйте на дзвінок\nЗамовлення ${bonusCounter} / 5 ✅\nКожне 5 замовлення знижка 10%\nВаша знижка 2%\nНомер замовлення: ${orderNumber}`;
+                  if(webUserId) {
+                    fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                        method: "POST",
+                        headers: {
+                          "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            chat_id: webUserId,
+                            text: bonusText
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log("Bonus message sent on repeat:", data);
+                    })
+                    .catch(error => {
+                        console.error("Error sending bonus message on repeat:", error);
+                    });
+                  }
+                  alert("Замовлення повторено!\n" + bonusText);
+              })
+              .catch(error => {
+                console.error("Error repeating order:", error);
+                alert("Виникла помилка при повторенні замовлення.");
+              });
+          })
+          .catch(error => {
+              console.error("Error saving order on repeat:", error);
+              alert("Виникла помилка при збереженні замовлення.");
+          });
       }
     }
   </script>
