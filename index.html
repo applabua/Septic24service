@@ -1267,11 +1267,6 @@
           .then(response => response.json())
           .then(data => {
               console.log("Order sent to Telegram:", data);
-              let bonusCounter = parseInt(localStorage.getItem('bonusCounter') || '0') + 1;
-              if (bonusCounter > 5) { bonusCounter = 1; }
-              localStorage.setItem('bonusCounter', bonusCounter);
-              const bonusText = `Замовлення ${bonusCounter} / 5 ✅\nКожне 5 замовлення знижка 10%\nВаша знижка 2%`;
-              alert("Дякуємо, Ваше замовлення сформовано, очікуйте на дзвінок\n\n" + bonusText);
           })
           .catch(error => {
               console.error("Error sending order to Telegram:", error);
@@ -1282,29 +1277,7 @@
           orders.push(finalMsg);
           localStorage.setItem('userOrders', JSON.stringify(orders));
           
-          let bonusCounter = parseInt(localStorage.getItem('bonusCounter') || '0') + 1;
-          if (bonusCounter > 5) { bonusCounter = 1; }
-          localStorage.setItem('bonusCounter', bonusCounter);
-          const bonusText = `Замовлення ${bonusCounter} / 5 ✅\nКожне 5 замовлення знижка 10%\nВаша знижка 2%`;
-          if (webUserId) {
-              fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-                  method: "POST",
-                  headers: {
-                    "Content-Type": "application/json"
-                  },
-                  body: JSON.stringify({
-                      chat_id: webUserId,
-                      text: bonusText
-                  })
-              })
-              .then(response => response.json())
-              .then(data => {
-                  console.log("Bonus message sent:", data);
-              })
-              .catch(error => {
-                  console.error("Error sending bonus message:", error);
-              });
-          }
+          alert("Дякуємо, Ваше замовлення сформовано, очікуйте на дзвінок");
           
           resetOrderModal();
       }, 2000);
@@ -1382,30 +1355,7 @@
         })
         .then(response => response.json())
         .then(data => {
-          let bonusCounter = parseInt(localStorage.getItem('bonusCounter') || '0') + 1;
-          if (bonusCounter > 5) { bonusCounter = 1; }
-          localStorage.setItem('bonusCounter', bonusCounter);
-          const bonusText = `Замовлення ${bonusCounter} / 5 ✅\nКожне 5 замовлення знижка 10%\nВаша знижка 2%`;
-          if(webUserId) {
-            fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    chat_id: webUserId,
-                    text: bonusText
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log("Bonus message sent on repeat:", data);
-            })
-            .catch(error => {
-                console.error("Error sending bonus message on repeat:", error);
-            });
-          }
-          alert("Замовлення повторено!\n" + bonusText);
+          alert("Замовлення повторено!");
         })
         .catch(error => {
           console.error("Error repeating order:", error);
