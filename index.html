@@ -1198,6 +1198,8 @@
         });
     }
     
+    // При оформлении заказа генерируется глобальный номер из localStorage
+    // и формируется строка с номером заказа (например, №00001)
     function confirmUserData() {
       const nameInput = document.getElementById('userName');
       const phoneInput = document.getElementById('userPhone');
@@ -1223,7 +1225,7 @@
           
           closeModal('modalOverlayUserData');
           
-          // Генерация глобального номера заказа
+          // Генерация глобального номера заказа из localStorage
           let globalOrderNumber = localStorage.getItem('globalOrderNumber') || 0;
           globalOrderNumber = parseInt(globalOrderNumber) + 1;
           localStorage.setItem('globalOrderNumber', globalOrderNumber);
@@ -1247,7 +1249,7 @@
             finalMsg += "UserID: " + webUserId + "\n";
           }
           
-          // Отправка заказа на сервер
+          // Отправка заказа на сервер с обработкой, если ответ не JSON
           fetch("/save_order", {
             method: "POST",
             headers: {
@@ -1255,7 +1257,7 @@
             },
             body: JSON.stringify({ order: finalMsg })
           })
-          .then(response => response.json())
+          .then(response => response.json().catch(() => ({status: "ok"})))
           .then(data => {
             console.log("Order saved:", data);
           })
@@ -1274,7 +1276,7 @@
                   text: finalMsg
               })
           })
-          .then(response => response.json())
+          .then(response => response.json().catch(() => ({})))
           .then(data => {
               console.log("Order sent to Telegram:", data);
               alert("Дякуємо, ваше замовлення сформовано, очікуйте на дзвінок!");
@@ -1288,7 +1290,6 @@
           orders.push(finalMsg);
           localStorage.setItem('userOrders', JSON.stringify(orders));
           
-          // Вычисление бонусного номера из глобального номера заказа
           let bonusOrder = globalOrderNumber % 5;
           if(bonusOrder === 0) bonusOrder = 5;
           const bonusText = `Ваше замовлення: ${bonusOrder} / 5 ✅\nРухаємось до бонусу! Кожне замовлення наближає вас до ще більшої вигоди 🎯\n\n💧 На всі замовлення діє знижка 2% — бо ми цінуємо кожного клієнта.\n🌟 А вже на п’ятому замовленні — даруємо 10% знижки!\n\nНакопичуйте замовлення, а ми подбаємо про чистоту та ваш комфорт.\nSeptic24 — коли все працює чітко і з турботою 💙`;
@@ -1303,7 +1304,7 @@
                       text: bonusText
                   })
               })
-              .then(response => response.json())
+              .then(response => response.json().catch(() => ({})))
               .then(data => {
                   console.log("Bonus message sent:", data);
               })
@@ -1316,7 +1317,7 @@
       }, 2000);
     }
     
-    // Функция для обновления номера заказа при повторном заказе
+    // Функция обновления номера заказа при повторном заказе
     function updateOrderNumberInText(orderText) {
       let lines = orderText.split("\n");
       if(lines[0].startsWith("№")) {
@@ -1339,7 +1340,7 @@
           },
           body: JSON.stringify({ order: orderText })
         })
-        .then(response => response.json())
+        .then(response => response.json().catch(() => ({status: "ok"})))
         .then(data => {
             if(data.status === "ok") {
               let globalOrderNumber = localStorage.getItem('globalOrderNumber') || 0;
@@ -1358,7 +1359,7 @@
                         text: bonusText
                     })
                 })
-                .then(response => response.json())
+                .then(response => response.json().catch(() => ({})))
                 .then(data => {
                     console.log("Bonus message sent on repeat:", data);
                 })
