@@ -593,9 +593,9 @@
         <div id="orderServicesButtons" class="buttons" style="max-width: 300px;"></div>
       </div>
       
-      <!-- Крок 1.5: параметри труб -->
+      <!-- Крок 1.5: параметри труб та додаткові параметри -->
       <div id="orderStep1_5">
-        <h3>Яка довжина ваших труб в метрах</h3>
+        <h4 style="font-size: 0.9rem;">Яка довжина ваших труб в метрах</h4>
         <input 
           type="range" 
           id="lengthRange" 
@@ -605,7 +605,7 @@
           oninput="document.getElementById('lengthValue').innerHTML = this.value + ' м';"
         >
         <div id="lengthValue" style="margin-bottom: 20px;">1 м</div>
-        <h3>Оберіть діаметр ваших труб в міліметрах</h3>
+        <h4 style="font-size: 0.9rem;">Оберіть діаметр ваших труб в міліметрах</h4>
         <input 
           type="range" 
           id="diameterRange" 
@@ -615,6 +615,26 @@
           oninput="document.getElementById('diameterValue').innerHTML = this.value + ' мм';"
         >
         <div id="diameterValue" style="margin-bottom: 20px;">100 мм</div>
+        <h4 style="font-size: 0.9rem;">Який об'єм вашої ємності в кубах?</h4>
+        <input 
+          type="range" 
+          id="volumeRange" 
+          min="1" 
+          max="25" 
+          value="1" 
+          oninput="document.getElementById('volumeValue').innerHTML = this.value + ' м<sup>3</sup>';"
+        >
+        <div id="volumeValue" style="margin-bottom: 20px; font-size: 0.9rem;">1 м<sup>3</sup></div>
+        <h4 style="font-size: 0.9rem;">Відстань від парковки до ємності</h4>
+        <input 
+          type="range" 
+          id="distanceRange" 
+          min="1" 
+          max="70" 
+          value="1" 
+          oninput="document.getElementById('distanceValue').innerHTML = this.value + ' м';"
+        >
+        <div id="distanceValue" style="margin-bottom: 20px; font-size: 0.9rem;">1 м</div>
         <button class="btn" id="volumeNextBtn">Далі</button>
       </div>
       
@@ -865,7 +885,7 @@
               digits = digits.substring(2);
           }
           digits = digits.substring(0, 10);
-          let formatted = "+38 (";
+          let formatted = "+38 ("; 
           formatted += digits.substring(0, 3).padEnd(3, "_");
           formatted += ")";
           formatted += digits.substring(3, 6).padEnd(3, "_");
@@ -1239,6 +1259,8 @@
             finalMsg += "Послуга: " + servicesData[selectedOrderServiceIndex].title.replace("вигребних", "вигрібних") + "\n";
             finalMsg += "Довжина труб: " + document.getElementById('lengthRange').value + " м\n";
             finalMsg += "Діаметр труб: " + document.getElementById('diameterRange').value + " мм\n";
+            finalMsg += "Об'єм ємності: " + document.getElementById('volumeRange').value + " м³\n";
+            finalMsg += "Відстань від парковки до ємності: " + document.getElementById('distanceRange').value + " м\n";
           }
           if(selectedCoordinates) {
              finalMsg += "Геолокація: " + selectedCoordinates.y.toFixed(5) + ", " + selectedCoordinates.x.toFixed(5) + "\n";
