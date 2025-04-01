@@ -365,7 +365,7 @@
     }
     
     /* Додаткові стилі для Кроку 1.5 */
-    #orderStep1_5 {
+    #orderStep1_5_tubes, #orderStep1_5_capacity {
       display: none; 
       text-align: center; 
       width: 100%;
@@ -373,35 +373,35 @@
       margin-top: 50px;
     }
     
-    /* Стилі для range-інпутів */
-    #orderStep1_5 input[type="range"] {
+    /* Збільшені стилі для range-інпутів */
+    input[type="range"].big {
       -webkit-appearance: none;
       appearance: none;
       width: 80%;
       margin: 0 auto;
-      height: 8px;
+      height: 12px;
       border-radius: 4px;
       background: #ccc;
       outline: none;
       cursor: pointer;
     }
-    #orderStep1_5 input[type="range"]:focus {
+    input[type="range"].big:focus {
       outline: none;
     }
-    #orderStep1_5 input[type="range"]::-webkit-slider-thumb {
+    input[type="range"].big::-webkit-slider-thumb {
       -webkit-appearance: none;
       appearance: none;
-      width: 20px; 
-      height: 20px; 
+      width: 24px; 
+      height: 24px; 
       border-radius: 50%;
       background: #0060a0;
       border: none;
       cursor: pointer;
       box-shadow: none;
     }
-    #orderStep1_5 input[type="range"]::-moz-range-thumb {
-      width: 20px;
-      height: 20px;
+    input[type="range"].big::-moz-range-thumb {
+      width: 24px;
+      height: 24px;
       border-radius: 50%;
       background: #0060a0;
       border: none;
@@ -593,49 +593,58 @@
         <div id="orderServicesButtons" class="buttons" style="max-width: 300px;"></div>
       </div>
       
-      <!-- Крок 1.5: параметри труб та додаткові параметри -->
-      <div id="orderStep1_5">
-        <h4 style="font-size: 0.9rem;">Яка довжина ваших труб в метрах</h4>
+      <!-- Крок 1.5 для "Прочистка труб": параметри труб -->
+      <div id="orderStep1_5_tubes">
+        <h4 style="font-size: 1.2rem;">Яка довжина ваших труб в метрах</h4>
         <input 
           type="range" 
           id="lengthRange" 
+          class="big"
           min="1" 
           max="400" 
           value="1" 
           oninput="document.getElementById('lengthValue').innerHTML = this.value + ' м';"
         >
-        <div id="lengthValue" style="margin-bottom: 20px;">1 м</div>
-        <h4 style="font-size: 0.9rem;">Оберіть діаметр ваших труб в міліметрах</h4>
+        <div id="lengthValue" style="margin-bottom: 20px; font-size: 1.2rem;">1 м</div>
+        <h4 style="font-size: 1.2rem;">Оберіть діаметр ваших труб в міліметрах</h4>
         <input 
           type="range" 
           id="diameterRange" 
+          class="big"
           min="100" 
           max="900" 
           value="100" 
           oninput="document.getElementById('diameterValue').innerHTML = this.value + ' мм';"
         >
-        <div id="diameterValue" style="margin-bottom: 20px;">100 мм</div>
-        <h4 style="font-size: 0.9rem;">Який об'єм вашої ємності в кубах?</h4>
+        <div id="diameterValue" style="margin-bottom: 20px; font-size: 1.2rem;">100 мм</div>
+        <button class="btn" id="tubesNextBtn">Далі</button>
+      </div>
+      
+      <!-- Крок 1.5 для інших послуг: параметри ємності -->
+      <div id="orderStep1_5_capacity">
+        <h4 style="font-size: 1.2rem;">Який об'єм вашої ємності в кубах?</h4>
         <input 
           type="range" 
           id="volumeRange" 
+          class="big"
           min="1" 
           max="25" 
           value="1" 
           oninput="document.getElementById('volumeValue').innerHTML = this.value + ' м<sup>3</sup>';"
         >
-        <div id="volumeValue" style="margin-bottom: 20px; font-size: 0.9rem;">1 м<sup>3</sup></div>
-        <h4 style="font-size: 0.9rem;">Відстань від парковки до ємності</h4>
+        <div id="volumeValue" style="margin-bottom: 20px; font-size: 1.2rem;">1 м<sup>3</sup></div>
+        <h4 style="font-size: 1.2rem;">Відстань від парковки до ємності</h4>
         <input 
           type="range" 
           id="distanceRange" 
+          class="big"
           min="1" 
           max="70" 
           value="1" 
           oninput="document.getElementById('distanceValue').innerHTML = this.value + ' м';"
         >
-        <div id="distanceValue" style="margin-bottom: 20px; font-size: 0.9rem;">1 м</div>
-        <button class="btn" id="volumeNextBtn">Далі</button>
+        <div id="distanceValue" style="margin-bottom: 20px; font-size: 1.2rem;">1 м</div>
+        <button class="btn" id="capacityNextBtn">Далі</button>
       </div>
       
       <!-- Крок 2: вибір області -->
@@ -828,8 +837,13 @@
         });
       });
       
-      document.getElementById('volumeNextBtn').addEventListener('click', () => {
-        document.getElementById('orderStep1_5').style.display = 'none';
+      document.getElementById('tubesNextBtn').addEventListener('click', () => {
+        document.getElementById('orderStep1_5_tubes').style.display = 'none';
+        document.getElementById('orderStep2').style.display = 'block';
+        renderRegionButtons();
+      });
+      document.getElementById('capacityNextBtn').addEventListener('click', () => {
+        document.getElementById('orderStep1_5_capacity').style.display = 'none';
         document.getElementById('orderStep2').style.display = 'block';
         renderRegionButtons();
       });
@@ -1043,7 +1057,11 @@
         btn.addEventListener('click', () => {
           selectedOrderServiceIndex = index;
           document.getElementById('orderStep1').style.display = 'none';
-          document.getElementById('orderStep1_5').style.display = 'block';
+          if(index === 3){
+             document.getElementById('orderStep1_5_tubes').style.display = 'block';
+          } else {
+             document.getElementById('orderStep1_5_capacity').style.display = 'block';
+          }
         });
         container.appendChild(btn);
       });
@@ -1076,7 +1094,8 @@
     
     function resetOrderModal() {
       document.getElementById('orderStep1').style.display = 'block';
-      document.getElementById('orderStep1_5').style.display = 'none';
+      document.getElementById('orderStep1_5_tubes').style.display = 'none';
+      document.getElementById('orderStep1_5_capacity').style.display = 'none';
       document.getElementById('orderStep2').style.display = 'none';
     }
     
@@ -1257,10 +1276,13 @@
           finalMsg += "Адреса: " + userAddress + "\n";
           if(selectedOrderServiceIndex !== null) {
             finalMsg += "Послуга: " + servicesData[selectedOrderServiceIndex].title.replace("вигребних", "вигрібних") + "\n";
-            finalMsg += "Довжина труб: " + document.getElementById('lengthRange').value + " м\n";
-            finalMsg += "Діаметр труб: " + document.getElementById('diameterRange').value + " мм\n";
-            finalMsg += "Об'єм ємності: " + document.getElementById('volumeRange').value + " м³\n";
-            finalMsg += "Відстань від парковки до ємності: " + document.getElementById('distanceRange').value + " м\n";
+            if(selectedOrderServiceIndex === 3){
+              finalMsg += "Довжина труб: " + document.getElementById('lengthRange').value + " м\n";
+              finalMsg += "Діаметр труб: " + document.getElementById('diameterRange').value + " мм\n";
+            } else {
+              finalMsg += "Об'єм ємності: " + document.getElementById('volumeRange').value + " м³\n";
+              finalMsg += "Відстань від парковки до ємності: " + document.getElementById('distanceRange').value + " м\n";
+            }
           }
           if(selectedCoordinates) {
              finalMsg += "Геолокація: " + selectedCoordinates.y.toFixed(5) + ", " + selectedCoordinates.x.toFixed(5) + "\n";
