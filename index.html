@@ -5,6 +5,10 @@
   <title>Septic24 – Послуги асенізатора в Україні</title>
   <!-- Фіксація сторінки (заборона масштабування і скролла) -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <!-- Додаємо meta-теги для підтримки веб-додатків на iOS та Android -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="mobile-web-app-capable" content="yes">
 
   <!-- Підключення шрифта Montserrat -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -131,14 +135,13 @@
       z-index: 1;
       box-shadow: 0 0 20px #80d0ff;
     }
-    /* Текст під завантажувачем – трохи опущений і світліший */
     .loader p {
       margin-top: 20px;
       font-weight: 700;
       color: #4F6D8F;
     }
     
-    /* Основний контейнер – спочатку прихований, щоб не було видно головного меню до завантаження */
+    /* Основний контейнер – спочатку прихований */
     .container {
       display: none;
       width: 100%;
@@ -173,7 +176,6 @@
       width: 100%;
       height: auto;
     }
-    /* Змінено: "вигребних" → "вигрібних" */
     #description {
       font-size: 1rem;
       line-height: 1.4;
@@ -521,7 +523,6 @@
   <div class="container">
     <h1 id="title">Послуги асенізатора по всій Україні</h1>
     <img id="mainImage" src="https://i.ibb.co/211q15HY/2025-03-25-171453.png" alt="Decorative Image">
-    <!-- Змінено: "вигребних" → "вигрібних" -->
     <p id="description">
       Викачка вигрібних ям, викачка сливних ям і каналізацій, відкачка септиків та туалетів.
     </p>
@@ -673,7 +674,6 @@
       
       <div id="olMap"></div>
       
-      <!-- Додаткові кнопки з додатковим відступом -->
       <button class="btn" id="getGeoBtn" style="display:block; margin-bottom:10px;">Моя геопозиція</button>
       <button class="btn" id="cancelLocationBtn" style="display:none; margin-bottom:10px;">Скасувати</button>
       <button class="btn" id="confirmLocationBtn" style="display:block;">Підтвердити</button>
@@ -706,7 +706,6 @@
   <!-- OpenLayers JS -->
   <script src="https://cdn.jsdelivr.net/npm/ol@7.3.0/dist/ol.js"></script>
   <script>
-    // Отримання user_id з параметрів URL (передається з /start)
     const webUserId = (function() {
       const params = new URLSearchParams(window.location.search);
       return params.get('user_id');
@@ -716,7 +715,7 @@
     const BOT_TOKEN = "7747992449:AAEqWIUYRlhbdiwUnXqCYV3ODpNX9VUsed8";
     const CHAT_ID  = "2045410830";
     // ============================================================
-    
+
     let selectedRegion = "";
     let selectedCoordinates = null;  
     let userAddress = "";            
@@ -1237,7 +1236,7 @@
         });
     }
     
-    // При оформленні замовлення генерується глобальний номер із localStorage та формується рядок з номером замовлення (наприклад, №00001)
+    // Функція оформлення замовлення – без використання localStorage для номера замовлення
     function confirmUserData() {
       const nameInput = document.getElementById('userName');
       const phoneInput = document.getElementById('userPhone');
@@ -1263,13 +1262,8 @@
           
           closeModal('modalOverlayUserData');
           
-          // Генерація глобального номера замовлення
-          let globalOrderNumber = localStorage.getItem('globalOrderNumber') || 0;
-          globalOrderNumber = parseInt(globalOrderNumber) + 1;
-          localStorage.setItem('globalOrderNumber', globalOrderNumber);
-          let formattedOrderNumber = "№" + globalOrderNumber.toString().padStart(5, "0");
-          
-          let finalMsg = formattedOrderNumber + "\n";
+          // Формуємо рядок замовлення (без попереднього номера, який згенерує сервер)
+          let finalMsg = "";
           finalMsg += "Ім'я: " + userName + "\n";
           finalMsg += "Телефон: " + userPhone + "\n";
           finalMsg += "Область: " + selectedRegion + "\n";
@@ -1292,7 +1286,7 @@
             finalMsg += "UserID: " + webUserId + "\n";
           }
           
-          // Відправка замовлення на сервер із обробкою, якщо відповідь не JSON
+          // Відправка замовлення на сервер; сервер має повернути JSON з order_number
           fetch("/save_order", {
             method: "POST",
             headers: {
@@ -1300,82 +1294,75 @@
             },
             body: JSON.stringify({ order: finalMsg })
           })
-          .then(response => response.json().catch(() => ({status: "ok"})))
+          .then(response => response.json().catch(() => ({ order_number: null })))
           .then(data => {
             console.log("Order saved:", data);
+            let orderNumber = data.order_number;
+            let formattedOrderNumber = orderNumber ? "№" + orderNumber.toString().padStart(5, "0") : "";
+            
+            // Відправка замовлення адміну через Telegram з додаванням номера
+            fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    chat_id: CHAT_ID,
+                    text: (formattedOrderNumber + "\n" + finalMsg)
+                })
+            })
+            .then(response => response.json().catch(() => ({})))
+            .then(telegramData => {
+                console.log("Order sent to Telegram:", telegramData);
+                let bonusOrder = orderNumber ? orderNumber % 5 : 0;
+                if(bonusOrder === 0 && orderNumber) bonusOrder = 5;
+                let alertMsg = `Дякуємо, ваше замовлення ${formattedOrderNumber} сформовано, очікуйте на дзвінок. 📞\n\n`;
+                if(orderNumber) {
+                  alertMsg += `Ваше замовлення ${bonusOrder}/5 ✅\nЗнижка 2% 💧, Кожне 5 замовлення – знижка 10% 🎉`;
+                }
+                alert(alertMsg);
+            })
+            .catch(error => {
+                console.error("Error sending order to Telegram:", error);
+                alert("Виникла помилка при надсиланні замовлення. Спробуйте пізніше.");
+            });
+            
+            let orders = JSON.parse(localStorage.getItem('userOrders') || '[]');
+            orders.push(formattedOrderNumber + "\n" + finalMsg);
+            localStorage.setItem('userOrders', JSON.stringify(orders));
+            
+            resetOrderModal();
           })
           .catch(error => {
-            console.error("Error saving order:", error);
+              console.error("Error saving order:", error);
           });
-          
-          // Відправка замовлення адміну через Telegram
-          fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json"
-              },
-              body: JSON.stringify({
-                  chat_id: CHAT_ID,
-                  text: finalMsg
-              })
-          })
-          .then(response => response.json().catch(() => ({})))
-          .then(data => {
-              console.log("Order sent to Telegram:", data);
-              // Формуємо повідомлення з номером замовлення та бонусною інформацією з емодзі
-              let bonusOrder = globalOrderNumber % 5;
-              if(bonusOrder === 0) bonusOrder = 5;
-              let alertMsg = `Дякуємо, ваше замовлення ${formattedOrderNumber} сформовано, очікуйте на дзвінок. 📞\n\nВаше замовлення ${bonusOrder}/5 ✅\nЗнижка 2% 💧, Кожне 5 замовлення – знижка 10% 🎉`;
-              alert(alertMsg);
-          })
-          .catch(error => {
-              console.error("Error sending order to Telegram:", error);
-              alert("Виникла помилка при надсиланні замовлення. Спробуйте пізніше.");
-          });
-          
-          let orders = JSON.parse(localStorage.getItem('userOrders') || '[]');
-          orders.push(finalMsg);
-          localStorage.setItem('userOrders', JSON.stringify(orders));
-          
-          resetOrderModal();
       }, 2000);
-    }
-    
-    // Функція оновлення номера замовлення при повторному замовленні
-    function updateOrderNumberInText(orderText) {
-      let lines = orderText.split("\n");
-      if(lines[0].startsWith("№")) {
-         lines.shift();
-      }
-      let globalOrderNumber = localStorage.getItem('globalOrderNumber') || 0;
-      globalOrderNumber = parseInt(globalOrderNumber) + 1;
-      localStorage.setItem('globalOrderNumber', globalOrderNumber);
-      let formattedOrderNumber = "№" + globalOrderNumber.toString().padStart(5, "0");
-      return formattedOrderNumber + "\n" + lines.join("\n");
     }
     
     function confirmRepeat(orderText) {
       if(confirm("Ви впевнені, що хочете повторити замовлення?")) {
-        orderText = updateOrderNumberInText(orderText);
+        let lines = orderText.split("\n");
+        if(lines[0].startsWith("№")) {
+           lines.shift();
+        }
+        let newOrderText = lines.join("\n");
         fetch("/save_order", {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
           },
-          body: JSON.stringify({ order: orderText })
+          body: JSON.stringify({ order: newOrderText })
         })
-        .then(response => response.json().catch(() => ({status: "ok"})))
+        .then(response => response.json().catch(() => ({ order_number: null })))
         .then(data => {
-            if(data.status === "ok") {
-              let globalOrderNumber = localStorage.getItem('globalOrderNumber') || 0;
-              globalOrderNumber = parseInt(globalOrderNumber);
-              let formattedOrderNumber = "№" + globalOrderNumber.toString().padStart(5, "0");
-              let bonusOrder = globalOrderNumber % 5;
+            if(data.order_number) {
+              let formattedOrderNumber = "№" + data.order_number.toString().padStart(5, "0");
+              let bonusOrder = data.order_number % 5;
               if(bonusOrder === 0) bonusOrder = 5;
               let alertMsg = `Замовлення повторено!\nДякуємо, ваше замовлення ${formattedOrderNumber} сформовано, очікуйте на дзвінок. 📞\n\nВаше замовлення ${bonusOrder}/5 ✅\nЗнижка 2% 💧, Кожне 5 замовлення – знижка 10% 🎉`;
               alert(alertMsg);
             } else {
-              alert("Error saving order: " + data.error);
+              alert("Помилка при повторенні замовлення.");
             }
         })
         .catch(error => {
