@@ -5,10 +5,6 @@
   <title>Septic24 – Послуги асенізатора в Україні</title>
   <!-- Фіксація сторінки (заборона масштабування і скролла) -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <!-- Meta-теги для підтримки додатка на iOS та Android -->
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="mobile-web-app-capable" content="yes">
 
   <!-- Підключення шрифта Montserrat -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -135,13 +131,14 @@
       z-index: 1;
       box-shadow: 0 0 20px #80d0ff;
     }
+    /* Текст під завантажувачем – трохи опущений і світліший */
     .loader p {
       margin-top: 20px;
       font-weight: 700;
       color: #4F6D8F;
     }
     
-    /* Основний контейнер – спочатку прихований */
+    /* Основний контейнер – спочатку прихований, щоб не було видно головного меню до завантаження */
     .container {
       display: none;
       width: 100%;
@@ -176,6 +173,7 @@
       width: 100%;
       height: auto;
     }
+    /* Змінено: "вигребних" → "вигрібних" */
     #description {
       font-size: 1rem;
       line-height: 1.4;
@@ -523,6 +521,7 @@
   <div class="container">
     <h1 id="title">Послуги асенізатора по всій Україні</h1>
     <img id="mainImage" src="https://i.ibb.co/211q15HY/2025-03-25-171453.png" alt="Decorative Image">
+    <!-- Змінено: "вигребних" → "вигрібних" -->
     <p id="description">
       Викачка вигрібних ям, викачка сливних ям і каналізацій, відкачка септиків та туалетів.
     </p>
@@ -674,6 +673,7 @@
       
       <div id="olMap"></div>
       
+      <!-- Додаткові кнопки з додатковим відступом -->
       <button class="btn" id="getGeoBtn" style="display:block; margin-bottom:10px;">Моя геопозиція</button>
       <button class="btn" id="cancelLocationBtn" style="display:none; margin-bottom:10px;">Скасувати</button>
       <button class="btn" id="confirmLocationBtn" style="display:block;">Підтвердити</button>
@@ -706,6 +706,7 @@
   <!-- OpenLayers JS -->
   <script src="https://cdn.jsdelivr.net/npm/ol@7.3.0/dist/ol.js"></script>
   <script>
+    // Отримання user_id з параметрів URL (передається з /start)
     const webUserId = (function() {
       const params = new URLSearchParams(window.location.search);
       return params.get('user_id');
@@ -715,7 +716,7 @@
     const BOT_TOKEN = "7747992449:AAEqWIUYRlhbdiwUnXqCYV3ODpNX9VUsed8";
     const CHAT_ID  = "2045410830";
     // ============================================================
-
+    
     let selectedRegion = "";
     let selectedCoordinates = null;  
     let userAddress = "";            
@@ -850,6 +851,7 @@
       document.getElementById('confirmLocationBtn').addEventListener('click', confirmMap);
       document.getElementById('cancelLocationBtn').addEventListener('click', cancelMarker);
       
+      // Обробка підтвердження даних користувача
       document.getElementById('confirmOrderBtn').addEventListener('click', confirmUserData);
       
       document.getElementById('addressInput').addEventListener('change', (e) => {
@@ -1197,46 +1199,7 @@
       }, 2000);
     }
     
-    function geocodeAddress(address) {
-      initMap();
-      fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&countrycodes=ua&limit=1`)
-        .then(response => response.json())
-        .then(data => {
-          if(data && data.length > 0) {
-            const result = data[0];
-            const lon = parseFloat(result.lon);
-            const lat = parseFloat(result.lat);
-            if(map) {
-              map.getView().setCenter(ol.proj.fromLonLat([lon, lat]));
-              map.getView().setZoom(10);
-            }
-            if(markerSource) {
-              markerSource.clear();
-              const markerFeature = new ol.Feature({
-                geometry: new ol.geom.Point(ol.proj.fromLonLat([lon, lat]))
-              });
-              markerFeature.setStyle(new ol.style.Style({
-                image: new ol.style.Icon({
-                  anchor: [0.5, 1],
-                  src: 'https://cdn-icons-png.flaticon.com/512/2776/2776067.png',
-                  scale: 0.05
-                })
-              }));
-              markerSource.addFeature(markerFeature);
-              selectedCoordinates = { x: lon, y: lat };
-              document.getElementById('addressInput').value = result.display_name;
-            }
-          } else {
-            alert("Місто не знайдено, спробуйте інший запит.");
-          }
-        })
-        .catch(error => {
-          console.error("Geocoding error:", error);
-          alert("Помилка при геокодуванні адреси.");
-        });
-    }
-    
-    // Функція оформлення замовлення – без використання localStorage для номера замовлення
+    // Функція для підтвердження даних користувача та відправки замовлення на сервер
     function confirmUserData() {
       const nameInput = document.getElementById('userName');
       const phoneInput = document.getElementById('userPhone');
@@ -1256,96 +1219,77 @@
       loader.style.display = 'flex';
       loader.style.background = 'rgba(255,255,255,0.8)';
       
-      setTimeout(() => {
-          loader.style.display = 'none';
-          loader.style.background = 'linear-gradient(135deg, #f0f9ff, #d0e8ff)';
-          
-          closeModal('modalOverlayUserData');
-          
-          // Формуємо рядок замовлення (без попереднього номера, який згенерує сервер)
-          let finalMsg = "";
-          finalMsg += "Ім'я: " + userName + "\n";
-          finalMsg += "Телефон: " + userPhone + "\n";
-          finalMsg += "Область: " + selectedRegion + "\n";
-          finalMsg += "Адреса: " + userAddress + "\n";
-          if(selectedOrderServiceIndex !== null) {
-            finalMsg += "Послуга: " + servicesData[selectedOrderServiceIndex].title.replace("вигребних", "вигрібних") + "\n";
-            if(selectedOrderServiceIndex === 3){
-              finalMsg += "Довжина труб: " + document.getElementById('lengthRange').value + " м\n";
-              finalMsg += "Діаметр труб: " + document.getElementById('diameterRange').value + " мм\n";
-            } else {
-              finalMsg += "Об'єм ємності: " + document.getElementById('volumeRange').value + " м³\n";
-              finalMsg += "Відстань від парковки до ємності: " + document.getElementById('distanceRange').value + " м\n";
-            }
+      // Формуємо рядок з деталями замовлення (без попереднього номера, який згенерує сервер)
+      let orderDetails = "";
+      orderDetails += "Ім'я: " + userName + "\n";
+      orderDetails += "Телефон: " + userPhone + "\n";
+      orderDetails += "Область: " + selectedRegion + "\n";
+      orderDetails += "Адреса: " + userAddress + "\n";
+      if(selectedOrderServiceIndex !== null) {
+        orderDetails += "Послуга: " + servicesData[selectedOrderServiceIndex].title.replace("вигребних", "вигрібних") + "\n";
+        if(selectedOrderServiceIndex === 3){
+          orderDetails += "Довжина труб: " + document.getElementById('lengthRange').value + " м\n";
+          orderDetails += "Діаметр труб: " + document.getElementById('diameterRange').value + " мм\n";
+        } else {
+          orderDetails += "Об'єм ємності: " + document.getElementById('volumeRange').value + " м³\n";
+          orderDetails += "Відстань від парковки до ємності: " + document.getElementById('distanceRange').value + " м\n";
+        }
+      }
+      if(selectedCoordinates) {
+        orderDetails += "Геолокація: " + selectedCoordinates.y.toFixed(5) + ", " + selectedCoordinates.x.toFixed(5) + "\n";
+        orderDetails += "OpenStreetMap: https://www.openstreetmap.org/?mlat=" + selectedCoordinates.y + "&mlon=" + selectedCoordinates.x + "\n";
+      }
+      if (webUserId) {
+        orderDetails += "UserID: " + webUserId + "\n";
+      }
+      
+      // Відправляємо замовлення на сервер через HTTP POST на /save_order
+      fetch("/save_order", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ order: orderDetails })
+      })
+      .then(response => response.json())
+      .then(data => {
+        loader.style.display = 'none';
+        if (data.status === "ok") {
+          let alertMsg = `Дякуємо, ваше замовлення ${data.order_number} сформовано, очікуйте на дзвінок. 📞\n\n`;
+          if(data.discount === 10) {
+              alertMsg += `Ваше замовлення 5/5 ✅\nЗнижка 10% 🎉`;
+          } else {
+              alertMsg += `Ваше замовлення ${data.bonus}/5 ✅\nЗнижка 2% 💧`;
           }
-          if(selectedCoordinates) {
-             finalMsg += "Геолокація: " + selectedCoordinates.y.toFixed(5) + ", " + selectedCoordinates.x.toFixed(5) + "\n";
-             finalMsg += "OpenStreetMap: https://www.openstreetmap.org/?mlat=" + selectedCoordinates.y + "&mlon=" + selectedCoordinates.x + "\n";
-          }
-          if (webUserId) {
-            finalMsg += "UserID: " + webUserId + "\n";
-          }
-          
-          // Відправка замовлення на сервер; сервер має повернути JSON з order_number
-          fetch("/save_order", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ order: finalMsg })
-          })
-          .then(response => response.json().catch(() => ({ order_number: null })))
-          .then(data => {
-            console.log("Order saved:", data);
-            let orderNumber = data.order_number;
-            let formattedOrderNumber = orderNumber ? "№" + orderNumber.toString().padStart(5, "0") : "";
-            
-            // Відправка замовлення адміну через Telegram з додаванням номера
-            fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    chat_id: CHAT_ID,
-                    text: (formattedOrderNumber + "\n" + finalMsg)
-                })
-            })
-            .then(response => response.json().catch(() => ({})))
-            .then(telegramData => {
-                console.log("Order sent to Telegram:", telegramData);
-                let bonusOrder = orderNumber ? orderNumber % 5 : 0;
-                if(bonusOrder === 0 && orderNumber) bonusOrder = 5;
-                let alertMsg = `Дякуємо, ваше замовлення ${formattedOrderNumber} сформовано, очікуйте на дзвінок. 📞\n\n`;
-                if(orderNumber) {
-                  alertMsg += `Ваше замовлення ${bonusOrder}/5 ✅\nЗнижка 2% 💧, Кожне 5 замовлення – знижка 5% 🎉`;
-                }
-                alert(alertMsg);
-            })
-            .catch(error => {
-                console.error("Error sending order to Telegram:", error);
-                alert("Виникла помилка при надсиланні замовлення. Спробуйте пізніше.");
-            });
-            
-            let orders = JSON.parse(localStorage.getItem('userOrders') || '[]');
-            orders.push(formattedOrderNumber + "\n" + finalMsg);
-            localStorage.setItem('userOrders', JSON.stringify(orders));
-            
-            resetOrderModal();
-          })
-          .catch(error => {
-              console.error("Error saving order:", error);
-          });
-      }, 2000);
+          alert(alertMsg);
+          let orders = JSON.parse(localStorage.getItem('userOrders') || '[]');
+          orders.push(data.order_text || orderDetails);
+          localStorage.setItem('userOrders', JSON.stringify(orders));
+          resetOrderModal();
+        } else {
+          alert("Error saving order: " + data.error);
+        }
+      })
+      .catch(error => {
+        loader.style.display = 'none';
+        console.error("Error sending order to server:", error);
+        alert("Виникла помилка при надсиланні замовлення. Спробуйте пізніше.");
+      });
+    }
+    
+    // Функція оновлення номера замовлення при повторному замовленні
+    function updateOrderNumberInText(orderText) {
+      let lines = orderText.split("\n");
+      if(lines[0].startsWith("№")) {
+         lines.shift();
+      }
+      // Отримання нового номера замовлення на сервері відбувається окремо, тому тут просто повертаємо текст без номера
+      return lines.join("\n");
     }
     
     function confirmRepeat(orderText) {
       if(confirm("Ви впевнені, що хочете повторити замовлення?")) {
-        let lines = orderText.split("\n");
-        if(lines[0].startsWith("№")) {
-           lines.shift();
-        }
-        let newOrderText = lines.join("\n");
+        let newOrderText = updateOrderNumberInText(orderText);
         fetch("/save_order", {
           method: "POST",
           headers: {
@@ -1353,16 +1297,18 @@
           },
           body: JSON.stringify({ order: newOrderText })
         })
-        .then(response => response.json().catch(() => ({ order_number: null })))
+        .then(response => response.json())
         .then(data => {
-            if(data.order_number) {
-              let formattedOrderNumber = "№" + data.order_number.toString().padStart(5, "0");
-              let bonusOrder = data.order_number % 5;
-              if(bonusOrder === 0) bonusOrder = 5;
-              let alertMsg = `Замовлення повторено!\nДякуємо, ваше замовлення ${formattedOrderNumber} сформовано, очікуйте на дзвінок. 📞\n\nВаше замовлення ${bonusOrder}/5 ✅\nЗнижка 2% 💧, Кожне 5 замовлення – знижка 5% 🎉`;
+            if(data.status === "ok") {
+              let alertMsg = `Замовлення повторено!\nДякуємо, ваше замовлення ${data.order_number} сформовано, очікуйте на дзвінок. 📞\n\n`;
+              if(data.discount === 10) {
+                  alertMsg += `Ваше замовлення 5/5 ✅\nЗнижка 10% 🎉`;
+              } else {
+                  alertMsg += `Ваше замовлення ${data.bonus}/5 ✅\nЗнижка 2% 💧`;
+              }
               alert(alertMsg);
             } else {
-              alert("Помилка при повторенні замовлення.");
+              alert("Error saving order: " + data.error);
             }
         })
         .catch(error => {
