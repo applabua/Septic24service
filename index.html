@@ -800,8 +800,7 @@
     let map, markerSource, mapInitialized = false;
     
     document.addEventListener('DOMContentLoaded', () => {
-      // Більше не обнуляємо збережені номери та замовлення,
-      // щоб зберігати дані після закриття застосунку.
+      // Більше не обнуляємо збережені номери та замовлення, щоб зберігати дані після закриття застосунку.
       
       setTimeout(() => {
         document.getElementById('loader').style.display = 'none';
@@ -1238,7 +1237,7 @@
         });
     }
     
-    // При оформленні замовлення генерується локальний номер з localStorage та формується рядок з номером замовлення
+    // При оформленні замовлення генерується локальний номер замовлення та формується рядок з номером замовлення
     function confirmUserData() {
       const nameInput = document.getElementById('userName');
       const phoneInput = document.getElementById('userPhone');
@@ -1264,11 +1263,9 @@
           
           closeModal('modalOverlayUserData');
           
-          // Генерація локального номера замовлення (локальне збереження більше не обнуляється)
-          let globalOrderNumber = parseInt(localStorage.getItem('globalOrderNumber') || "0", 10);
-          globalOrderNumber++;
-          localStorage.setItem('globalOrderNumber', globalOrderNumber);
-          let formattedOrderNumber = "№" + globalOrderNumber.toString().padStart(5, "0");
+          // Формування фінального повідомлення замовлення
+          let globalOrderNumber = localStorage.getItem('globalOrderNumber') || "Не встановлено"; // для локального перегляду
+          let formattedOrderNumber = globalOrderNumber; // тут показується номер, який був отриманий від сервера
           
           let finalMsg = formattedOrderNumber + "\n";
           finalMsg += "Ім'я: " + userName + "\n";
@@ -1293,22 +1290,6 @@
             finalMsg += "UserID: " + webUserId + "\n";
           }
           
-          // Відправка замовлення на сервер
-          fetch("/save_order", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ order: finalMsg })
-          })
-          .then(response => response.json().catch(() => ({status: "ok"})))
-          .then(data => {
-            console.log("Order saved:", data);
-          })
-          .catch(error => {
-            console.error("Error saving order:", error);
-          });
-          
           // Відправка замовлення адміну через Telegram
           fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
               method: "POST",
@@ -1323,7 +1304,8 @@
           .then(response => response.json().catch(() => ({})))
           .then(data => {
               console.log("Order sent to Telegram:", data);
-              let bonusOrder = globalOrderNumber % 5;
+              let num = parseInt(formattedOrderNumber.slice(1));
+              let bonusOrder = num % 5;
               let alertMsg = "";
               if(bonusOrder === 0) {
                   alertMsg = `Дякуємо, ваше замовлення ${formattedOrderNumber} сформовано, очікуйте на дзвінок. 📞\n\nЗамовлення 5/5 ✅\nЗнижка 10% 🎉`;
@@ -1337,6 +1319,7 @@
               alert("Виникла помилка при надсиланні замовлення. Спробуйте пізніше.");
           });
           
+          // Збереження замовлення в локальному сховищі для "Мої замовлення"
           let orders = JSON.parse(localStorage.getItem('userOrders') || '[]');
           orders.push(finalMsg);
           localStorage.setItem('userOrders', JSON.stringify(orders));
@@ -1351,57 +1334,30 @@
       if(lines[0].startsWith("№")) {
          lines.shift();
       }
-      let globalOrderNumber = parseInt(localStorage.getItem('globalOrderNumber') || "0", 10);
-      globalOrderNumber++;
-      localStorage.setItem('globalOrderNumber', globalOrderNumber);
-      let formattedOrderNumber = "№" + globalOrderNumber.toString().padStart(5, "0");
-      return formattedOrderNumber + "\n" + lines.join("\n");
+      let globalOrderNumber = localStorage.getItem('globalOrderNumber') || "Не встановлено";
+      return globalOrderNumber + "\n" + lines.join("\n");
     }
     
     function confirmRepeat(orderText) {
       if(confirm("Ви впевнені, що хочете повторити замовлення?")) {
         orderText = updateOrderNumberInText(orderText);
-        fetch("/save_order", {
+        fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
           },
-          body: JSON.stringify({ order: orderText })
+          body: JSON.stringify({
+              chat_id: CHAT_ID,
+              text: orderText
+          })
         })
-        .then(response => response.json().catch(() => ({status: "ok"})))
+        .then(response => response.json().catch(() => ({})))
         .then(data => {
-            let globalOrderNumber = parseInt(localStorage.getItem('globalOrderNumber') || "0", 10);
-            let formattedOrderNumber = "№" + globalOrderNumber.toString().padStart(5, "0");
-            let bonusOrder = globalOrderNumber % 5;
-            let alertMsg = "";
-            if(bonusOrder === 0) {
-                alertMsg = `Замовлення повторено!\nДякуємо, ваше замовлення ${formattedOrderNumber} сформовано, очікуйте на дзвінок. 📞\n\nЗамовлення 5/5 ✅\nЗнижка 10% 🎉`;
-            } else {
-                alertMsg = `Замовлення повторено!\nДякуємо, ваше замовлення ${formattedOrderNumber} сформовано, очікуйте на дзвінок. 📞\n\nВаше замовлення ${bonusOrder}/5 ✅\nЗнижка 2% 💧`;
-            }
-            // Відправка повторного замовлення адміну через Telegram
-            fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json"
-              },
-              body: JSON.stringify({
-                  chat_id: CHAT_ID,
-                  text: orderText
-              })
-            })
-            .then(response => response.json().catch(() => ({})))
-            .then(data => {
-              console.log("Order sent to Telegram (repeat):", data);
-            })
-            .catch(error => {
-              console.error("Error sending repeated order to Telegram:", error);
-            });
-            
-            alert(alertMsg);
+          console.log("Order sent to Telegram (repeat):", data);
+          alert("Замовлення повторено!\nОчікуйте на дзвінок.");
         })
         .catch(error => {
-          console.error("Error repeating order:", error);
+          console.error("Error sending repeated order to Telegram:", error);
           alert("Виникла помилка при повторенні замовлення.");
         });
       }
